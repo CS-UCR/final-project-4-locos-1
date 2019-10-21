@@ -6,8 +6,11 @@
 ### Pre-Requirements
 
 #### React-Native Project
+1) `npm install -g expo-cli`
+Then run the following commands to create a new React Native project called "AwesomeProject":
+2) `expo init AwesomeProject`
 
-- search "expo cli react native start up"
+3) `cd AwesomeProject`
 
 #### Firebase
 
