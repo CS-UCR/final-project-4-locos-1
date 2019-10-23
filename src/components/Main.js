@@ -11,6 +11,8 @@ export default class Main extends Component{
             <View style={styles.center}>
                 <Text> Main Menu </Text>
                 <Button title = 'Go to Feed' onPress = {()=> this.props.navigation.navigate('FeedRoute')} />
+                <Button title = 'Go to Map' onPress = {()=> this.props.navigation.navigate('MapRoute')} />
+
             </View>
 
         )

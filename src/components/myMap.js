@@ -3,7 +3,7 @@ import MapView, {Permissions} from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 
-export default class App extends React.Component {
+export default class myMap extends React.Component {
 
   state = {
     latitude: null,
