@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, View,} from 'react-native';
 import {credentials} from './src/config';
 import {createAppContainer, createSwitchNavigator} from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
@@ -12,8 +12,9 @@ credentials();
 
 const AppStack = createStackNavigator({
 
+  TitleRoute: Title,
   FeedRoute: Feed,
-  MainRoute: Main
+  MainRoute: Main,
 
 
 })
@@ -43,12 +44,3 @@ export default class App extends Component{
 }
 
 */
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
