@@ -6,17 +6,24 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import Feed from './src/components/Feed'
 import Main from './src/components/Main'
+import myMap from './src/components/myMap'
 
-//const Maps_API = "AIzaSyDbhCsme0uvQT5Kt-eFHE1cgHg8YhZmAs0";
+
 credentials();
 
 const AppStack = createStackNavigator({
+<<<<<<< HEAD
 
   TitleRoute: Title,
   FeedRoute: Feed,
   MainRoute: Main,
 
 
+=======
+  FeedRoute: Feed,
+  MainRoute: Main,
+  MapRoute: myMap
+>>>>>>> 50e42285f8db7c0554b00b06a56468b5ca631f75
 })
 
 export default createAppContainer(createSwitchNavigator({
@@ -24,6 +31,7 @@ export default createAppContainer(createSwitchNavigator({
   App: AppStack
 }));
 
+<<<<<<< HEAD
 /*
 export default class App extends Component{
 
@@ -44,3 +52,13 @@ export default class App extends Component{
 }
 
 */
+=======
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+>>>>>>> 50e42285f8db7c0554b00b06a56468b5ca631f75
