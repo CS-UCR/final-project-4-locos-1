@@ -7,6 +7,9 @@ import {createStackNavigator} from 'react-navigation-stack';
 import Feed from './src/components/Feed'
 import Main from './src/components/Main'
 
+//const Maps_API = "AIzaSyDbhCsme0uvQT5Kt-eFHE1cgHg8YhZmAs0";
+credentials();
+
 const AppStack = createStackNavigator({
 
   FeedRoute: Feed,
