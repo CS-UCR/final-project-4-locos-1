@@ -1,44 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Button, Platform, TouchableHighlight,} from 'react-native';
-
-import{styles} from '../styles/styles';
-
-export default class Title extends Component {
-  _onPressLogInButton() {
-    alert('Logged in!')
-    props.navigation.navigate('MainRoute')
-  }
-
-  _onPressSignUpButton() {
-    alert('Created Account!')
-    props.navigation.navigate('MainRoute')
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-
-      <View style={{width: 250, height: 300}}>
-        <Text style={styles.titleText}>Study Buddy</Text>
-      </View>
-
-        <TouchableHighlight onPress={this._onPressLogInButton} underlayColor="white">
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Log In</Text>
-          </View>
-        </TouchableHighlight>
-
-        <TouchableHighlight onPress={this._onPressSignUpButton} underlayColor="white">
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </View>
-        </TouchableHighlight>
-      </View>
-
-
-    );
-  }
-}
+import {View, Text, Button, Platform, TouchableHighlight,StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -64,3 +25,45 @@ const styles = StyleSheet.create({
     color: '#505050'
   }
 });
+
+export default class Title extends Component {
+
+  constructor(props){
+
+    super(props)
+  }
+  _onPressLogInButton() {
+    alert('Logged in!')
+    this.props.navigation.navigate('MainRoute')
+  }
+
+  _onPressSignUpButton() {
+    alert('Created Account!')
+    this.props.navigation.navigate('MainRoute')
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+
+      <View style={{width: 250, height: 300}}>
+        <Text style={styles.titleText}>Study Buddy</Text>
+      </View>
+
+        <TouchableHighlight onPress={()=> { alert('Logged in!');this.props.navigation.navigate('LoginRoute');}} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </View>
+        </TouchableHighlight>
+
+        <TouchableHighlight onPress={()=> {  alert('Created Account!'); this.props.navigation.navigate('SignUpRoute');}} underlayColor="white">
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+
+
+    );
+  }
+}

@@ -9,18 +9,17 @@ import Feed from './src/components/Feed'
 import Main from './src/components/Main'
 import myMap from './src/components/myMap'
 import Login from './src/authentication/User/LoginScreen';
-import SignUp from './src/authentication/User/SignUpScreen'
+//import SignUp from './src/authentication/User/SignUpScreen'
 
 credentials();
 
 const AppStack = createStackNavigator({
-
+  MainRoute: Main,
   TitleRoute: Title,
   FeedRoute: Feed,
-  MainRoute: Main,
   MapRoute: myMap,
   LoginRoute: Login,
-  SignUpRoute: SignUp
+//  SignUpRoute: SignUp
   })
 
 export default createAppContainer(createSwitchNavigator({

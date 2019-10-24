@@ -14,6 +14,7 @@ export default class Main extends Component{
                 <Button title = 'Go to Map' onPress = {()=> this.props.navigation.navigate('MapRoute')} />
                 <Button title = 'Go to Login' onPress = {()=> this.props.navigation.navigate('LoginRoute')} />
                 <Button title = 'Go to Signup' onPress = {()=> this.props.navigation.navigate('SignUpRoute')} />
+                <Button title = 'Go to Title' onPress = {()=> this.props.navigation.navigate('TitleRoute')} />
 
             </View>
 
