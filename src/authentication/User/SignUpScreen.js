@@ -1,8 +1,9 @@
 import React, { useReducer, useCallback } from 'react';
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text } from 'react-native';
 
-// import Input from '../component/utilites/Input'
-import AuthLayout from '../components/utilites/InputLayout';
+
+import Input from '../component/utilites/Input'
+import AuthLayout from '../component/utilites/InputLayout'
 import * as authActions from '../store/Action/auth';
 
 
