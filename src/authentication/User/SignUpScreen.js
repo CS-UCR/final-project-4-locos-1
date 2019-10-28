@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, {useEffect, useState, useReducer, useCallback } from 'react';
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text } from 'react-native';
 
 
@@ -36,7 +36,7 @@ const authReducer = (currentState, action) => {
 };
 
 const SignUpScreen = props => {
-
+  const [error, setError] = useState()
   const [authState, dispatchAuthState] = useReducer(authReducer, {
     inputValues: {
       email: '',
@@ -49,16 +49,31 @@ const SignUpScreen = props => {
     authIsValid: false
   });
 
-  const signupHandler = () => {
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An Error Has Occurred!', error, [{ text: 'Okay' }]);
+    }
+  }, [error]);
+
+  const signupHandler = async () => {
     if (!authState.authIsValid) {
       alert("Error in Valid Form")
       return
     }
-    authActions.signup(
+    let action = authActions.signup(
       authState.inputValues.email,
       authState.inputValues.password
-    );
-  };
+    )
+    
+    setError(null);
+    try {
+      await action4
+      props.navigation.navigate('Login')
+      Alert.alert('Congratulation', 'You Have Successfully Sign Up',[{text:'Okay'}])
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   const inputChangeHandler = useCallback(
     (inputIdentifier, inputValue, inputValidity) => {
