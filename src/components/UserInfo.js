@@ -149,7 +149,7 @@ export default class UserInfo extends Component{
                 </View>
                 <TouchableHighlight onPress={this.onPressUpdateInfoButton} underlayColor="white">    
                     <View style={styles.updateInfoButton}>
-                        <Text style={styles.updateInfoButtonText}>Update</Text>
+                        <Text style={styles.updateInfoButtonText}>Create</Text>
                     </View>
                 </TouchableHighlight>
             </View>
