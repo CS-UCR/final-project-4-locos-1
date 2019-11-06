@@ -138,7 +138,7 @@ export default class UserInfo extends Component{
         return (
             <View style={styles.container}>
                 <View style={{height: 30}}>
-                    <Text style={styles.pageTitleText}>Update User Info</Text>
+                    <Text style={styles.pageTitleText}>Create Profile</Text>
                 </View>
                 <View style={{height: 40}}></View>
                 <View style={{height: 400}}>
