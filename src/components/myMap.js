@@ -1,7 +1,8 @@
 import React from 'react';
-import MapView, {Permissions, Marker, Polygon} from 'react-native-maps';
+import MapView, {Permissions, Marker, Polygon, ProviderPropType,} from 'react-native-maps';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
+
 
 export default class myMap extends React.Component {
 
@@ -14,12 +15,6 @@ export default class myMap extends React.Component {
     }
   }
   componentDidMount(){
-    
-    // const {status} = await Location.hasServicesEnabledAsync()
-    // if(status != 'granted'){
-    //   const response = await Location.requestPermissionsAsync()
-    // }
-
     navigator.geolocation.getCurrentPosition(
       position =>{
         this.setState({
@@ -32,19 +27,9 @@ export default class myMap extends React.Component {
     )
   }
 
-  // _onPress = () =>{
-  //   <Polygon 
-  //     coordinates={[
-  //       {name: '1', latitude: this.state.latitude + 0.01, longitude: this.state.longitude - 0.01},
-  //       {name: '2', latitude: this.state.latitude + 0.01, longitude: this.state.longitude + 0.01},
-  //       {name: '3', latitude: this.state.latitude - 0.01, longitude: this.state.longitude + 0.01},
-  //       {name: '4', latitude: this.state.latitude - 0.01, longitude: this.state.longitude - 0.01},
-  //     ]}
-  //     strokeWidth={2}
-  //     strokeColor={'red'}
-  //     fillColor={'hsla(360, 100%, 50%, 0.5)'}>
-  //   </Polygon> 
-  // }
+  _onPress = () =>{
+    
+  }
 
   render() {
     return (
@@ -58,6 +43,17 @@ export default class myMap extends React.Component {
             longitude: this.state.longitude,
             latitudeDelta: 0.09,
             longitudeDelta: 0.09 }}>
+          <Polygon 
+            coordinates={[
+              {name: '1', latitude: this.state.latitude + 0.01, longitude: this.state.longitude - 0.01},
+              {name: '2', latitude: this.state.latitude + 0.01, longitude: this.state.longitude + 0.01},
+              {name: '3', latitude: this.state.latitude - 0.01, longitude: this.state.longitude + 0.01},
+              {name: '4', latitude: this.state.latitude - 0.01, longitude: this.state.longitude - 0.01},
+            ]}
+            strokeWidth={2}
+            strokeColor={'red'}
+            fillColor={'hsla(360, 100%, 50%, 0.5)'}>
+          </Polygon> 
         </MapView>
         <View style={styles.buttonContainerStyle}>
           <TouchableOpacity 
@@ -82,7 +78,7 @@ const styles = StyleSheet.create({
   buttonContainerStyle:{
     position: 'absolute',
     alignSelf: 'center',
-     bottom: 10,
+     bottom: 20,
   },
   buttonBoxStyle:{
     alignSelf:'center',
