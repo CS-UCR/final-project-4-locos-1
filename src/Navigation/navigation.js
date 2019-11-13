@@ -12,6 +12,7 @@ import Title from '../components/Title'
 import Feed from '../components/Feed'
 import Menu from '../components/Main'
 import myMap from '../components/myMap'
+import UserInfo from '../components/UserInfo'
 
 const Features = createStackNavigator(
     {
@@ -20,6 +21,7 @@ const Features = createStackNavigator(
         FeedRoute: Feed,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
+        UserInfoRoute: UserInfo
     }
 )
 
@@ -35,7 +37,8 @@ const Authentication = createStackNavigator(
 
 const MainNavigator = createSwitchNavigator({
     Auth: Authentication,
-    Features: Features
+    Features: Features,
+    
 })
 
 

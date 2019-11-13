@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
+import * as firebase from 'firebase'
 
 const styles = StyleSheet.create({
     container: {
@@ -99,7 +100,30 @@ export default class UserInfo extends Component{
     
         this.state={
             info: null,
+            currentUser : "",
+            firstname : null,
+            lastname : null,
+            major : null,
+            sharedInfo: null
         }
+    }
+
+    componentDidMount(){
+        
+        var self = this
+        firebase.auth().onAuthStateChanged(function(user){
+            if(user){
+                //logged on
+                console.log("user\n")
+                console.log(user)
+                self.setState({currentUser: user,
+                                userId : user.uid})
+            }
+            else{
+                //not logged on
+                console.log("no user logged on")
+            }
+        })
     }
 
     handleSubmit = () => {
@@ -110,22 +134,33 @@ export default class UserInfo extends Component{
         }else{
             alert("Please correct the errors")
         }
-        console.log('value: ', value);
+        //console.log('value: ', value);
     }
     //TODO:Update info into firebase
     updateFirebase = () => {
-        if(this.state.info){
+        console.log("in button")
             //Constants to be updated into firebase
-            const info = this.state.info
-            const   firstname = info.firstname,
-                    lastname = info.lastname,
-                    major = info.major,
-                    shareInfo = info.shareInfo
-            if(info.phonenum) {phonenum = info.phonenum} else {phonenum = 0};
-        }else{
-            alert("Updating firebase with invalid info...")
-        }
+    
+            //if(info.phonenum) {phonenum = info.phonenum} else {phonenum = 0};
+            
+            var formValues = this._form.getValue()
+            var output = {
+                email: this.state.currentUser.email,
+                profile: {firstname : formValues.firstname,
+                        lastname: formValues.lastname,
+                        major : formValues.major,
+                        shareInfo : formValues.shareInfo,
+                        phoneNum : formValues.phonenum
+                }
+            }
+            console.log("OUTPUT")
+            console.log(output)
+            console.log("pushing into firebase")
+            firebase.database().ref('Users/' + this.state.userId + '/').update(output)
+            alert("Valid Info")
+
     }
+    
     
     onPressUpdateInfoButton = () => {
         this.handleSubmit()
@@ -138,7 +173,7 @@ export default class UserInfo extends Component{
         return (
             <View style={styles.container}>
                 <View style={{height: 30}}>
-                    <Text style={styles.pageTitleText}>Create Profile</Text>
+                    <Text refstyle={styles.pageTitleText}>Create Profile</Text>
                 </View>
                 <View style={{height: 40}}></View>
                 <View style={{height: 400}}>
@@ -147,7 +182,7 @@ export default class UserInfo extends Component{
                         type={UserI}
                         options={formOptions} />
                 </View>
-                <TouchableHighlight onPress={this.onPressUpdateInfoButton} underlayColor="white">    
+                <TouchableHighlight onPress={this.updateFirebase} underlayColor="white">    
                     <View style={styles.updateInfoButton}>
                         <Text style={styles.updateInfoButtonText}>Create</Text>
                     </View>

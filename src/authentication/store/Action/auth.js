@@ -1,5 +1,6 @@
 export const SIGNUP = "SIGNUP"
 export const LOGIN = "LOGIN"
+import * as firebase from 'firebase'
 
 export const signup = async (email, password) => {
   const response =  await fetch(
@@ -15,7 +16,7 @@ export const signup = async (email, password) => {
         returnSecureToken: true
       })
     })
-
+  
 
 
   if (!response.ok) {
@@ -29,6 +30,7 @@ export const signup = async (email, password) => {
   }
 
   const accountData = await response.json()
+  firebase.auth().signInWithEmailAndPassword(email,password)
 }
 
 
@@ -61,4 +63,6 @@ export const login = async (email, password) => {
       }
 
       const accountData = await response.json()
+      console.log(firebase.auth().signInWithEmailAndPassword(email,password))
+
 } 
