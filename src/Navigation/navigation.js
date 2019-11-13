@@ -1,6 +1,10 @@
 import React from 'react'
 import {createAppContainer, createSwitchNavigator}  from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack'
+import { SafeAreaView, Button, View } from 'react-native';
+
+import * as authActions from '../authentication/store/Action/auth'
+import { useDispatch } from 'react-redux';
 
 
 import AuthenticationMenu from '../authentication/AuthenticationMenu'
@@ -20,6 +24,24 @@ const Features = createStackNavigator(
         FeedRoute: Feed,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
+    },{
+        defaultNavigationOptions: ({ navigation }) => ({
+            headerRight: (
+                <View style={{ flex: 1, paddingBottom: 20 }}>
+                <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                  <Button
+                    title="Logout"
+                    onPress={() => navigation.navigate('Parametres')}
+                    onPress={() => {
+                      dispatch(authActions.logout());
+                    }}
+                  />
+                </SafeAreaView>
+              </View>
+            )
+    }
+    
+)
     }
 )
 
