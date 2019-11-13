@@ -27,17 +27,10 @@ const Features = createStackNavigator(
     },{
         defaultNavigationOptions: ({ navigation }) => ({
             headerRight: (
-                <View style={{ flex: 1, paddingBottom: 20 }}>
-                <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
                   <Button
                     title="Logout"
-                    onPress={() => navigation.navigate('Parametres')}
-                    onPress={() => {
-                      dispatch(authActions.logout());
-                    }}
+                    onPress={() => navigation.navigate('Auth')}
                   />
-                </SafeAreaView>
-              </View>
             )
     }
     
