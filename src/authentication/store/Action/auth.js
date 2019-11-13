@@ -30,7 +30,10 @@ export const signup = async (email, password) => {
   }
 
   const accountData = await response.json()
+  login(email,password)
+  console.log("signed up, logging in")
   firebase.auth().signInWithEmailAndPassword(email,password)
+  
 }
 
 

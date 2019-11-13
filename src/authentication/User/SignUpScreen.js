@@ -68,7 +68,7 @@ const SignUpScreen = props => {
     setError(null);
     try {
       await action
-      props.navigation.navigate('Login')
+      props.navigation.navigate('UserInfoRoute')
       Alert.alert('Congratulation', 'You Have Successfully Sign Up',[{text:'Okay'}])
     } catch (err) {
       setError(err.message);

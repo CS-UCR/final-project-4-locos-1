@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text } from 'react-native'
 import AuthLayout from './component/utilites/InputLayout'
+import * as firebase from 'firebase'
 
 const AuthenticationMenu = props => {
 

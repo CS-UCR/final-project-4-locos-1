@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
+import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
 import * as firebase from 'firebase'
 
@@ -137,7 +137,7 @@ export default class UserInfo extends Component{
         //console.log('value: ', value);
     }
     //TODO:Update info into firebase
-    updateFirebase = () => {
+    updateFirebase = async() => {
         console.log("in button")
             //Constants to be updated into firebase
     
@@ -156,8 +156,9 @@ export default class UserInfo extends Component{
             console.log("OUTPUT")
             console.log(output)
             console.log("pushing into firebase")
-            firebase.database().ref('Users/' + this.state.userId + '/').update(output)
-            alert("Valid Info")
+            await firebase.database().ref('Users/' + this.state.userId + '/').update(output)
+            this.props.navigation.navigate('MainRoute')
+            Alert.alert('Notice','Successfully updated profile!',[{text:'Okay'}])
 
     }
     

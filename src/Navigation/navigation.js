@@ -16,15 +16,16 @@ import UserInfo from '../components/UserInfo'
 
 const Features = createStackNavigator(
     {
+        
+        
         MainRoute: Menu,
         TitleRoute: Title,
-        FeedRoute: Feed,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
-        UserInfoRoute: UserInfo
+        UserInfoRoute: UserInfo,
+        FeedRoute: Feed,
     }
 )
-
 
 
 const Authentication = createStackNavigator(

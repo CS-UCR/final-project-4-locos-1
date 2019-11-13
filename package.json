@@ -10,6 +10,7 @@
   "dependencies": {
     "expo": "^35.0.0",
     "expo-location": "~7.0.0",
+    "expo-task-manager": "~7.0.0",
     "firebase": "^7.2.1",
     "react": "16.8.3",
     "react-dom": "16.8.3",
