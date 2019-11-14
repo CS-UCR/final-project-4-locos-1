@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useReducer, useCallback } from 'react';
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 
 import Input from '../component/utilites/Input'
@@ -36,6 +37,7 @@ const authReducer = (currentState, action) => {
 };
 
 const SignUpScreen = props => {
+  const dispatch = useDispatch();
   const [error, setError] = useState()
   const [authState, dispatchAuthState] = useReducer(authReducer, {
     inputValues: {
@@ -60,6 +62,7 @@ const SignUpScreen = props => {
       alert("Error in Valid Form")
       return
     }
+
     let action = authActions.signup(
       authState.inputValues.email,
       authState.inputValues.password
@@ -67,7 +70,7 @@ const SignUpScreen = props => {
     
     setError(null);
     try {
-      await action
+      await dispatch(action)
       props.navigation.navigate('UserInfoRoute')
       Alert.alert('Congratulation', 'You Have Successfully Sign Up',[{text:'Okay'}])
     } catch (err) {
@@ -126,6 +129,10 @@ const SignUpScreen = props => {
       </AuthLayout>
     </KeyboardAvoidingView>
   );
+};
+
+SignUpScreen.navigationOptions = {
+  headerTitle: 'Authentication'
 };
 
 

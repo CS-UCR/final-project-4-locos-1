@@ -1,26 +1,14 @@
-import React, { Component } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
+import React from 'react';
+import { Text, TouchableOpacity } from 'react-native';
+import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
+import * as Permissions from 'expo-permissions'
 
-export default class Feed extends Component {
-  state = {
-    location: null,
-    errorMessage: null,
-  };
+const LOCATION_TASK_NAME = 'background-location-task';
 
-  componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
-
-  _getLocationAsync = async () => {
+export default class Feed extends React.Component {
+  onPress = async () => {
+    console.log("running....")
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
@@ -28,37 +16,31 @@ export default class Feed extends Component {
       });
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+      accuracy: Location.Accuracy.BestForNavigation
+          });
   };
 
   render() {
-    let text = 'Waiting..';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.location) {
-      text = JSON.stringify(this.state.location);
-    }
-
     return (
-      <View style={styles.container}>
-        <Text style={styles.paragraph}>{text}</Text>
-      </View>
+      <TouchableOpacity onPress={this.onPress}>
+        <Text>Enable background location</Text>
+      </TouchableOpacity>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1',
-  },
-  paragraph: {
-    margin: 24,
-    fontSize: 18,
-    textAlign: 'center',
-  },
+ 
+TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+  if (error) {
+    // Error occurred - check `error.message` for more details.
+    console.log("error")
+    console.log(error)
+    return;
+  }
+  if (data) {
+    const { locations } = data;
+    console.log("================ LOCATION ========================")
+    console.log(locations)
+    // do something with the locations captured in the background
+  }
 });
