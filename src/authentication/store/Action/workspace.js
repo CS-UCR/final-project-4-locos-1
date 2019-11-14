@@ -1,16 +1,38 @@
+export const CREATE_WORKSPACE = 'CREATE_WORKSPACE';
+export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
 
-export const createWorkSpace = (title, admin, members, setting) => {
-    return async dispatch => {
+
+// export const deleteWorkSpace = workSpaceID =>{
+//     return async (dispatch, getState) => {
+//         const token =  getState().userAuth.token;
+//         const response = await fetch(
+//             `https://lokos-studybuddy.firebaseio.com/workspaces/${workSpaceID}.json?auth=${token}`,
+//             {
+//               method: 'DELETE'
+//             }
+//           );
+//     };
+
+//     if(!response.ok){
+//         throw new Error("Something Wrong with delete Workspace")
+//     }
+//     dispatchEvent({ type: DELETE_WORKSPACE, workspaceID: workSpaceID})
+// }
+
+
+export const createWorkSpace = (workspaceName, addUser) => {
+    return async (dispatch, getState )=> {
+        const userID =  getState().userAuth.userId
+        console.log("user id", userID)
         const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
               },
             body: JSON.stringify({
-                title,
-                admin,
-                members,
-                setting
+                workspaceName,
+                adminId: userID,
+                addUser:addUser
             })
         });
 
@@ -21,10 +43,8 @@ export const createWorkSpace = (title, admin, members, setting) => {
             type:CREATE_WORKSPACE,
             workspaceData:{
                 id:resData.name,
-                title,
-                admin,
-                members,
-                setting
+                workspaceName,
+                adminId: userID
             }
         });
     }

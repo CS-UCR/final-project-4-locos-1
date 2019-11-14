@@ -31,8 +31,7 @@ export const signup = (email, password) => {
     }
   
     const accountData = await response.json()
-    console.log(accountData)
-    dispatch({type: SIGNUP, token: accountData.idToken , userID:accountData.localID })
+    dispatch({ type: SIGNUP, token: accountData.idToken, userId: accountData.localId });
   }
 }
 
@@ -67,8 +66,7 @@ export const login = (email, password) => {
       }
 
       const accountData = await response.json()
-      console.log(accountData)
-      dispatch({type: LOGIN, token: accountData.idToken , userID:accountData.localID })
+      dispatch({ type: LOGIN, token: accountData.idToken, userId: accountData.localId });
   }
 }
 

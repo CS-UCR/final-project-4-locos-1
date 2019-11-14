@@ -10,12 +10,13 @@ import { useDispatch } from 'react-redux';
 import AuthenticationMenu from '../authentication/AuthenticationMenu'
 import SignUp from '../authentication/User/SignUpScreen'
 import Login from '../authentication/User/LoginScreen'
-import MainScreen from '../components/MainScreen'
 
+import MainScreen from '../components/MainScreen'
 import Title from '../components/Title'
 import Feed from '../components/Feed'
 import Menu from '../components/Main'
 import myMap from '../components/myMap'
+import CreateWorkspace from '../components/CreateWorkspace'
 
 const Features = createStackNavigator(
     {
@@ -24,6 +25,7 @@ const Features = createStackNavigator(
         FeedRoute: Feed,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
+        CreateWorkspaceRoute: CreateWorkspace,
     },{
         defaultNavigationOptions: ({ navigation }) => ({
             headerRight: (
