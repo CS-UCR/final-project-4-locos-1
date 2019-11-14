@@ -31,7 +31,6 @@ export const createWorkSpace = (settings) => {
               },
             body: JSON.stringify({
                 settings: settings,
-                addUser:addUser
             })
         });
 
@@ -43,7 +42,6 @@ export const createWorkSpace = (settings) => {
             workspaceData:{
                 id:resData.name,
                 settings: settings,
-                addUser:addUser
             }
         });
     }
