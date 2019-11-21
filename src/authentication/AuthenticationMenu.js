@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text } from 'react-native'
 import AuthLayout from './component/utilites/InputLayout'
 import * as firebase from 'firebase'
+import {Image} from 'react-native'
 
 const AuthenticationMenu = props => {
 
@@ -11,9 +12,14 @@ const AuthenticationMenu = props => {
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
-      <View style={styles.lines}></View>
+      {/* <View style={styles.lines}></View>
       <Text style={styles.Header}>Study Buddy</Text>
-      <View style={styles.lines}></View>
+      <View style={styles.lines}></View> */}
+      <View style={{height: 5}}></View>
+      <Image 
+          source={require('../../assets/StuddyBuddyLogo.png')}  
+          style={{width: 300, height: 300}} 
+      />
       <AuthLayout style={styles.LoginContainer}>
         <ScrollView>
           <View style={styles.buttonContainer}>
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
     LoginContainer: {
       width: '60%',
       padding: 20,
-      marginTop:150,
+      marginTop:50,
       backgroundColor:'#feccc1',
       borderWidth:7,
       borderColor:'pink'
