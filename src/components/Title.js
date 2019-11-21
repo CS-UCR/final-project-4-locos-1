@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight,StyleSheet} from 'react-native';
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,6 +42,15 @@ export default class Title extends Component {
     alert('Created Account!')
     this.props.navigation.navigate('MainRoute')
   }
+
+  static navigationOptions = () => {
+    return {
+        headerRight: <DrawerIcon/>,
+        headerStyle: {
+            backgroundColor: '#E0E0E0',
+        },
+    };
+  };
 
   render() {
     return (

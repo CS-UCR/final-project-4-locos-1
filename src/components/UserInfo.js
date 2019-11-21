@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 const styles = StyleSheet.create({
     container: {
@@ -107,6 +108,15 @@ export default class UserInfo extends Component{
             sharedInfo: null
         }
     }
+
+    static navigationOptions = () => {
+        return {
+            headerRight: <DrawerIcon/>,
+            headerStyle: {
+                backgroundColor: '#E0E0E0',
+            },
+        };
+    };
 
     componentDidMount(){
         
