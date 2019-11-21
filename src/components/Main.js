@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Alert,View, Text, Button} from 'react-native';
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 import{styles} from '../styles/styles';
 import * as firebase from 'firebase'
@@ -13,6 +14,15 @@ export default class Main extends Component{
             userInfo : null,
         }
     }
+
+    static navigationOptions = () => {
+        return {
+            headerRight: <DrawerIcon/>,
+            headerStyle: {
+                backgroundColor: '#E0E0E0',
+            },
+        };
+    };
 
     redirectToProfile(){
         this.props.navigation.navigate('UserInfoRoute')

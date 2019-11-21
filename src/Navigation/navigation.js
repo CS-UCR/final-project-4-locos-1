@@ -18,6 +18,7 @@ import Menu from '../components/Main'
 import myMap from '../components/myMap'
 import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
+import DrawerNavigation from '../Navigation/DrawerNavigation'
 
 const Features = createStackNavigator(
     {
@@ -44,7 +45,6 @@ const Features = createStackNavigator(
     }
 )
 
-
 const Authentication = createStackNavigator(
     {
         AuthenticationMenu: AuthenticationMenu,
@@ -55,7 +55,7 @@ const Authentication = createStackNavigator(
 
 const MainNavigator = createSwitchNavigator({
     Auth: Authentication,
-    Features: Features,
+    DrawerNavigation: DrawerNavigation,
     
 })
 

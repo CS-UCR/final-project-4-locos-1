@@ -1,7 +1,8 @@
 import React, {Component, useCallback} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
-import * as Workspace from '../authentication/store/Action/workspace'
+import * as Workspace from '../authentication/store/Action/workspace';
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 import { useSelector, useDispatch } from 'react-redux';
 
 const Form = t.form.Form;
@@ -56,6 +57,15 @@ const formOptions = {
 
 const CreateWorkspace = props => {
     const dispatch = useDispatch();
+
+    navigationOptions = () => {
+        return {
+            headerRight: <DrawerIcon/>,
+            headerStyle: {
+                backgroundColor: '#E0E0E0',
+            },
+        };
+    };
  
     const submitHandler = async () => {
         const { addUsers, workspaceName} = this._form.getValue();

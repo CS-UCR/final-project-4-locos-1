@@ -72,7 +72,7 @@ const LoginScreen = props => {
     setError(null);
     try {
       await dispatch(action)
-      props.navigation.navigate('Features')
+      props.navigation.navigate('DrawerNavigation')
       // Alert.alert('Congratulation', 'You Have Successfully Login Up',[{text:'Okay'}])
     } catch (err) {
       setError(err.message);

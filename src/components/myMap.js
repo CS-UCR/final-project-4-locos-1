@@ -1,6 +1,7 @@
 import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 //TO DO:
 /*
@@ -44,6 +45,15 @@ export default class myMap extends React.Component {
       editing: null,
     });
   }
+
+  static navigationOptions = () => {
+    return {
+        headerRight: <DrawerIcon/>,
+        headerStyle: {
+            backgroundColor: '#E0E0E0',
+        },
+    };
+  };
 
   onPress(e){
     const{editing} = this.state;
