@@ -19,6 +19,11 @@ const FeedStack = createStackNavigator({
     FeedRoute: Feed,
 });
 
+const UserInfoStackSignUp = createStackNavigator({
+    UserInfoRouteSignUp: UserInfo,
+    DrawerNavigation: DrawerNavigation,
+});
+
 const UserInfoStack = createStackNavigator({
     UserInfoRoute: UserInfo,
 });
@@ -36,7 +41,7 @@ const DrawerNavigation = createDrawerNavigator(
         MenuDrawer: MenuStack,
         TitleDrawer: TitleStack,
         FeedDrawer: FeedStack,
-        UserInfoDrawer: UserInfoStack,
+        UserInfoDrawer: UserInfoStackSignUp,
         CreateWorkspaceDrawer: CreateWorkspaceStack,
         MainScreenDrawer: {
             screen: MainScreenStack,
