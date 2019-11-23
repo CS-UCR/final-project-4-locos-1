@@ -18,7 +18,8 @@ import Menu from '../components/Main'
 import myMap from '../components/myMap'
 import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
-import DrawerNavigation from '../Navigation/DrawerNavigation'
+import { createDrawerNavigator } from 'react-navigation-drawer';
+// import DrawerNavigation from '../Navigation/DrawerNavigation'
 
 const Features = createStackNavigator(
     {
@@ -45,6 +46,32 @@ const Features = createStackNavigator(
     }
 )
 
+
+const Drawer = createDrawerNavigator(
+    {
+        MainRoute: Menu,
+        TitleRoute: Title,
+        FeedRoute: Feed,
+        MapRoute: myMap,
+        UserInfoRoute: UserInfo,
+        CreateWorkspaceRoute: CreateWorkspace,
+        MainScreenDrawer: {
+            screen: MainScreen,
+        }
+    },
+    {
+        initialRouteName: 'MainScreenDrawer',
+        drawerPosition: 'right',
+        drawerBackgroundColor: '#C0C0C0',
+        contentOptions: {
+            labelStyle: {
+              color: 'white',
+            },
+            activeBackgroundColor: '#A0A0A0',
+        }
+    }
+)
+
 const Authentication = createStackNavigator(
     {
         AuthenticationMenu: AuthenticationMenu,
@@ -55,7 +82,7 @@ const Authentication = createStackNavigator(
 
 const MainNavigator = createSwitchNavigator({
     Auth: Authentication,
-    DrawerNavigation: DrawerNavigation,
+    DrawerNavigation: Drawer,
     
 })
 
