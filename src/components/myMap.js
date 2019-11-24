@@ -37,9 +37,19 @@ export default class myMap extends React.Component {
       // polypoints: [],
       polygons: [],
       editing: null,
+      creating: false,
     }
   }
   
+  static navigationOptions = () => {
+    return {
+        headerRight: <DrawerIcon/>,
+        headerStyle: {
+            backgroundColor: '#E0E0E0',
+        },
+    };
+  };
+
   finish(){
     const{polygons, editing} = this.state;
     if(editing.coordinates.length < 4){
@@ -49,6 +59,7 @@ export default class myMap extends React.Component {
         polygons: [...polygons, editing],
         // polypoints: [...polypoints, editing.points],
         editing: null,
+        creating: false,
       });
     }
     console.log(polygons);
@@ -60,42 +71,43 @@ export default class myMap extends React.Component {
     this.setState({
       polygons: [...polygons],
       editing: null,
+      creating: false,
     })
   }
 
-  static navigationOptions = () => {
-    return {
-        headerRight: <DrawerIcon/>,
-        headerStyle: {
-            backgroundColor: '#E0E0E0',
-        },
-    };
-  };
+  create(){
+    const{creating} = this.state;
+    this.setState({
+      creating: true,
+    })
+  }
 
   onPress(e){
-    const{editing, coord} = this.state;
-    if(!editing){
-      this.setState({
-        editing: {
-          id: id++,
-          coordinates: [e.nativeEvent.coordinate],
-          points: [e.nativeEvent.coordinate],
-        },
-        coord: {
-          latitude: e.nativeEvent.coordinate.latitude,
-          longitude: e.nativeEvent.coordinate.longitude,
-        }
-      });
-    } else if(editing.coordinates.length < 4){
-      this.setState({
-        editing:{
-          ...editing,
-          coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
-                        e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
-          points: [...editing.coordinates, e.nativeEvent.coordinate],
-        },
-      });
-    } else{} 
+    const{editing, coord, creating} = this.state;
+    if(creating == true){
+      if(!editing){
+        this.setState({
+          editing: {
+            id: id++,
+            coordinates: [e.nativeEvent.coordinate],
+            points: [e.nativeEvent.coordinate],
+          },
+          coord: {
+            latitude: e.nativeEvent.coordinate.latitude,
+            longitude: e.nativeEvent.coordinate.longitude,
+          }
+        });
+      } else if(editing.coordinates.length < 4){
+        this.setState({
+          editing:{
+            ...editing,
+            coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
+                          e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
+            points: [...editing.coordinates, e.nativeEvent.coordinate],
+          },
+        });
+      } else{} 
+    }
   }
 
   componentDidMount(){
@@ -148,6 +160,14 @@ export default class myMap extends React.Component {
             )}
         </MapView>
         <View style={styles.buttonContainerStyle}>
+          {!this.state.creating && (
+            <TouchableOpacity
+              onPress={() => this.create()}
+              style={styles.buttonStyle}
+            >
+              <Text>Create Study Space</Text>
+            </TouchableOpacity>
+          )}
           {this.state.editing && (
             <TouchableOpacity
               onPress={() => this.finish()}
