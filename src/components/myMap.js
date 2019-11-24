@@ -2,6 +2,7 @@ import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import { Updates } from 'expo';
 
 //TO DO:
 /*
@@ -37,32 +38,10 @@ export default class myMap extends React.Component {
       // polypoints: [],
       polygons: [],
       editing: null,
+      creating: false,
     }
   }
   
-  finish(){
-    const{polygons, editing} = this.state;
-    if(editing.coordinates.length < 4){
-      Alert.alert('Your study space is incomplete!');
-    } else {
-      this.setState({
-        polygons: [...polygons, editing],
-        // polypoints: [...polypoints, editing.points],
-        editing: null,
-      });
-    }
-    console.log(polygons);
-  }
-
-  cancel(){
-    const{polygons} = this.state;
-    id = id - 1
-    this.setState({
-      polygons: [...polygons],
-      editing: null,
-    })
-  }
-
   static navigationOptions = () => {
     return {
         headerRight: <DrawerIcon/>,
@@ -72,30 +51,85 @@ export default class myMap extends React.Component {
     };
   };
 
+  finish(){
+    const{polygons, editing} = this.state;
+    if(editing.coordinates.length < 4){
+      Alert.alert('Your study space is incomplete!');
+    } else {
+      this.setState({
+        polygons: [...polygons, editing],
+        editing: null,
+        creating: false,
+      });
+    }
+  }
+
+  cancel(){
+    const{polygons} = this.state;
+    id = id - 1
+    this.setState({
+      polygons: [...polygons],
+      editing: null,
+      creating: false,
+    })
+    console.log(polygons)
+  }
+
+  create(){
+    this.setState({
+      creating: true,
+    })
+  }
+
+  delete(polygon){
+    const{polygons} = this.state;
+    console.log(polygon.id)
+    this.state.polygons.splice(polygon.id, 1)
+    for(i = polygon.id; i < this.state.polygons.length; i++){
+      this.state.polygons[i].id = this.state.polygons[i].id - 1
+    }
+    this.setState({
+      polygons: [...polygons]
+    })
+  }
+
   onPress(e){
-    const{editing, coord} = this.state;
-    if(!editing){
-      this.setState({
-        editing: {
-          id: id++,
-          coordinates: [e.nativeEvent.coordinate],
-          points: [e.nativeEvent.coordinate],
-        },
-        coord: {
-          latitude: e.nativeEvent.coordinate.latitude,
-          longitude: e.nativeEvent.coordinate.longitude,
-        }
-      });
-    } else if(editing.coordinates.length < 4){
-      this.setState({
-        editing:{
-          ...editing,
-          coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
-                        e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
-          points: [...editing.coordinates, e.nativeEvent.coordinate],
-        },
-      });
-    } else{} 
+    const{editing, coord, creating} = this.state;
+    if(creating == true){
+      if(!editing){
+        this.setState({
+          editing: {
+            id: id++,
+            coordinates: [e.nativeEvent.coordinate],
+            points: [e.nativeEvent.coordinate],
+          },
+          coord: {
+            latitude: e.nativeEvent.coordinate.latitude,
+            longitude: e.nativeEvent.coordinate.longitude,
+          }
+        });
+      } else if(editing.coordinates.length < 4){
+        this.setState({
+          editing:{
+            ...editing,
+            coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
+                          e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
+            points: [...editing.coordinates, e.nativeEvent.coordinate],
+          },
+        });
+      } else{} 
+    }
+  }
+
+  onPolygonPress(polygon){
+    Alert.alert(
+      'Do you wish to delete this polygon?',
+      '',
+      [
+        {text: 'No'},
+        {text: 'Yes', onPress: () => this.delete(polygon)},
+      ],
+    );
   }
 
   componentDidMount(){
@@ -131,10 +165,12 @@ export default class myMap extends React.Component {
             {this.state.polygons.map(polygon => (
               <Polygon
                 key={polygon.id}
+                tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
                 strokeColor={1}
+                onPress={() => this.onPolygonPress(polygon)}
               />
             ))}
             {this.state.editing && (
@@ -148,6 +184,14 @@ export default class myMap extends React.Component {
             )}
         </MapView>
         <View style={styles.buttonContainerStyle}>
+          {!this.state.creating && (
+            <TouchableOpacity
+              onPress={() => this.create()}
+              style={styles.buttonStyle}
+            >
+              <Text>Create Study Space</Text>
+            </TouchableOpacity>
+          )}
           {this.state.editing && (
             <TouchableOpacity
               onPress={() => this.finish()}
