@@ -1,12 +1,11 @@
 import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 //TO DO:
 /*
 1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - P1
-3.-Be able to fix distortions on the polygons                                                                 - P4
 4.-Be able to delete polygons                                                                                 - P2
 5.-Try to create a button to start creating polyongs rather than just starting when clicking in the map       - P3
 6.-Have a button to go back to users location                                                                 - P5
@@ -46,10 +45,14 @@ export default class myMap extends React.Component {
   
   finish(){
     const{polygons, editing} = this.state;
-    this.setState({
-      polygons: [...polygons, editing],
-      editing: null,
-    });
+    if(editing.coordinates.length < 4){
+      Alert.alert('Your study space is incomplete!');
+    } else {
+      this.setState({
+        polygons: [...polygons, editing],
+        editing: null,
+      });
+    }
   }
 
   static navigationOptions = () => {
@@ -141,6 +144,14 @@ export default class myMap extends React.Component {
               <Text>Finish</Text>
             </TouchableOpacity>
           )}
+          {this.state.editing && (
+            <TouchableOpacity
+              onPress={() => this.cancel()}
+              style={styles.buttonStyle}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>                                                                                                                                                                                                    
     );
@@ -155,21 +166,22 @@ const styles = StyleSheet.create({
   container:{
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   mapStyle: {
     ...StyleSheet.absoluteFillObject,
   },
   buttonContainerStyle:{
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    bottom: 30,
+    marginHorizontal: 80
   },
   buttonStyle:{
     backgroundColor: '#hsla(60, 100%, 50%, 0.5)',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 20,    
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,  
+  
   },
 
 });
