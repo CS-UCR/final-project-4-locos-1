@@ -55,6 +55,14 @@ export default class myMap extends React.Component {
     }
   }
 
+  cancel(){
+    const{polygons, editing} = this.state;
+    this.setState({
+      polygons: [...polygons],
+      editing: null,
+    })
+  }
+
   static navigationOptions = () => {
     return {
         headerRight: <DrawerIcon/>,
