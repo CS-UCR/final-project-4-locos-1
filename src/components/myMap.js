@@ -6,10 +6,7 @@ import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 //TO DO:
 /*
 1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - P1
-4.-Be able to delete polygons                                                                                 - P2
-5.-Try to create a button to start creating polyongs rather than just starting when clicking in the map       - P3
-6.-Have a button to go back to users location                                                                 - P5
-7.-Edit colors                                                                                                - P6
+4.-Be able to delete polygons                                                                                 - P27                                                                                               - P6
 */
 
 const { width, height } = Dimensions.get('window');
@@ -37,7 +34,7 @@ export default class myMap extends React.Component {
         latitude: null,
         longitude: null,
       },
-
+      // polypoints: [],
       polygons: [],
       editing: null,
     }
@@ -50,13 +47,16 @@ export default class myMap extends React.Component {
     } else {
       this.setState({
         polygons: [...polygons, editing],
+        // polypoints: [...polypoints, editing.points],
         editing: null,
       });
     }
+    console.log(polygons);
   }
 
   cancel(){
-    const{polygons, editing} = this.state;
+    const{polygons} = this.state;
+    id = id - 1
     this.setState({
       polygons: [...polygons],
       editing: null,
@@ -79,6 +79,7 @@ export default class myMap extends React.Component {
         editing: {
           id: id++,
           coordinates: [e.nativeEvent.coordinate],
+          points: [e.nativeEvent.coordinate],
         },
         coord: {
           latitude: e.nativeEvent.coordinate.latitude,
@@ -91,6 +92,7 @@ export default class myMap extends React.Component {
           ...editing,
           coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
                         e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
+          points: [...editing.coordinates, e.nativeEvent.coordinate],
         },
       });
     } else{} 
@@ -121,8 +123,10 @@ export default class myMap extends React.Component {
           style={styles.mapStyle}
           //mapType = {MAP_TYPES.HYBRID}       //CHOOSE THE TYPE OF MAP YOU WANT TO USE
           showsUserLocation={true}
+          showsMyLocationButton={true}
+          
           initialRegion={this.state.initialRegion}
-            onPress={e => this.onPress(e)}
+          onPress={e => this.onPress(e)}
           >
             {this.state.polygons.map(polygon => (
               <Polygon
