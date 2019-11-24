@@ -5,8 +5,8 @@ import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 
 //TO DO:
 /*
-1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - PO
-2.-Be able to make polygons by using only two points (or at least 4 only)                                     - P1
+1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - P1
+2.-Be able to make polygons by using only two points (or at least 4 only)                                     - P0
 3.-Be able to fix distortions on the polygons                                                                 - P4
 4.-Be able to delete polygons                                                                                 - P2
 5.-Try to create a button to start creating polyongs rather than just starting when clicking in the map       - P3
@@ -32,7 +32,14 @@ export default class myMap extends React.Component {
         longitude: LONGITUDE,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
+
       },
+
+      coord:{
+        latitude: null,
+        longitude: null,
+      },
+
       polygons: [],
       editing: null,
     }
@@ -56,20 +63,24 @@ export default class myMap extends React.Component {
   };
 
   onPress(e){
-    const{editing} = this.state;
+    const{editing, coord} = this.state;
     if(!editing){
       this.setState({
         editing: {
           id: id++,
           coordinates: [e.nativeEvent.coordinate],
-          holes:[],
         },
+        coord: {
+          latitude: e.nativeEvent.coordinate.latitude,
+          longitude: e.nativeEvent.coordinate.longitude,
+        }
       });
     } else{
       this.setState({
         editing:{
           ...editing,
-          coordinates: [...editing.coordinates, e.nativeEvent.coordinate],
+          coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
+                        e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
         },
       });
     } 
@@ -107,7 +118,6 @@ export default class myMap extends React.Component {
               <Polygon
                 key={polygon.id}
                 coordinates={polygon.coordinates}
-                holes={polygon.holes}
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
                 strokeColor={1}
@@ -117,7 +127,6 @@ export default class myMap extends React.Component {
               <Polygon
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
-                holes={this.state.editing.holes}
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
                 strokeColor={1}
@@ -128,7 +137,7 @@ export default class myMap extends React.Component {
           {this.state.editing && (
             <TouchableOpacity
               onPress={() => this.finish()}
-              style={[styles.secondButtonStyle, styles.ButtonStyle]}
+              style={styles.buttonStyle}
             >
               <Text>Finish</Text>
             </TouchableOpacity>
@@ -158,18 +167,10 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
   buttonStyle:{
-    alignSelf:'center',
-    alignItems: 'center',
-    backgroundColor: '#hsla(60, 100%, 50%, 0.5)',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 12,
-    width: 100,
-  },
-  secondButtonStyle:{
     backgroundColor: '#hsla(60, 100%, 50%, 0.5)',
     paddingHorizontal: 18,
     paddingVertical: 12,
     borderRadius: 20,    
-  }
+  },
+
 });
