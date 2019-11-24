@@ -6,7 +6,6 @@ import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 //TO DO:
 /*
 1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - P1
-2.-Be able to make polygons by using only two points (or at least 4 only)                                     - P0
 3.-Be able to fix distortions on the polygons                                                                 - P4
 4.-Be able to delete polygons                                                                                 - P2
 5.-Try to create a button to start creating polyongs rather than just starting when clicking in the map       - P3
@@ -75,7 +74,7 @@ export default class myMap extends React.Component {
           longitude: e.nativeEvent.coordinate.longitude,
         }
       });
-    } else{
+    } else if(editing.coordinates.length < 4){
       this.setState({
         editing:{
           ...editing,
@@ -83,7 +82,7 @@ export default class myMap extends React.Component {
                         e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
         },
       });
-    } 
+    } else{} 
   }
 
   componentDidMount(){
