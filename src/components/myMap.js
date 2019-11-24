@@ -2,6 +2,7 @@ import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import { Updates } from 'expo';
 
 //TO DO:
 /*
@@ -57,12 +58,10 @@ export default class myMap extends React.Component {
     } else {
       this.setState({
         polygons: [...polygons, editing],
-        // polypoints: [...polypoints, editing.points],
         editing: null,
         creating: false,
       });
     }
-    console.log(polygons);
   }
 
   cancel(){
@@ -73,12 +72,24 @@ export default class myMap extends React.Component {
       editing: null,
       creating: false,
     })
+    console.log(polygons)
   }
 
   create(){
-    const{creating} = this.state;
     this.setState({
       creating: true,
+    })
+  }
+
+  delete(polygon){
+    const{polygons} = this.state;
+    console.log(polygon.id)
+    this.state.polygons.splice(polygon.id, 1)
+    for(i = polygon.id; i < this.state.polygons.length; i++){
+      this.state.polygons[i].id = this.state.polygons[i].id - 1
+    }
+    this.setState({
+      polygons: [...polygons]
     })
   }
 
@@ -108,6 +119,17 @@ export default class myMap extends React.Component {
         });
       } else{} 
     }
+  }
+
+  onPolygonPress(polygon){
+    Alert.alert(
+      'Do you wish to delete this polygon?',
+      '',
+      [
+        {text: 'No'},
+        {text: 'Yes', onPress: () => this.delete(polygon)},
+      ],
+    );
   }
 
   componentDidMount(){
@@ -143,10 +165,12 @@ export default class myMap extends React.Component {
             {this.state.polygons.map(polygon => (
               <Polygon
                 key={polygon.id}
+                tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
                 strokeColor={1}
+                onPress={() => this.onPolygonPress(polygon)}
               />
             ))}
             {this.state.editing && (
