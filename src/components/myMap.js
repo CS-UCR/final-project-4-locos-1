@@ -62,6 +62,7 @@ export default class myMap extends React.Component {
         creating: false,
       });
     }
+    console.log('create')
   }
 
   cancel(){
@@ -72,7 +73,7 @@ export default class myMap extends React.Component {
       editing: null,
       creating: false,
     })
-    console.log(polygons)
+    console.log('cancel')
   }
 
   create(){
@@ -83,14 +84,15 @@ export default class myMap extends React.Component {
 
   delete(polygon){
     const{polygons} = this.state;
-    console.log(polygon.id)
     this.state.polygons.splice(polygon.id, 1)
     for(i = polygon.id; i < this.state.polygons.length; i++){
       this.state.polygons[i].id = this.state.polygons[i].id - 1
     }
+    id = id - 1
     this.setState({
       polygons: [...polygons]
     })
+    console.log('delete')
   }
 
   onPress(e){
@@ -126,7 +128,7 @@ export default class myMap extends React.Component {
       'Do you wish to delete this polygon?',
       '',
       [
-        {text: 'No'},
+        {text: 'No', onPress: () => console.log(polygon.id)},
         {text: 'Yes', onPress: () => this.delete(polygon)},
       ],
     );
