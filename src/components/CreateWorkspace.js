@@ -3,7 +3,7 @@ import {View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'reac
 import t from 'tcomb-form-native';
 import * as Workspace from '../authentication/store/Action/workspace';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const Form = t.form.Form;
 
@@ -11,7 +11,6 @@ const WorkspaceI = t.struct({
     workspaceName: t.String,
     addUsers: t.maybe(t.Boolean),
 })
-
 
 const formStyles = {
     ...Form.stylesheet,
@@ -41,6 +40,7 @@ const formStyles = {
     },
 }
 
+
 const formOptions = {
     fields: {
         workspaceName:{
@@ -67,25 +67,26 @@ const CreateWorkspace = props => {
         };
     };
  
-    const submitHandler = async () => {
+    const submitHandler = useCallback(()=> {
         const { addUsers, workspaceName} = this._form.getValue();
         if(this._form.getValue()){
-            const settings = {
-                workspaceName,addUsers
-            }
+            // const settings = {
+            //     workspaceName,addUsers
+            // }
+            
             let action = Workspace.createWorkSpace(
-                settings
+                workspaceName,  '#f5428d'
             )
 
             try {
                 dispatch(action)
-                props.navigation.navigate('MainRoute')
                 alert("Workspace has been created")
             }catch(error){
                 alert("Please correct the errors")
             }
         }
-    }
+        props.navigation.goBack();
+    }, [submitHandler])
 
 
     return(

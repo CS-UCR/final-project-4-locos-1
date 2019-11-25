@@ -133,9 +133,9 @@ const LoginScreen = props => {
   );
 };
 
-LoginScreen.navigationOptions = {
-  headerTitle: 'Authentication'
-};
+// LoginScreen.navigationOptions = {
+//   headerTitle: 'Authentication'
+// };
 
 
 const styles = StyleSheet.create({
