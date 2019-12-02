@@ -1,4 +1,5 @@
 import Workspace from "../../../models/workspace";
+import email from 'react-native-email'
 import { auth } from "firebase";
 
 export const CREATE_WORKSPACE = 'CREATE_WORKSPACE';
@@ -6,11 +7,20 @@ export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
 export const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE';
 export const SET_WORKSPACE = 'SET_WORKSPACE'
 
+const makeId = (length) => {
+  let result = '';
+  let characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 
 export const fetchWorkspace = () => {
     return async (dispatch, getState)=> {
       const userId = getState().userAuth.userId
-      console.log("User ID in fetch: ", userId)
         try{
             const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json',
             );
@@ -26,7 +36,8 @@ export const fetchWorkspace = () => {
                     resData[key].workspaceTitle,
                     resData[key].authID,
                     resData[key].color,
-                    resData[key].imageUri))
+                    resData[key].imageUri,
+                    resData[key].accessCode))
             }
             dispatch({type: SET_WORKSPACE, 
                       workspaces: loadedWorkspace,
@@ -56,7 +67,8 @@ export const deleteWorkSpace = workspaceId =>{
 export const createWorkSpace = (workspaceTitle, color, imageUri) => {
     return async (dispatch, getState )=> {
         const authID =  getState().userAuth.userId
-        // console.log("user id", userID)
+        const accessCode = makeId(5)
+        //console.log("user id", userID)
         const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json', {
             method: 'POST',
             headers: {
@@ -66,12 +78,12 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
                 workspaceTitle,
                 color,
                 authID,
-                imageUri
+                imageUri,
+                accessCode
             })
         });
 
         const resData = await response.json();
-        // console.log(resData)
 
         dispatch({
             type:CREATE_WORKSPACE,
@@ -80,7 +92,8 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
                 workspaceTitle,
                 authID,
                 color,
-                imageUri
+                imageUri,
+                accessCode
             }
         });
     }
@@ -120,14 +133,10 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
     };
   };
 
-
-  export const addMembers = async(to ,workspaceTitle, accessCode) => {
-      try{
-        await email(to, {
-            subject: 'Studdy Buddy!!!',
-            body:`You have been invited to join ${workspaceTitle}. The access code is ${accessCode}`
-        })
-      }catch(error){
-        throw error
-    }
-  }
+  export const addMembers = (too ,workspaceTitle, accessCode) => {
+    const to = ['fgall002@ucr.edu', 'kikingallego13@hotmail.com'] // string or array of email addresses
+    email(to, {
+        subject: 'Studdy Buddy!!!',
+        body:`You have been invited to join ${workspaceTitle}. The access code is ${accessCode}`
+    }).catch(console.error)
+}

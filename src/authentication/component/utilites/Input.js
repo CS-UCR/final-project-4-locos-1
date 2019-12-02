@@ -49,6 +49,7 @@ const Input = props => {
     if (props.minLength != null && text.length < props.minLength) {
       isValid = false;
     }
+    console.log("Text Value ", text)
     dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
   };
 
