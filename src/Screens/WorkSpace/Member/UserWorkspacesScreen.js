@@ -10,7 +10,7 @@ import * as workspaceActions from '../../../authentication/store/Action/workspac
 import Colors from '../../../constants/Colors'
 
 const UserWorkspacesScreen = props => {
-    const workspaces = useSelector(state =>  state.WorkSpaces.authWorkspaces)
+    const workspaces = useSelector(state =>  state.WorkSpaces.availableWorkspaces)
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] =  useState()
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -38,7 +38,7 @@ const UserWorkspacesScreen = props => {
     }, [])
 
     useEffect(( ) => {
-        props.navigation.setParams({ create: createHandler });
+        props.navigation.setParams({ join: createHandler });
     }, [createHandler])
 
     const loadWorkspaces = useCallback(async () => {
@@ -70,6 +70,7 @@ const UserWorkspacesScreen = props => {
 
 
     const renderGridItem = itemData => {
+        console.log("item Data",  itemData)
         return (
             <WorkSpaceGridTile
                 workspaceTitle = {itemData.item.workspaceTitle}
@@ -78,15 +79,15 @@ const UserWorkspacesScreen = props => {
                 pickedImage = {itemData.item.imageUri}
                 onSelect = {() => {editWorkspaceHandler(itemData.item.id)}}>
 
-                <Button
+                {/* <Button
                     color= {Colors.workSpaceNavigationPrimaryColor}
                     title= "Add Members"
-                    onPress={() => {addMembersHandler(itemData.item.id)}}/>
+                    onPress={() => {addMembersHandler(itemData.item.id)}}/> */}
 
-                <Button
+                {/* <Button
                     color= {Colors.workSpaceNavigationPrimaryColor}
                     title= "Delete"
-                    onPress={deleteHandler.bind(this,itemData.item.id)}/>    
+                    onPress={deleteHandler.bind(this,itemData.item.id)}/>     */}
             </WorkSpaceGridTile>
         )
     }
@@ -103,7 +104,7 @@ const UserWorkspacesScreen = props => {
     if(!isLoading && workspaces.length === 0){
         return(
             <View style ={styles.centered}>
-                <Text> No WorkSpace found. Join or Create One! </Text>
+                <Text> No WorkSpace found. Join One! </Text>
             </View>
         )
     }
@@ -121,13 +122,13 @@ const UserWorkspacesScreen = props => {
 
 
 UserWorkspacesScreen.navigationOptions = navigationData =>{
-    const workSpaceCreator = navigationData.navigation.getParam('create')
+    const workSpaceCreator = navigationData.navigation.getParam('join')
     return {
-        headerTitle: 'Workspace Categories',
+        headerTitle: 'My Workspaces',
         headerRight:(
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
-                    title="Create Workspace"
+                    title="Join Workspace"
                     iconName={
                         Platform.OS === 'android' ? 'md-add' : 'ios-add'
                     }

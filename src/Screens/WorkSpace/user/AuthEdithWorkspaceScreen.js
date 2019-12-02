@@ -11,6 +11,7 @@ import Input from '../../../authentication/component/utilites/Input'
 import HeaderButton from '../../../authentication/component/utilites/HeaderButton'
 import Colors from '../../../constants/Colors'
 
+
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
 const IMAGE_INPUT_UPDATE = 'IMAGE_INPUT_UPDATE'
 const ADD_MEMBERS_UPDATE = 'ADD_MEMBERS_UPDATE'
@@ -47,13 +48,13 @@ const formReducer = (state, action) => {
             };
         
         case ADD_MEMBERS_UPDATE:
-            const addMembers = {
-                ...state.inputValue,
-                emails: action.value
-            }
+            const updatedAddMembers = {
+                ...state.inputValues,
+                [action.input]: action.value
+            };
             return {
                 ...state,
-                inputValues:addMembers
+                inputValues:updatedAddMembers
             }
         default:
             return state
@@ -67,7 +68,7 @@ const EditWorkspaceScreen = props => {
     const workspaceId = props.navigation.getParam('workspaceId')
     const functionality = props.navigation.getParam('functionality')
     const editedWorkspace = useSelector(state => 
-        state.WorkSpaces.userWorkspaces.find(workspace => workspace.id == workspaceId)
+        state.WorkSpaces.availableWorkspaces.find(workspace => workspace.id == workspaceId)
     );
 
     const dispatch = useDispatch();
@@ -83,7 +84,7 @@ const EditWorkspaceScreen = props => {
             workspaceTitle:  editedWorkspace ? true: false,
             color: editedWorkspace ? true : false,
             imageUri: true,
-            email: true
+            emails: true
         },
         formIsValid: editedWorkspace ? true : false
     })
@@ -115,15 +116,16 @@ const EditWorkspaceScreen = props => {
                 )
             )
         }
-        console.log("FormState value : ", formState.inputValues.email)
-        // if(functionality !== 'Edit Workspace' && !formState.inputValue.email){
-        //     console.log("insid eif")
-        //     await workspacesAction.addMembers(
-        //         formState.inputValue.email,
-        //         formState.inputValues.workspaceTitle,
-        //         '544332'
-        //     )
-        // }
+        console.log("FormState value : ", editedWorkspace)
+
+        if(formState.inputValues.emails){
+            console.log("insid eif")
+            workspacesAction.addMembers(
+                formState.inputValues.emails,
+                formState.inputValues.workspaceTitle,
+                editedWorkspace.accessCode
+            )
+        }
         console.log("Submited")
         props.navigation.goBack();
     }, [dispatch, workspaceId, formState])
@@ -134,6 +136,7 @@ const EditWorkspaceScreen = props => {
 
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidities) => {
+            console.log("Input Change Handler: ", inputValue)
             dispatchFormState({
                 type: FORM_INPUT_UPDATE,
                 value:inputValue,
@@ -151,14 +154,17 @@ const EditWorkspaceScreen = props => {
         })
     }, [dispatchFormState])
 
-    const addMembersHandler = useCallback(
-        (inputValue) => {
+    const addMemberChangeHandler = useCallback(
+        (inputIdentifier, inputValue, inputValidities) => {
+            console.log("add Change Handler: ", inputValue)
             dispatchFormState({
-                type:ADD_MEMBERS_UPDATE,
-                value:inputValue
+                type: ADD_MEMBERS_UPDATE,
+                value:inputValue,
+                input:inputIdentifier
             })
-        }
-    )
+        },
+        [dispatchFormState]
+    );
 
     return(
         <KeyboardAvoidingView
@@ -202,16 +208,16 @@ const EditWorkspaceScreen = props => {
 
                     {functionality !== 'Edit Workspace' &&
                         <Input
-                        id="Add Members"
-                        label="Add Members (Separate Emails with Commas)"
-                        errorText="Please enter valid email address"
+                        id="emails"
+                        label="Add Members (Separate with commas)"
+                        errorText="Please enter a valid email!"
                         keyboardType = "default"
                         autoCapitalize="sentences"
                         returnKeyType="next"
-                        onInputChange={addMembersHandler}
+                        onInputChange={addMemberChangeHandler}
                         initialValue={''}
                         initiallyValid={!!editedWorkspace}
-                    />
+                        />
                     }
                     
                 </View>
