@@ -17,6 +17,7 @@ import Login from '../authentication/User/LoginScreen'
 import MainScreen from '../components/MainScreen'
 import Feed from '../components/Feed'
 import myMap from '../components/myMap'
+import AuthMap from '../components/AuthMap'
 // import UserInfo from '../components/UserInfo'
 
 
@@ -33,6 +34,7 @@ const WorkSpacesNavigator = createStackNavigator(
         UserWorkSpacesCategories: UserWorkspacesScreen,
         // WorkSpace: IndividualWorkspaceScreen,
         UserEditWorkspaceScreen :UserEditWorkspaceScreen,
+        AuthMap:AuthMap
     }, {
         defaultNavigationOptions: {
             headerStyle: {
