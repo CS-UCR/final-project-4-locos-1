@@ -2,7 +2,8 @@ import { DELETE_WORKSPACE, CREATE_WORKSPACE, UPDATE_WORKSPACE, SET_WORKSPACE} fr
 import Workspace from '../../../models/workspace'
 
 const initialState = {
-    userWorkspaces: []
+    userWorkspaces: [],
+    authWorkspaces: []
     // userWorkspaces: WORKSPACES.filter(workspace => workspace.ownerId === ' ' )
 };
 
@@ -10,13 +11,16 @@ export default(state = initialState, action) => {
     switch(action.type){
         case SET_WORKSPACE:
             return{
-                ...state,
-                userWorkspaces: action.workspaces
+                userWorkspaces: action.workspaces,
+                authWorkspaces: action.authWorkspaces
             }
         case DELETE_WORKSPACE:
             return {
                 ...state,
                 userWorkspaces: state.userWorkspaces.filter(
+                    workspace => workspace.id !== action.workspaceId
+                ),
+                authWorkspaces: state.authWorkspaces.filter(
                     workspace => workspace.id !== action.workspaceId
                 )
             }
@@ -31,12 +35,37 @@ export default(state = initialState, action) => {
             );
             return{
                 ...state,
-                userWorkspaces: state.userWorkspaces.concat(newWorkSpace)
+                userWorkspaces: state.userWorkspaces.concat(newWorkSpace),
+                authWorkspaces: state.authWorkspaces.concat(newWorkSpace)
             }
         case UPDATE_WORKSPACE:
-            Console.log("Update")
-            console.log("Update Reducer: ", state.workspaceData)
-            return state
+            const workspaceAuthIndex = state.authWorkspaces.findIndex(
+                workspace => workspace.id === action.workspaceId
+            )
+
+            const updatedWorkspace = new Workspace(
+                action.workspaceId,
+                action.workspaceData.workspaceTitle,
+                state.authWorkspaces[workspaceAuthIndex].authID,
+                action.workspaceData.color,
+                action.workspaceData.imageUri
+            );
+
+            const updatedAuthWorkspace = [...state.authWorkspaces];
+            updatedAuthWorkspace[workspaceAuthIndex] = updatedWorkspace;
+
+            const userWorkspacesIndex = state.userWorkspaces.findIndex(
+                workspace => workspace.id === action.workspaceId
+            );
+
+            const updatedUserWorkspaces = [...state.userWorkspaces]
+            updatedUserWorkspaces[userWorkspacesIndex] = updatedWorkspace;
+
+            return {
+                ...state,
+                userWorkspaces: updatedUserWorkspaces,
+                authWorkspaces: updatedAuthWorkspace
+            };
         default:
             return state
     }

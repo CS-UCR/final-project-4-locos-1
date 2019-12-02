@@ -1,9 +1,9 @@
 import React from 'react'
 import {createAppContainer, createSwitchNavigator}  from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack'
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator , DrawerNavigatorItems} from 'react-navigation-drawer';
 
-import { Button, Platform } from 'react-native';
+import { Button, Platform, View, SafeAreaView } from 'react-native';
 import * as authActions from '../authentication/store/Action/auth'
 import { useDispatch } from 'react-redux';
 
@@ -23,9 +23,13 @@ import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
 
 
-import UserWorkspacesScreen from '../Screens/WorkSpace/user/UserWorkspacesScreen'
-import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScreen'
+import UserWorkspacesScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
+// import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScreen'
 import IndividualWorkspaceScreen from '../Screens/WorkSpace/WorkspaceScreen'
+
+import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScreen'
+// import IndividualWorkspaceScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
+
 
  
 
@@ -56,7 +60,7 @@ const Features = createStackNavigator(
 const WorkSpacesNavigator = createStackNavigator(
     {
         UserWorkSpacesCategories: UserWorkspacesScreen,
-        WorkSpace: IndividualWorkspaceScreen,
+        // WorkSpace: IndividualWorkspaceScreen,
         UserEditWorkspaceScreen :UserEditWorkspaceScreen,
         CreateWorkspace: CreateWorkspace,
     }, {
@@ -85,14 +89,33 @@ const Drawer = createDrawerNavigator(
     {
         initialRouteName: 'MainScreenDrawer',
         drawerPosition: 'right',
-        drawerBackgroundColor: '#C0C0C0',
+        drawerBackgroundColor: Colors.drawerNavigatorBackgroundColor,
         contentOptions: {
             labelStyle: {
               color: 'white',
             },
-            activeBackgroundColor: '#A0A0A0',
-        }
-    }
+            activeBackgroundColor: Colors.drawerNavigatorActivationColor,
+        },
+        contentComponent: props => {
+            const dispatch = useDispatch()
+            return (
+              <View style={{ flex: 1, paddingTop: 20 }}>
+                <SafeAreaView forceInset={{ bottom: 'always', horizontal: 'never' }}>
+                  <DrawerNavigatorItems {...props} />
+                  <Button
+                    title="Logout"
+                    color={Colors.drawerNavigatorTextColor}
+                    onPress={() => {
+                        dispatch(authActions.logout())
+                        props.navigation.navigate('AuthenticationMenu')
+                    
+                    }}
+                  />
+                </SafeAreaView>
+              </View>
+            );
+          }
+    },
 )
 
 const Authentication = createStackNavigator(

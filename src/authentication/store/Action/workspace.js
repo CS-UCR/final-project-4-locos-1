@@ -8,7 +8,9 @@ export const SET_WORKSPACE = 'SET_WORKSPACE'
 
 
 export const fetchWorkspace = () => {
-    return async (dispatch)=> {
+    return async (dispatch, getState)=> {
+      const userId = getState().userAuth.userId
+      console.log("User ID in fetch: ", userId)
         try{
             const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json',
             );
@@ -26,7 +28,10 @@ export const fetchWorkspace = () => {
                     resData[key].color,
                     resData[key].imageUri))
             }
-            dispatch({type: SET_WORKSPACE, workspaces: loadedWorkspace})
+            dispatch({type: SET_WORKSPACE, 
+                      workspaces: loadedWorkspace,
+                      authWorkspaces: loadedWorkspace.filter(workspace => workspace.authId === userId) 
+                    });
         }
         catch(err){
             throw err
@@ -84,9 +89,9 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
 
 export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
     return async dispatch => {
-        await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
+      const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
         {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -97,6 +102,10 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
           })
         }
       );
+
+      if(!response.ok){
+        throw new Error('Something went wrong!')
+      }
   
       dispatch({
         type:CREATE_WORKSPACE,
@@ -110,3 +119,15 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
       });
     };
   };
+
+
+  export const addMembers = async(to ,workspaceTitle, accessCode) => {
+      try{
+        await email(to, {
+            subject: 'Studdy Buddy!!!',
+            body:`You have been invited to join ${workspaceTitle}. The access code is ${accessCode}`
+        })
+      }catch(error){
+        throw error
+    }
+  }

@@ -32,10 +32,17 @@ const WorkspacesScreen = props => {
              }}])
     }
 
+    const editHandler = (workspaceId) => {
+        props.navigation.navigate('UserEditWorkspaceScreen',{workspaceId: workspaceId})
+    }
+
+    const addMembersHandler = (workspaceId) => {
+        props.navigation.navigate('UserEditWorkspaceScreen',{workspaceId: workspaceId, functionality: 'Add Members'})
+    }
+
     const createHandler = useCallback(async() => {
-        // UserEditWorkspaceScreen
-        props.navigation.navigate('UserEditWorkspaceScreen')
-        // props.navigation.navigate('CreateWorkspace')
+        console.log("Create Handlers")
+        props.navigation.navigate('UserEditWorkspaceScreen',{functionality: 'Create Workspace' })
     },[])
 
     const loadWorkspaces = useCallback(async () => {
@@ -72,14 +79,12 @@ const WorkspacesScreen = props => {
                 image = {itemData.item.imageUrl}
                 color = {itemData.item.color}
                 pickedImage = {itemData.item.imageUri}
-                onSelect = {()=> {
-                    props.navigation.navigate('UserEditWorkspaceScreen',{workspaceId: itemData.item.id, workspaceTitle: itemData.item.workspaceTitle})
-                }}>
+                onSelect = {editHandler(itemData.item.id)}>
 
                 <Button
                     color= {Colors.workSpaceNavigationPrimaryColor}
                     title= "Add Members"
-                    onPress={() => {}}/>
+                    onPress={addMembersHandler(itemData.item.id)}/>
 
                 <Button
                     color= {Colors.workSpaceNavigationPrimaryColor}

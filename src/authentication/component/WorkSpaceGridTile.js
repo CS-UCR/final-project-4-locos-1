@@ -12,6 +12,7 @@ import {
   import Card from '../component/utilites/InputLayout'
 
   const WorkSpaceGridTile =  props => {
+    console.log("Image: ", props.pickedImage)
       let TouchableCmp = TouchableOpacity
 
       if (Platform.OS === 'android' && Platform.Version >= 21) {
