@@ -11,11 +11,11 @@ import {
 } from 'react-native'
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import HeaderButton from '../../../authentication/component/utilites/HeaderButton'
+import HeaderButton from '../authentication/component/utilites/HeaderButton'
 
-import WorkSpaceGridTile from '../../../authentication/component/WorkSpaceGridTile'
-import * as workspaceActions from '../../../authentication/store/Action/workspace'
-import Colors from '../../../constants/Colors'
+import WorkSpaceGridTile from '../authentication/component/WorkSpaceGridTile'
+import * as workspaceActions from '../authentication/store/Action/workspace'
+import Colors from '../constants/Colors'
 
 const WorkspacesScreen = props => {
     const [isLoading, setIsLoading ] = useState(false)

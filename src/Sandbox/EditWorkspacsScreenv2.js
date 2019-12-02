@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  HeaderButtons , Item } from 'react-navigation-header-buttons'
 import email from 'react-native-email'
 
-import * as workspacesAction from '../../../authentication/store/Action/workspace'
-import Input from '../../../authentication/component/utilites/Input'
-import HeaderButton from '../../../authentication/component/utilites/HeaderButton'
-import Colors from '../../../constants/Colors'
-import ImagePicker from '../../../authentication/component/utilites/ImagePicker'
+import * as workspacesAction from '../authentication/store/Action/workspace'
+import Input from '../authentication/component/utilites/Input'
+import HeaderButton from '../authentication/component/utilites/HeaderButton'
+import Colors from '../constants/Colors'
+import ImagePicker from '../authentication/component/utilites/ImagePicker'
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
 const IMAGE_INPUT_UPDATE = 'IMAGE_INPUT_UPDATE'

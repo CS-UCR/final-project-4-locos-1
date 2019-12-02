@@ -1,5 +1,5 @@
 import React, {  useReducer, useCallback , useEffect} from 'react'
-import {View, ScrollView, StyleSheet, Alert, KeyboardAvoidingView , Platform} from 'react-native'
+import {View, ScrollView, StyleSheet, Alert, KeyboardAvoidingView , Platform, Button} from 'react-native'
 import {  HeaderButtons , Item } from 'react-navigation-header-buttons'
 
 import ImagePicker from '../../../authentication/component/utilites/ImagePicker'
@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as workspacesAction from '../../../authentication/store/Action/workspace'
 import Input from '../../../authentication/component/utilites/Input'
 import HeaderButton from '../../../authentication/component/utilites/HeaderButton'
+import Colors from '../../../constants/Colors'
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
 const IMAGE_INPUT_UPDATE = 'IMAGE_INPUT_UPDATE'
@@ -217,6 +218,14 @@ const EditWorkspaceScreen = props => {
 
                 {functionality !== 'Add Members' &&
                     <ImagePicker onImageTaken={imageTakenHandler}/>
+                }
+
+                {functionality === 'Edit Workspace' &&
+                        <Button
+                            title= "Study Spaces"
+                            onPress = { props.navigation.navigate('MapRoute',{workspaceId: workspaceId})}
+                            color={Colors.workSpaceNavigationPrimaryColor}
+                        />
                 }
             </ScrollView>
         </KeyboardAvoidingView>

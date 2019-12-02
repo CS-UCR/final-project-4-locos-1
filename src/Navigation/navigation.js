@@ -15,12 +15,9 @@ import SignUp from '../authentication/User/SignUpScreen'
 import Login from '../authentication/User/LoginScreen'
 
 import MainScreen from '../components/MainScreen'
-import Title from '../components/Title'
 import Feed from '../components/Feed'
-import Menu from '../components/Main'
 import myMap from '../components/myMap'
-import UserInfo from '../components/UserInfo'
-import CreateWorkspace from '../components/CreateWorkspace'
+// import UserInfo from '../components/UserInfo'
 
 
 import UserWorkspacesScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
@@ -31,38 +28,11 @@ import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScr
 // import IndividualWorkspaceScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
 
 
- 
-
-const Features = createStackNavigator(
-    {
-        
-        
-        MainRoute: Menu,
-        TitleRoute: Title,
-        MainScreenRoute: MainScreen,
-        MapRoute: myMap,
-        UserInfoRoute: UserInfo,
-        FeedRoute: Feed,
-    },{
-        defaultNavigationOptions: ({ navigation }) => ({
-            headerRight: (
-                  <Button
-                    title="Logout"
-                    onPress={() => navigation.navigate('Auth')}
-                  />
-            )
-    }
-    
-)
-    }
-)
-
 const WorkSpacesNavigator = createStackNavigator(
     {
         UserWorkSpacesCategories: UserWorkspacesScreen,
         // WorkSpace: IndividualWorkspaceScreen,
         UserEditWorkspaceScreen :UserEditWorkspaceScreen,
-        CreateWorkspace: CreateWorkspace,
     }, {
         defaultNavigationOptions: {
             headerStyle: {
@@ -74,15 +44,10 @@ const WorkSpacesNavigator = createStackNavigator(
     }
 );
 
-
 const Drawer = createDrawerNavigator(
     {
-        MainRoute: Menu,
-        TitleRoute: Title,
-        FeedRoute: Feed,
+        FeedRoute: Feed, 
         MapRoute: myMap,
-        UserInfoRoute: UserInfo,
-        CreateWorkspaceRoute: CreateWorkspace,
         MainScreenDrawer: MainScreen,
         WorkspacesDrawer : WorkSpacesNavigator
     },
