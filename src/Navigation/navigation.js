@@ -17,24 +17,19 @@ import Login from '../authentication/User/LoginScreen'
 import MainScreen from '../components/MainScreen'
 import Feed from '../components/Feed'
 import myMap from '../components/myMap'
-import AuthMap from '../components/AuthMap'
 // import UserInfo from '../components/UserInfo'
 
 
-import UserWorkspacesScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
-// import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScreen'
-import IndividualWorkspaceScreen from '../Screens/WorkSpace/WorkspaceScreen'
+import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
+import AuthEditWorkspaceScreen from '../Screens/WorkSpace/user/AuthEdithWorkspaceScreen'
 
-import UserEditWorkspaceScreen from '../Screens/WorkSpace/user/EdithWorkspaceScreen'
-// import IndividualWorkspaceScreen from '../Screens/WorkSpace/user/UserWorspacesScreen2v'
+import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScreen'
 
 
-const WorkSpacesNavigator = createStackNavigator(
+const AuthWorkSpacesNavigator = createStackNavigator(
     {
-        UserWorkSpacesCategories: UserWorkspacesScreen,
-        // WorkSpace: IndividualWorkspaceScreen,
-        UserEditWorkspaceScreen :UserEditWorkspaceScreen,
-        AuthMap:AuthMap
+         AuthWorkspacesScreen: AuthWorkspacesScreen,
+        AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
     }, {
         defaultNavigationOptions: {
             headerStyle: {
@@ -46,12 +41,28 @@ const WorkSpacesNavigator = createStackNavigator(
     }
 );
 
+
+const UserWorkSpacesNavigator = createStackNavigator(
+  {
+       UserWorkspacesScreen: UserWorkspacesScreen,
+  }, {
+      defaultNavigationOptions: {
+          headerStyle: {
+            backgroundColor: Platform.OS === 'android' ? Colors.workSpaceNavigationPrimaryColor : ''
+          },
+          headerTintColor:
+            Platform.OS === 'android' ? 'white' : Colors.workSpaceNavigationPrimaryColor,
+        }
+  }
+);
+
 const Drawer = createDrawerNavigator(
     {
         FeedRoute: Feed, 
         MapRoute: myMap,
         MainScreenDrawer: MainScreen,
-        WorkspacesDrawer : WorkSpacesNavigator
+        'My Workspaces':UserWorkSpacesNavigator ,
+        'Workspaces Management' : AuthWorkSpacesNavigator
     },
     {
         initialRouteName: 'MainScreenDrawer',
