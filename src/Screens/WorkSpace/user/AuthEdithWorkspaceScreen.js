@@ -229,7 +229,7 @@ const EditWorkspaceScreen = props => {
                 {functionality === 'Edit Workspace' &&
                         <Button
                             title= "Study Spaces"
-                            onPress = { ( ) => { props.navigation.navigate('AuthMap',{workspaceId: editedWorkspace})}}
+                            onPress = { ( ) => { props.navigation.navigate('AuthMap',{workspaceId: workspaceId})}}
                             color={Colors.workSpaceNavigationPrimaryColor}
                         />
                 }
