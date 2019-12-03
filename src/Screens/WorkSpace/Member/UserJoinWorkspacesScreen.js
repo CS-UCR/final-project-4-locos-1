@@ -84,9 +84,15 @@ const UserWorkspaceSettings = props => {
                     findWorkspace.id
                 )
             )
+            props.navigation.goBack();
+        }
+        else{
+            Alert.alert('Wrong access code!', 'Please reach check access code provided.', [
+                { text: 'Okay' }
+              ]);
+              return;
         }
         console.log("Submited")
-        props.navigation.goBack();
     }, [dispatch, workspaceId, formState])
 
     useEffect(()=> {

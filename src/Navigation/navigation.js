@@ -22,15 +22,18 @@ import myMap from '../components/myMap'
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
 import AuthEditWorkspaceScreen from '../Screens/WorkSpace/user/AuthEdithWorkspaceScreen'
+import AuthMap from '../components/myMap'
 
 import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScreen'
 import UserJoinWorkspacesScreen from '../Screens/WorkSpace/Member/UserJoinWorkspacesScreen'
 
 
+
 const AuthWorkSpacesNavigator = createStackNavigator(
     {
-         AuthWorkspacesScreen: AuthWorkspacesScreen,
+        AuthWorkspacesScreen: AuthWorkspacesScreen,
         AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
+        AuthMap:AuthMap
     }, {
         defaultNavigationOptions: {
             headerStyle: {

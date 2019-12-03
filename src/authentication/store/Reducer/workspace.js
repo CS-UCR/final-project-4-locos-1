@@ -73,27 +73,31 @@ export default(state = initialState, action) => {
             };
 
         case ADD_MEMBERS:
-            const workspaceIndex = state.availableWorkspaces.findIndex(
-                workspace => workspace.id === action.workspaceId
-            )
+                const workspaceMemberIndex = state.availableWorkspaces.findIndex(
+                    workspace => workspace.id === action.workspaceId
+                )
 
-            const newWorkspace = new Workspace(
-                action.workspaceId,
-                state.availableWorkspaces[workspaceIndex].workspaceTitle,
-                state.availableWorkspaces[workspaceAuthIndex].authID,
-                state.availableWorkspaces[workspaceAuthIndex].color,
-                state.availableWorkspaces[workspaceAuthIndex].imageUri,
-                state.authWorkspaces[workspaceAuthIndex].accessCode,
-                action.workspaceData.newMember
+                console.log("New Member IDdddddddddddddddd ", action.workspaceData.newMember)
+                console.log("available workspaces : ", state.availableWorkspaces)
+                const newMemberWorkspace = new Workspace(
+                    action.workspaceId,
+                    state.availableWorkspaces[workspaceMemberIndex].workspaceTitle,
+                    state.availableWorkspaces[workspaceMemberIndex].authId,
+                    state.availableWorkspaces[workspaceMemberIndex].color,
+                    state.availableWorkspaces[workspaceMemberIndex].imageUri,
+                    state.availableWorkspaces[workspaceMemberIndex].accessCode,
+                    action.workspaceData.newMember
 
-            )
+                );
 
-            const updatedUserWorkspace = [...state.availableWorkspaces] 
-            updatedUserWorkspace[workspaceIndex] = newWorkspace
+                console.log("New workspace: ", newMemberWorkspace)
+
+                const updatedAvailableWorkspace = [...state.authWorkspaces];
+                updatedAvailableWorkspace[workspaceAuthIndex] = newMemberWorkspace;
 
             return {
                 ...state,
-                userWorkspaces: updatedUserWorkspace
+                availableWorkspaces: updatedAvailableWorkspace
             }
         default:
             return state

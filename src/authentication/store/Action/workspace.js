@@ -38,7 +38,8 @@ export const fetchWorkspace = () => {
                     resData[key].authID,
                     resData[key].color,
                     resData[key].imageUri,
-                    resData[key].accessCode))
+                    resData[key].accessCode,
+                    resData[key].members))
             }
             dispatch({type: SET_WORKSPACE, 
                       workspaces: loadedWorkspace,
