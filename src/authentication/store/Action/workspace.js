@@ -41,9 +41,22 @@ export const fetchWorkspace = () => {
                     resData[key].accessCode,
                     resData[key].members))
             }
+
+            const userWorkspaces = []
+
+            for(const key in loadedWorkspace){
+              if(loadedWorkspace[key].members.includes(userId)){
+                // console.log("Found")
+                // console.log("MemberListtttttt: ", loadedWorkspace[key].members)
+                userWorkspaces.push(loadedWorkspace[key])
+              }
+            }
+            console.log("User WOrksapces :", userWorkspaces)
+            console.log("Ended")
+
             dispatch({type: SET_WORKSPACE, 
                       workspaces: loadedWorkspace,
-                      authWorkspaces: loadedWorkspace.filter(workspace => workspace.authId === userId) 
+                      authWorkspaces: loadedWorkspace.filter(workspace => workspace.authId === userId),
                     });
         }
         catch(err){
@@ -81,7 +94,8 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
                 color,
                 authID,
                 imageUri,
-                accessCode
+                accessCode,
+                members: [authID]
             })
         });
 
@@ -95,7 +109,9 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
                 authID,
                 color,
                 imageUri,
-                accessCode
+                accessCode,
+                members:[authID]
+                
             }
         });
     }
@@ -144,11 +160,10 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
 }
 
 
-export const joinWorkspace = (id) => {
+export const joinWorkspace = (id,members) => {
   return async (dispatch, getState) => {
     const authID =  getState().userAuth.userId
-    const getMembers = getState().WorkSpaces.availableWorkspaces
-    console.log("Get members ", getMembers)
+    console.log("Members: ", members)
     const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
       {
         method: 'PATCH',
@@ -156,7 +171,7 @@ export const joinWorkspace = (id) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          members : authID
+          members : members
         })
       }
     );
@@ -169,7 +184,7 @@ export const joinWorkspace = (id) => {
       type:ADD_MEMBERS,
           workspaceId: id,
           workspaceData:{
-            newMember: authID
+            memberList: members
           }
     });
   };

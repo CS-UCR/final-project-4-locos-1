@@ -12,7 +12,8 @@ export default(state = initialState, action) => {
         case SET_WORKSPACE:
             return{
                 availableWorkspaces: action.workspaces,
-                authWorkspaces: action.authWorkspaces
+                authWorkspaces: action.authWorkspaces,
+                userWorkspaces: action.userWorkspaces
             }
         case DELETE_WORKSPACE:
             return {
@@ -33,7 +34,8 @@ export default(state = initialState, action) => {
                 action.workspaceData.authID,
                 action.workspaceData.color,
                 action.workspaceData.imageUri,
-                action.workspaceData.accessCode
+                action.workspaceData.accessCode,
+                action.workspaceData.members
 
             );
             console.log("new workspace ", newWorkSpace)
@@ -53,7 +55,8 @@ export default(state = initialState, action) => {
                 state.authWorkspaces[workspaceAuthIndex].authID,
                 action.workspaceData.color,
                 action.workspaceData.imageUri,
-                state.authWorkspaces[workspaceAuthIndex].accessCode
+                state.authWorkspaces[workspaceAuthIndex].accessCode,
+                state.authWorkspaces[workspaceAuthIndex].members
             );
 
             const updatedAuthWorkspace = [...state.authWorkspaces];
@@ -77,8 +80,6 @@ export default(state = initialState, action) => {
                     workspace => workspace.id === action.workspaceId
                 )
 
-                console.log("New Member IDdddddddddddddddd ", action.workspaceData.newMember)
-                console.log("available workspaces : ", state.availableWorkspaces)
                 const newMemberWorkspace = new Workspace(
                     action.workspaceId,
                     state.availableWorkspaces[workspaceMemberIndex].workspaceTitle,
@@ -86,7 +87,7 @@ export default(state = initialState, action) => {
                     state.availableWorkspaces[workspaceMemberIndex].color,
                     state.availableWorkspaces[workspaceMemberIndex].imageUri,
                     state.availableWorkspaces[workspaceMemberIndex].accessCode,
-                    action.workspaceData.newMember
+                    action.workspaceData.memberList
 
                 );
 
@@ -94,6 +95,7 @@ export default(state = initialState, action) => {
 
                 const updatedAvailableWorkspace = [...state.authWorkspaces];
                 updatedAvailableWorkspace[workspaceAuthIndex] = newMemberWorkspace;
+
 
             return {
                 ...state,

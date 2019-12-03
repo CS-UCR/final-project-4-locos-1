@@ -49,7 +49,7 @@ const UserWorkspaceSettings = props => {
     const availableWorkspaces = useSelector(state => 
         state.WorkSpaces.availableWorkspaces
     );
-
+    const AuthID = useSelector(state => state.userAuth.userId)
 
     const dispatch = useDispatch();
 
@@ -75,25 +75,46 @@ const UserWorkspaceSettings = props => {
 
 
         const findWorkspace = availableWorkspaces.find(workspace => workspace.accessCode === formState.inputValues.accessCode)
-
-        console.log("Find Workspace :", findWorkspace)
+        const memberList = findWorkspace.members
+        let validAccessCode = false
 
         if(findWorkspace){
+            validAccessCode = findWorkspace.members.includes(AuthID)
+        }
+
+        console.log("Find Workspace :",validAccessCode)
+        console.log("MemberList: ", memberList)
+
+
+
+
+
+        if(findWorkspace && !validAccessCode){
+            console.log("Hello world")
+            const updatedMemberList  = memberList.concat(AuthID)
+            console.log("After append, ", updatedMemberList)
             dispatch(
                 workspacesAction.joinWorkspace(
-                    findWorkspace.id
+                    findWorkspace.id,
+                    updatedMemberList
                 )
             )
             props.navigation.goBack();
         }
+        else if(!findWorkspace){
+            Alert.alert('Wrong access code!', 'Please recheck access code provided.', [
+                { text: 'Okay' }
+              ]);
+              return;
+        }
         else{
-            Alert.alert('Wrong access code!', 'Please reach check access code provided.', [
+            Alert.alert('Wrong access code!', 'You are a member of this workspace already.', [
                 { text: 'Okay' }
               ]);
               return;
         }
         console.log("Submited")
-    }, [dispatch, workspaceId, formState])
+    }, [dispatch, workspaceId, formState, AuthID])
 
     useEffect(()=> {
         props.navigation.setParams({submit: submitHandler})
@@ -132,14 +153,6 @@ const UserWorkspaceSettings = props => {
                         initialValue={''}
                         initiallyValid={false}
                     />
-                    }  
-
-                    {functionality === 'Study Spaces' &&
-                        <Button
-                            title= "Study Spaces"
-                            onPress = { ( ) => { props.navigation.navigate('AuthMap',{workspaceId: editedWorkspace})}}
-                            color={Colors.workSpaceNavigationPrimaryColor}
-                        />
                     }   
      
                 </View>
