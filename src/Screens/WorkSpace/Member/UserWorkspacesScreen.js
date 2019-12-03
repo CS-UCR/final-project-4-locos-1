@@ -17,7 +17,7 @@ const UserWorkspacesScreen = props => {
     const dispatch =useDispatch();
 
     const editWorkspaceHandler = id => {
-        props.navigation.navigate('UserEditWorkspaceScreen',{workspaceId: id, functionality: 'Edit Workspace'})
+        props.navigation.navigate('UserJoinWorkspacesScreen',{workspaceId: id, functionality: 'Study Spaces'})
     }
 
     const deleteHandler = (workspaceId) => {
@@ -29,12 +29,8 @@ const UserWorkspacesScreen = props => {
              }}])
     }
 
-    const addMembersHandler = id => {
-        props.navigation.navigate('UserEditWorkspaceScreen', {workspaceId: id,functionality: 'Add Members'})
-    }
-
     const createHandler = useCallback(async()=> {
-        props.navigation.navigate('UserEditWorkspaceScreen',{functionality: 'Create Workspace'})
+        props.navigation.navigate('UserJoinWorkspacesScreen',{functionality: 'Join Workspace'})
     }, [])
 
     useEffect(( ) => {
@@ -70,7 +66,6 @@ const UserWorkspacesScreen = props => {
 
 
     const renderGridItem = itemData => {
-        console.log("item Data",  itemData)
         return (
             <WorkSpaceGridTile
                 workspaceTitle = {itemData.item.workspaceTitle}
@@ -84,10 +79,10 @@ const UserWorkspacesScreen = props => {
                     title= "Add Members"
                     onPress={() => {addMembersHandler(itemData.item.id)}}/> */}
 
-                {/* <Button
+                <Button
                     color= {Colors.workSpaceNavigationPrimaryColor}
                     title= "Delete"
-                    onPress={deleteHandler.bind(this,itemData.item.id)}/>     */}
+                    onPress={deleteHandler.bind(this,itemData.item.id)}/> 
             </WorkSpaceGridTile>
         )
     }
