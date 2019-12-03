@@ -10,7 +10,7 @@ import * as workspaceActions from '../../../authentication/store/Action/workspac
 import Colors from '../../../constants/Colors'
 
 const UserWorkspacesScreen = props => {
-    const workspaces = useSelector(state =>  state.WorkSpaces.availableWorkspaces)
+    const workspaces = useSelector(state =>  state.WorkSpaces.userWorkspaces)
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] =  useState()
     const [isRefreshing, setIsRefreshing] = useState(false);

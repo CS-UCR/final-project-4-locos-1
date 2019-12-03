@@ -46,17 +46,15 @@ export const fetchWorkspace = () => {
 
             for(const key in loadedWorkspace){
               if(loadedWorkspace[key].members.includes(userId)){
-                // console.log("Found")
-                // console.log("MemberListtttttt: ", loadedWorkspace[key].members)
                 userWorkspaces.push(loadedWorkspace[key])
               }
             }
-            console.log("User WOrksapces :", userWorkspaces)
-            console.log("Ended")
+
 
             dispatch({type: SET_WORKSPACE, 
                       workspaces: loadedWorkspace,
                       authWorkspaces: loadedWorkspace.filter(workspace => workspace.authId === userId),
+                      userWorkspaces: userWorkspaces
                     });
         }
         catch(err){
@@ -151,8 +149,8 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
     };
   };
 
-  export const addMembers = (too ,workspaceTitle, accessCode) => {
-    const to = ['fgall002@ucr.edu', 'kikingallego13@hotmail.com'] // string or array of email addresses
+  export const addMembers = (to ,workspaceTitle, accessCode) => {
+    // const to = ['fgall002@ucr.edu', 'kikingallego13@hotmail.com'] // string or array of email addresses
     email(to, {
         subject: 'Studdy Buddy!!!',
         body:`You have been invited to join ${workspaceTitle}. The access code is ${accessCode}`

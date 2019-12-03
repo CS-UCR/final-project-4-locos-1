@@ -13,7 +13,7 @@ export default(state = initialState, action) => {
             return{
                 availableWorkspaces: action.workspaces,
                 authWorkspaces: action.authWorkspaces,
-                userWorkspaces: action.userWorkspaces
+                userWorkspaces: action.userWorkspaces,
             }
         case DELETE_WORKSPACE:
             return {
