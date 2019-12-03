@@ -46,9 +46,9 @@ const formReducer = (state, action) => {
 const UserWorkspaceSettings = props => {
     const workspaceId = props.navigation.getParam('workspaceId')
     const functionality = props.navigation.getParam('functionality')
-    // const availableWorkspaces = useSelector(state => 
-    //     state.WorkSpaces.availableWorkspaces
-    // );
+    const availableWorkspaces = useSelector(state => 
+        state.WorkSpaces.availableWorkspaces
+    );
 
 
     const dispatch = useDispatch();
@@ -74,19 +74,9 @@ const UserWorkspaceSettings = props => {
         console.log("Access Code: ", formState.inputValues.accessCode)
 
 
+        const findWorkspace = availableWorkspaces.find(workspace => workspace.accessCode === formState.inputValues.accessCode)
 
-        // const findWorkspace = useSelector(state => 
-        //     state.WorkSpaces.availableWorkspaces.find(workspace => workspace.accessCode === formState.inputValues.accessCode)
-        // );
-
-        // useSelector(state => {
-        //     console.log("Workspaces Data: ", state.WorkSpaces.availableWorkspaces)
-        // })
-
-        // useSelector()
-
-        // console.log("Find workspace: ", findWorkspace)
-
+        console.log("Find Workspace :", findWorkspace)
 
         // dispatch(
         //     workspacesAction.joinWorkspace(
