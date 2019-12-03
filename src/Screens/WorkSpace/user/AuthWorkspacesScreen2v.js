@@ -70,7 +70,6 @@ const UserWorkspacesScreen = props => {
 
 
     const renderGridItem = itemData => {
-        console.log("item Data",  itemData)
         return (
             <WorkSpaceGridTile
                 workspaceTitle = {itemData.item.workspaceTitle}

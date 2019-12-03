@@ -116,10 +116,8 @@ const EditWorkspaceScreen = props => {
                 )
             )
         }
-        console.log("FormState value : ", editedWorkspace)
 
         if(formState.inputValues.emails){
-            console.log("insid eif")
             workspacesAction.addMembers(
                 formState.inputValues.emails,
                 formState.inputValues.workspaceTitle,
@@ -136,7 +134,6 @@ const EditWorkspaceScreen = props => {
 
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidities) => {
-            console.log("Input Change Handler: ", inputValue)
             dispatchFormState({
                 type: FORM_INPUT_UPDATE,
                 value:inputValue,
@@ -156,7 +153,6 @@ const EditWorkspaceScreen = props => {
 
     const addMemberChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidities) => {
-            console.log("add Change Handler: ", inputValue)
             dispatchFormState({
                 type: ADD_MEMBERS_UPDATE,
                 value:inputValue,

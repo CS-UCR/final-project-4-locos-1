@@ -36,7 +36,6 @@ const WorkspaceScreen = props => {
 
 
 WorkspaceScreen.navigationOptions =  navigationData => {
-    console.log("Functionality: ", navigationData.navigation.getParam('functionality'))
     const workspaceTitle = navigationData.navigation.getParam('workspaceTitle');
     
     return{headerTitle: workspaceTitle}
