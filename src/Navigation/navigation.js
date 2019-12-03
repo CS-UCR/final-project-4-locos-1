@@ -24,6 +24,7 @@ import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen
 import AuthEditWorkspaceScreen from '../Screens/WorkSpace/user/AuthEdithWorkspaceScreen'
 
 import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScreen'
+import UserJoinWorkspacesScreen from '../Screens/WorkSpace/Member/UserJoinWorkspacesScreen'
 
 
 const AuthWorkSpacesNavigator = createStackNavigator(
@@ -45,6 +46,7 @@ const AuthWorkSpacesNavigator = createStackNavigator(
 const UserWorkSpacesNavigator = createStackNavigator(
   {
        UserWorkspacesScreen: UserWorkspacesScreen,
+       UserJoinWorkspacesScreen:UserJoinWorkspacesScreen
   }, {
       defaultNavigationOptions: {
           headerStyle: {
