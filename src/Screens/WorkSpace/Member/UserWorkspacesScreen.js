@@ -16,8 +16,9 @@ const UserWorkspacesScreen = props => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const dispatch =useDispatch();
 
+
     const editWorkspaceHandler = id => {
-        props.navigation.navigate('UserJoinWorkspacesScreen',{workspaceId: id, functionality: 'Study Spaces'})
+        props.navigation.navigate('UserWorkspaceMap',{workspaceId: id, functionality: 'Study Spaces'})
     }
 
     const deleteHandler = (workspaceId) => {
