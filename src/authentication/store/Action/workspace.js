@@ -6,6 +6,7 @@ export const CREATE_WORKSPACE = 'CREATE_WORKSPACE';
 export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
 export const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE';
 export const SET_WORKSPACE = 'SET_WORKSPACE'
+export const ADD_MEMBERS = 'ADD_MEMBERS'
 
 const makeId = (length) => {
   let result = '';
@@ -140,3 +141,35 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
         body:`You have been invited to join ${workspaceTitle}. The access code is ${accessCode}`
     }).catch(console.error)
 }
+
+
+export const joinWorkspace = (id) => {
+  return async (dispatch, getState) => {
+    const authID =  getState().userAuth.userId
+    const getMembers = getState().WorkSpaces.availableWorkspaces
+    console.log("Get members ", getMembers)
+    const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          members : authID
+        })
+      }
+    );
+
+    if(!response.ok){
+      throw new Error('Something went wrong!')
+    }
+
+    dispatch({
+      type:ADD_MEMBERS,
+          workspaceId: id,
+          workspaceData:{
+            newMember: authID
+          }
+    });
+  };
+};

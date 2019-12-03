@@ -1,4 +1,4 @@
-import { DELETE_WORKSPACE, CREATE_WORKSPACE, UPDATE_WORKSPACE, SET_WORKSPACE} from '../Action/workspace'
+import { DELETE_WORKSPACE, CREATE_WORKSPACE, UPDATE_WORKSPACE, SET_WORKSPACE, ADD_MEMBERS} from '../Action/workspace'
 import Workspace from '../../../models/workspace'
 
 const initialState = {
@@ -71,6 +71,30 @@ export default(state = initialState, action) => {
                 availableWorkspaces: updatedAvailableWorkspaces,
                 authWorkspaces: updatedAuthWorkspace
             };
+
+        case ADD_MEMBERS:
+            const workspaceIndex = state.availableWorkspaces.findIndex(
+                workspace => workspace.id === action.workspaceId
+            )
+
+            const newWorkspace = new Workspace(
+                action.workspaceId,
+                state.availableWorkspaces[workspaceIndex].workspaceTitle,
+                state.availableWorkspaces[workspaceAuthIndex].authID,
+                state.availableWorkspaces[workspaceAuthIndex].color,
+                state.availableWorkspaces[workspaceAuthIndex].imageUri,
+                state.authWorkspaces[workspaceAuthIndex].accessCode,
+                action.workspaceData.newMember
+
+            )
+
+            const updatedUserWorkspace = [...state.availableWorkspaces] 
+            updatedUserWorkspace[workspaceIndex] = newWorkspace
+
+            return {
+                ...state,
+                userWorkspaces: updatedUserWorkspace
+            }
         default:
             return state
     }

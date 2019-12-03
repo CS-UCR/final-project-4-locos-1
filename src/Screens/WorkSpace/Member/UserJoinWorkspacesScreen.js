@@ -78,13 +78,13 @@ const UserWorkspaceSettings = props => {
 
         console.log("Find Workspace :", findWorkspace)
 
-        // dispatch(
-        //     workspacesAction.joinWorkspace(
-        //         formState.inputValues.workspaceTitle,
-        //         formState.inputValues.color,
-        //         formState.inputValues.imageUri
-        //     )
-        // )
+        if(findWorkspace){
+            dispatch(
+                workspacesAction.joinWorkspace(
+                    findWorkspace.id
+                )
+            )
+        }
         console.log("Submited")
         props.navigation.goBack();
     }, [dispatch, workspaceId, formState])

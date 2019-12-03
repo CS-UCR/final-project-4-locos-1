@@ -41,7 +41,6 @@ const WorkspacesScreen = props => {
     }
 
     const createHandler = useCallback(async() => {
-        console.log("Create Handlers")
         props.navigation.navigate('UserEditWorkspaceScreen',{functionality: 'Create Workspace' })
     },[])
 
