@@ -22,7 +22,7 @@ import myMap from '../components/myMap'
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
 import AuthEditWorkspaceScreen from '../Screens/WorkSpace/user/AuthEdithWorkspaceScreen'
-import AuthMap from '../components/myMap'
+import AuthMap from '../components/AuthMap'
 
 import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScreen'
 import UserJoinWorkspacesScreen from '../Screens/WorkSpace/Member/UserJoinWorkspacesScreen'
