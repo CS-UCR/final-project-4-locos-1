@@ -1,6 +1,6 @@
 import Workspace from "../../../models/workspace";
 import email from 'react-native-email'
-import { auth } from "firebase";
+import * as firebase from 'firebase'
 
 export const CREATE_WORKSPACE = 'CREATE_WORKSPACE';
 export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
@@ -81,7 +81,6 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
     return async (dispatch, getState )=> {
         const authID =  getState().userAuth.userId
         const accessCode = makeId(5)
-        //console.log("user id", userID)
         const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json', {
             method: 'POST',
             headers: {
@@ -161,7 +160,6 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
 export const joinWorkspace = (id,members) => {
   return async (dispatch, getState) => {
     const authID =  getState().userAuth.userId
-    console.log("Members: ", members)
     const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
       {
         method: 'PATCH',
@@ -173,6 +171,26 @@ export const joinWorkspace = (id,members) => {
         })
       }
     );
+
+      await firebase.database().ref(`/Users/${authID}/workspaces/`).once('value').then(async function(snapshot){
+        let userWorkspaces = snapshot.val()
+        let updatedWorkspace = []
+
+        if(userWorkspaces){
+          updatedWorkspace = userWorkspaces
+          updatedWorkspace.push(id)
+        }
+        else{
+          updatedWorkspace.push(id)
+        }
+
+        await firebase.database().ref(`/Users/${authID}/workspaces/`).update(updatedWorkspace)
+      })
+
+      
+
+
+
 
     if(!response.ok){
       throw new Error('Something went wrong!')

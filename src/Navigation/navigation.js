@@ -17,7 +17,7 @@ import Login from '../authentication/User/LoginScreen'
 import MainScreen from '../components/MainScreen'
 import Feed from '../components/Feed'
 import myMap from '../components/myMap'
-// import UserInfo from '../components/UserInfo'
+import UserInfo from '../components/UserInfo'
 
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
@@ -103,11 +103,14 @@ const Drawer = createDrawerNavigator(
     },
 )
 
+
+
 const Authentication = createStackNavigator(
     {
         AuthenticationMenu: AuthenticationMenu,
         SignUp: SignUp,
-        Login:Login
+        Login:Login,
+        UserInfo:UserInfo
     },
     {
         defaultNavigationOptions: {

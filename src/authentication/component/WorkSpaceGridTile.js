@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useState, useEffect } from 'react'
 import {
     TouchableOpacity,
     View,
@@ -10,13 +10,28 @@ import {
   } from 'react-native';
 
   import Card from '../component/utilites/InputLayout'
+  import * as firebase from 'firebase'
 
   const WorkSpaceGridTile =  props => {
+    const [imageUrl, setImageUrl] = useState('')
+
+    const imageSource = async(image) => {
+      console.log("hello: ", image)
+      const imageRetrieved  = await firebase.storage().ref().child(`images/workspaces/${image}`).getDownloadURL()
+        .then(url =>  setImageUrl(url))
+
+    }
+
+
       let TouchableCmp = TouchableOpacity
 
       if (Platform.OS === 'android' && Platform.Version >= 21) {
         TouchableCmp = TouchableNativeFeedback;
       }
+
+      useEffect(() => {
+        imageSource(props.pickedImage)
+      }, []);
 
       return(
         <Card style={styles.product}>
@@ -24,7 +39,11 @@ import {
         <TouchableCmp onPress={props.onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
-            <Image style={styles.image} source={{uri: props.pickedImage}} />
+             {imageUrl ? (
+               <Image style={styles.image} source={{uri: imageUrl}} />
+             ):
+             <Image style={styles.image} source={require('../../../assets/StuddyBuddyLogo.png')}/>
+             }
             </View>
             <View style={styles.details}>
               <Text style={styles.title}>{props.workspaceTitle}</Text>
