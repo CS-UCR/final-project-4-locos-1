@@ -68,7 +68,7 @@ export const login = (email, password) => {
 
       const accountData = await response.json()
       dispatch({ type: LOGIN, token: accountData.idToken, userId: accountData.localId });
-      console.log(firebase.auth().signInWithEmailAndPassword(email,password))
+      firebase.auth().signInWithEmailAndPassword(email,password)
   }
 }
 

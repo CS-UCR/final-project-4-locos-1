@@ -5,7 +5,7 @@ import * as firebase from 'firebase'
 import {Image} from 'react-native'
 
 const AuthenticationMenu = props => {
-
+    
     return (
      <KeyboardAvoidingView
       behavior="padding"

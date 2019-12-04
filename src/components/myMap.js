@@ -68,6 +68,8 @@ export default class myMap extends React.Component {
             owner : this.state.userId,
             point1 : this.state.editing.points[0],
             point2 : this.state.editing.points[1],
+            //need to add a name for workspace or "personal" study space
+            refName : "Personal"
 
           }
         console.log("polygons")
@@ -242,6 +244,7 @@ export default class myMap extends React.Component {
         //get user studyspaces
         firebase.database().ref('/Users/'+ user.uid + "/StudySpaces/").once('value').then(function(snapshot){
           
+          //
           var spaces = snapshot.val()
           //iterate polygons current state
 
