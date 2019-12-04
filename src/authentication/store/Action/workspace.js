@@ -1,6 +1,6 @@
 import Workspace from "../../../models/workspace";
 import email from 'react-native-email'
-import { auth } from "firebase";
+import * as firebase from 'firebase'
 
 export const CREATE_WORKSPACE = 'CREATE_WORKSPACE';
 export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
@@ -174,6 +174,29 @@ export const joinWorkspace = (id,members) => {
       }
     );
 
+      console.log("hello")
+      await firebase.database().ref(`/Users/${authID}/workspaces/`).once('value').then(async function(snapshot){
+        let userWorkspaces = snapshot.val()
+        let updatedWorkspace = []
+
+        if(userWorkspaces){
+          updatedWorkspace = userWorkspaces
+          updatedWorkspace.push(id)
+        }
+        else{
+          updatedWorkspace.push(id)
+        }
+
+        console.log("UserWorkspaces: ", updatedWorkspace)
+
+        await firebase.database().ref(`/Users/${authID}/workspaces/`).update(updatedWorkspace)
+      })
+
+      
+
+
+
+
     if(!response.ok){
       throw new Error('Something went wrong!')
     }
@@ -190,7 +213,16 @@ export const joinWorkspace = (id,members) => {
 
 // export const updateUserWorkspace = (id) => {
 //   return async(dispatch, getState) => {
+//     console.log("Hello worlds")
 //     const authID = getState().userAuth.userId
 //     console.log("AuthID, ", authID)
+
+
+
+
+//     dispatch({
+//     });
 //   }
+
+  
 // }
