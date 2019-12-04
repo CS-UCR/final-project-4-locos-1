@@ -119,16 +119,13 @@ const EditWorkspaceScreen = props => {
 
         if(formState.inputValues.emails){
 
-            console.log("Email: ", formState.inputValues.emails)
             const stripEmails= formState.inputValues.emails.split(',')
-            console.log("Strip: ", stripEmails)
             workspacesAction.addMembers(
                 stripEmails,
                 formState.inputValues.workspaceTitle,
                 editedWorkspace.accessCode
             )
         }
-        console.log("Submitted")
         props.navigation.goBack();
     }, [dispatch, workspaceId, formState])
 

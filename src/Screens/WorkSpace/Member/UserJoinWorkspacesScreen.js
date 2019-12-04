@@ -84,9 +84,7 @@ const UserWorkspaceSettings = props => {
 
 
         if(findWorkspace && !validAccessCode){
-            console.log("Hello world")
             const updatedMemberList  = memberList.concat(AuthID)
-            console.log("After append, ", updatedMemberList)
             dispatch(
                 workspacesAction.joinWorkspace(
                     findWorkspace.id,

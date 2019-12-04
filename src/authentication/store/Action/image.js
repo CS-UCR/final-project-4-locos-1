@@ -13,7 +13,6 @@ export const addImage = ( workspaceId,image) => {
                 to : newPath
             });
         } catch(error){
-            console.log(error);
             throw error
         }
 

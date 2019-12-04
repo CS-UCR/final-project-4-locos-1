@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as firebase from 'firebase'
 
 import { View, Button, Text, StyleSheet, Image , Alert}  from 'react-native'
@@ -29,7 +29,7 @@ const ImagePicker = props => {
             quality: 0.5
         })
 
-        const hello = await uploadImage(image.uri)
+        await uploadImage(image.uri)
             .then(()=> {
                 console.log("Success")
             })

@@ -81,7 +81,6 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
     return async (dispatch, getState )=> {
         const authID =  getState().userAuth.userId
         const accessCode = makeId(5)
-        //console.log("user id", userID)
         const response = await fetch('https://lokos-studybuddy.firebaseio.com/workspaces.json', {
             method: 'POST',
             headers: {
@@ -161,7 +160,6 @@ export const updateWorkSpace = (id, workspaceTitle, color, imageUri) => {
 export const joinWorkspace = (id,members) => {
   return async (dispatch, getState) => {
     const authID =  getState().userAuth.userId
-    console.log("Members: ", members)
     const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
       {
         method: 'PATCH',
@@ -174,7 +172,6 @@ export const joinWorkspace = (id,members) => {
       }
     );
 
-      console.log("hello")
       await firebase.database().ref(`/Users/${authID}/workspaces/`).once('value').then(async function(snapshot){
         let userWorkspaces = snapshot.val()
         let updatedWorkspace = []
@@ -186,8 +183,6 @@ export const joinWorkspace = (id,members) => {
         else{
           updatedWorkspace.push(id)
         }
-
-        console.log("UserWorkspaces: ", updatedWorkspace)
 
         await firebase.database().ref(`/Users/${authID}/workspaces/`).update(updatedWorkspace)
       })
@@ -210,19 +205,3 @@ export const joinWorkspace = (id,members) => {
     });
   };
 };
-
-// export const updateUserWorkspace = (id) => {
-//   return async(dispatch, getState) => {
-//     console.log("Hello worlds")
-//     const authID = getState().userAuth.userId
-//     console.log("AuthID, ", authID)
-
-
-
-
-//     dispatch({
-//     });
-//   }
-
-  
-// }

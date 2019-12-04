@@ -27,7 +27,6 @@ export default(state = initialState, action) => {
             }
         case CREATE_WORKSPACE:
             const accessCode = action.workspaceData.id.substring(0,5)
-            console.log("Access Code: ", accessCode)
             const newWorkSpace = new Workspace(
                 action.workspaceData.id,
                 action.workspaceData.workspaceTitle,
