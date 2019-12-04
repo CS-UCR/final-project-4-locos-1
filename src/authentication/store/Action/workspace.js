@@ -187,3 +187,10 @@ export const joinWorkspace = (id,members) => {
     });
   };
 };
+
+// export const updateUserWorkspace = (id) => {
+//   return async(dispatch, getState) => {
+//     const authID = getState().userAuth.userId
+//     console.log("AuthID, ", authID)
+//   }
+// }

@@ -75,16 +75,21 @@ const UserWorkspaceSettings = props => {
 
 
         const findWorkspace = availableWorkspaces.find(workspace => workspace.accessCode === formState.inputValues.accessCode)
-        const memberList = findWorkspace.members
+
         let validAccessCode = false
 
+        let memberList = []
+
+        console.log("yeah")
         if(findWorkspace){
             validAccessCode = findWorkspace.members.includes(AuthID)
+            memberList = findWorkspace.members
         }
 
-        console.log("Find Workspace :",validAccessCode)
-        console.log("MemberList: ", memberList)
 
+        // workspacesAction.joinWorkspace(
+        //     findWorkspace
+        // )
 
 
 
