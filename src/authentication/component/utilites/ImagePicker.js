@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import * as firebase from 'firebase'
 
 import { View, Button, Text, StyleSheet, Image , Alert}  from 'react-native'
 import * as ImgPicker from 'expo-image-picker'
@@ -28,9 +29,28 @@ const ImagePicker = props => {
             quality: 0.5
         })
 
+        const hello = await uploadImage(image.uri)
+            .then(()=> {
+                console.log("Success")
+            })
+            .catch((err) => {
+                console.log(err)
+            }) 
+
         setPickedImage(image.uri)
-        props.onImageTaken(image.uri);
     };
+
+
+    const uploadImage = async(uri) => {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const image = blob['_data']['name']
+        var ref = firebase.storage().ref().child(`images/workspaces/${image}`)
+        props.onImageTaken(image);
+
+        return ref.put(blob)
+    }
+
     return(
         <View style ={styles.imagePicker}> 
             <View style={styles.imagePreview}>
