@@ -18,7 +18,7 @@ const UserWorkspacesScreen = props => {
 
 
     const editWorkspaceHandler = id => {
-        props.navigation.navigate('UserWorkspaceMap',{workspaceId: id, functionality: 'Study Spaces'})
+        props.navigation.navigate('AuthMap',{workspaceId: id, functionality: 'Study Spaces'})
     }
 
     const deleteHandler = (workspaceId) => {
