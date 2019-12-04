@@ -59,7 +59,7 @@ export default class myMap extends React.Component {
           owner: this.state.userId,
           point1: this.state.editing.points[0],
           point2: this.state.editing.points[1],
-        //   wsID: this.props.navigation.getParam('workspaceId')
+          wsID: this.props.navigation.getParam('workspaceId')
         }
 
         //push new study space
@@ -231,7 +231,6 @@ export default class myMap extends React.Component {
                 renderingPolygons.push(polygon)
                 id+=1
             }
-
             self.setState({
               polygons : renderingPolygons
             })
@@ -257,7 +256,6 @@ export default class myMap extends React.Component {
         console.log("no user logged on")
       }
     })
-
     navigator.geolocation.getCurrentPosition(
       position =>{
         this.setState({
