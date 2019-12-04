@@ -2,8 +2,8 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://p5-k5p.anonymous.final-project-4-locos-1.exp.direct",
   "packagerNgrokUrl": "https://packager.p5-k5p.anonymous.final-project-4-locos-1.exp.direct",
-  "ngrokPid": 17441,
+  "ngrokPid": 21183,
   "devToolsPort": 19002,
   "packagerPort": 19001,
-  "packagerPid": 17396
+  "packagerPid": 21153
 }

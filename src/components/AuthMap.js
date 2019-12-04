@@ -30,13 +30,13 @@ export default class myMap extends React.Component {
         latitude: null,
         longitude: null,
       },
- 
       polygons: [],
       editing: null,
       creating: false,
       currentUser : null,
       userId : null,
       rendered : false,
+      wsID: this.props.navigation.getParam('workspaceId')
     }
   }
   
@@ -59,16 +59,16 @@ export default class myMap extends React.Component {
           owner: this.state.userId,
           point1: this.state.editing.points[0],
           point2: this.state.editing.points[1],
-          wsID: this.props.navigation.getParam('workspaceId')
+          wsID: this.state.wsID,
         }
 
         //push new study space
         firebase.database().ref("/StudySpaces/" + this.state.editing.studySpaceKey).update(payload)
         
-        //push ref key to users
+        //push ref key to workspaces
         var self = this;
         var newKey = this.state.editing.studySpaceKey
-        firebase.database().ref("/Users/" + this.state.userId + "/").once('value').then(function(snapshot){
+        firebase.database().ref("/workspaces/" + this.state.wsID + "/").once('value').then(function(snapshot){
 
           var schema = snapshot.val()
 
@@ -84,7 +84,7 @@ export default class myMap extends React.Component {
             var points = {}
             points[newKey] = newKey
           }
-          firebase.database().ref("/Users/" + self.state.userId + "/StudySpaces").update(points)
+          firebase.database().ref("/workspaces/" + self.state.wsID + "/StudySpaces").update(points)
         })
 
         this.setState({
@@ -118,7 +118,7 @@ export default class myMap extends React.Component {
     firebase.database().ref('/StudySpaces/'+polygon.studySpaceKey + "/").remove()
 
     //remove from Users/id/studyspaces
-    firebase.database().ref('/Users/'+this.state.userId + '/StudySpaces/'+ polygon.studySpaceKey).remove()
+    firebase.database().ref('/workspaces/'+this.state.wsID + '/StudySpaces/'+ polygon.studySpaceKey).remove()
   
     this.state.polygons.splice(polygon.id, 1)
     for(i = polygon.id; i < this.state.polygons.length; i++){
@@ -203,7 +203,7 @@ export default class myMap extends React.Component {
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
         //get user studyspaces
-        firebase.database().ref('/Users/'+ user.uid + "/StudySpaces/").once('value').then(function(snapshot){
+        firebase.database().ref('/workspaces/'+ self.state.wsID + "/StudySpaces/").once('value').then(function(snapshot){
           
           var spaces = snapshot.val()
 

@@ -25,9 +25,18 @@ export default class myMap extends React.Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
+
+      coord:{
+        latitude: null,
+        longitude: null,
+      },
+ 
       polygons: [],
+      editing: null,
+      creating: false,
       currentUser : null,
       userId : null,
+      rendered : false,
     }
   }
   
@@ -39,6 +48,129 @@ export default class myMap extends React.Component {
       },
     };
   };
+
+  finish(){
+    const{polygons, editing} = this.state;
+    if(editing.coordinates.length < 4){
+      Alert.alert('Your study space is incomplete!');
+    } else {
+        //make a payload to push in /StudySpaces
+        var payload = {
+          owner: this.state.userId,
+          point1: this.state.editing.points[0],
+          point2: this.state.editing.points[1],
+        }
+
+        //push new study space
+        firebase.database().ref("/StudySpaces/" + this.state.editing.studySpaceKey).update(payload)
+        
+        //push ref key to users
+        var self = this;
+        var newKey = this.state.editing.studySpaceKey
+        firebase.database().ref("/Users/" + this.state.userId + "/").once('value').then(function(snapshot){
+
+          var schema = snapshot.val()
+
+          //if already have studyspaces
+          if (snapshot.hasChild("StudySpaces")){
+            // console.log("has child")
+            var points = schema["StudySpaces"]
+            points[newKey] = newKey
+          }
+          //if first study space
+          else{
+            // console.log("no children")
+            var points = {}
+            points[newKey] = newKey
+          }
+          firebase.database().ref("/Users/" + self.state.userId + "/StudySpaces").update(points)
+        })
+
+        this.setState({
+          polygons: [...polygons, editing],
+          editing: null,
+          creating: false,
+        });
+    }
+  }
+
+  cancel(){
+    const{polygons} = this.state;
+    id = id - 1
+    this.setState({
+      polygons: [...polygons],
+      editing: null,
+      creating: false,
+    })
+  }
+
+  create(){
+    this.setState({
+      creating: true,
+    })
+  }
+
+  delete(polygon){
+    const{polygons} = this.state;
+    //remove from database
+    //remove from /StudySpaces
+    firebase.database().ref('/StudySpaces/'+polygon.studySpaceKey + "/").remove()
+
+    //remove from Users/id/studyspaces
+    firebase.database().ref('/Users/'+this.state.userId + '/StudySpaces/'+ polygon.studySpaceKey).remove()
+  
+    this.state.polygons.splice(polygon.id, 1)
+    for(i = polygon.id; i < this.state.polygons.length; i++){
+      this.state.polygons[i].id = this.state.polygons[i].id - 1
+    }
+    id = id - 1
+    this.setState({
+      polygons: [...polygons]
+    })
+  }
+
+  onPress(e){
+    const{editing, coord, creating} = this.state;
+    if(creating == true){
+      if(!editing){
+
+        this.setState({
+          editing: {
+            id: id++,
+            coordinates: [e.nativeEvent.coordinate],
+            points: [e.nativeEvent.coordinate],
+          },
+          coord: {
+            latitude: e.nativeEvent.coordinate.latitude,
+            longitude: e.nativeEvent.coordinate.longitude,
+          }
+        });
+      } else if(editing.coordinates.length < 4){
+        var newKey = firebase.database().ref("/StudySpaces/").push().key
+
+        this.setState({
+          editing:{
+            studySpaceKey: newKey,
+            ...editing,
+            coordinates:  [...editing.coordinates, {latitude: e.nativeEvent.coordinate.latitude, longitude: coord.longitude }, 
+                          e.nativeEvent.coordinate, {latitude: coord.latitude, longitude: e.nativeEvent.coordinate.longitude}],
+            points: [...editing.coordinates, e.nativeEvent.coordinate],
+          },
+        });
+      } else{} 
+    }
+  }
+
+  onPolygonPress(polygon){
+    Alert.alert(
+      'Do you wish to delete this polygon?',
+      '',
+      [
+        {text: 'No'},
+        {text: 'Yes', onPress: () => this.delete(polygon)},
+      ],
+    );
+  } 
 
   makeCoordinates(point1, point2){
     coordinates = []
@@ -98,7 +230,6 @@ export default class myMap extends React.Component {
                 renderingPolygons.push(polygon)
                 id+=1
             }
-
             self.setState({
               polygons : renderingPolygons
             })
@@ -124,7 +255,6 @@ export default class myMap extends React.Component {
         console.log("no user logged on")
       }
     })
-
     navigator.geolocation.getCurrentPosition(
       position =>{
         this.setState({
@@ -157,10 +287,12 @@ export default class myMap extends React.Component {
           showsUserLocation={true}
           showsMyLocationButton={true}
           initialRegion={this.state.initialRegion}
+          onPress={e => this.onPress(e)}
           >
             {this.state.polygons.map(polygon => (
               <Polygon
                 key={polygon.id}
+                tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
@@ -168,7 +300,42 @@ export default class myMap extends React.Component {
                 onPress={() => this.onPolygonPress(polygon)}
               />
             ))}
+            {this.state.editing && (
+              <Polygon
+                key={this.state.editing.id}
+                coordinates={this.state.editing.coordinates}
+                strokeColor={'red'}
+                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                strokeColor={1}
+              />
+            )}
         </MapView>
+        <View style={styles.buttonContainerStyle}>
+          {!this.state.creating && (
+            <TouchableOpacity
+              onPress={() => this.create()}
+              style={styles.buttonStyle}
+            >
+              <Text>Create Study Space</Text>
+            </TouchableOpacity>
+          )}
+          {this.state.editing && (
+            <TouchableOpacity
+              onPress={() => this.finish()}
+              style={styles.buttonStyle}
+            >
+              <Text>Finish</Text>
+            </TouchableOpacity>
+          )}
+          {this.state.editing && (
+            <TouchableOpacity
+              onPress={() => this.cancel()}
+              style={styles.buttonStyle}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>                                                                                                                                                                                                    
     );
   }
@@ -185,5 +352,17 @@ const styles = StyleSheet.create({
   },
   mapStyle: {
     ...StyleSheet.absoluteFillObject,
+  },
+  buttonContainerStyle:{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    bottom: 30,
+    marginHorizontal: 80
+  },
+  buttonStyle:{
+    backgroundColor: '#hsla(60, 100%, 50%, 0.5)',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 10,  
   },
 });
