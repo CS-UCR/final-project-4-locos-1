@@ -230,6 +230,14 @@ const EditWorkspaceScreen = props => {
                             color={Colors.workSpaceNavigationPrimaryColor}
                         />
                 }
+
+                {functionality === 'Edit Workspace' &&
+                        <Button
+                            title= "Workspace Members"
+                            onPress = { ( ) => { props.navigation.navigate('AuthListWorkspaceMemberScreen',{workspaceId: editedWorkspace})}}
+                            color={Colors.workSpaceNavigationPrimaryColor}
+                        />
+                }
             </ScrollView>
         </KeyboardAvoidingView>
     )
