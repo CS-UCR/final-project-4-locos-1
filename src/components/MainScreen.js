@@ -58,9 +58,9 @@ export default class MainScreen extends Component {
 
     this.state={
         timer: null,
-        hourCount: '00',
-        minCount: '00',
-        secCount: '00',
+        hourCount: 0,
+        minCount: 0,
+        secCount: 0,
         trueStart: null,
         showTimerText: false,
         trueTime: null,
@@ -118,6 +118,10 @@ export default class MainScreen extends Component {
       else{
 
       }
+    console.log("====ALL MY COORDINATES ==== ")
+    console.log(currentPos)
+    console.log(coordinates1)
+    console.log(coordinates2)
 
     if((currentPos.coords.latitude <= coordinates1.latitude) && (currentPos.coords.latitude >= coordinates2.latitude)){
       console.log("latitude inbound")
@@ -145,30 +149,89 @@ export default class MainScreen extends Component {
     await firebase.database().ref('/Users/' + this.state.userId).once('value').then(async function(snapshot){
 
       var userInfo = snapshot.val()
-      
+      var userSnapshot = snapshot
       //collect study spaces from workspaces
-      if(snapshot.hasChild("Workspaces")){
-        
-        
-      }
-
       if(snapshot.hasChild("StudySpaces")){
 
-        await firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
+        await firebase.database().ref('/StudySpaces/').once('value').then(async function(studySpaceSnapshot){
+          
+          var allStudySpaces = studySpaceSnapshot.val()
+          var studySpaceSnapshot = studySpaceSnapshot
+          console.log("checking if user has workspaces child")
+          if(userSnapshot.hasChild("workspaces")){
+            
+            console.log("iterating workspaces")
+            console.log("workspace length")
+            console.log(userInfo["workspaces"].length)
+            for(var i = 0 ; i < userInfo["workspaces"].length ; i++){
+                //get workspaces
 
-          var allStudySpaces = snapshot.val()
+                console.log("going into workspace firebase call")
+                await firebase.database().ref('/workspaces/' + userInfo["workspaces"][i]).once('value').then(async function(snapshot){
+                  //check if there
+                  var workspaceInfo = snapshot.val()
+                  console.log("workspaceInfo")
+                  console.log(workspaceInfo)
+
+                  if(snapshot.hasChild('StudySpaces')){
+                    console.log("has StudySpaces index")
+                    var WSS = workspaceInfo['StudySpaces']
+                    for(var ss in WSS){
+                      //check if in bound
+                      //if yes, push
+                      console.log("current study space key from workspace : " + ss)
+                      if(studySpaceSnapshot.hasChild(ss)){
+                        console.log("has child")
+                        if (self.ifInBound(self.state.location , allStudySpaces[ss].point2,allStudySpaces[ss].point1)){
+                          console.log("workspace is inBound")
+                          var payload = {
+
+                            ref: workspaceInfo['workspaceTitle'],
+                            imageLink: await firebase.storage().ref().child('images/workspaces/'+ workspaceInfo['imageUri'])
+                            
+                          }
+                          myList.push({
+                            key : ss,
+                            payload: payload,
+                            highlight: false,
+                            style: {backgroundColor : 'transparent',
+                            borderColor : '#404040',
+                            
+                            },
+                            type : 2,
+                            workspaceID: userInfo["workspaces"][i]
+                          })
+                          
+                          //get unique list of refName
+                          renderList[payload.ref]= {
+                            key : ss,
+                            payload: payload,
+                            highlight: false,
+                            style: {backgroundColor : 'transparent',
+                            borderColor : '#404040',
+                            
+                            },
+                            type: 2,
+                            workspaceID: userInfo["workspaces"][i]
+                          }
+                        }
+                    }
+
+                    }
+                  }
+                })
+            }
+          }
+
   
           //iterate user's studyspaces and retrieve points
           for(var key in userInfo["StudySpaces"]){
-            console.log("current key: " + key)
           
             //check if studyspace has key
-            if(snapshot.hasChild(key)){
+            if(studySpaceSnapshot.hasChild(key)){
               
-              console.log("/studyspaces has key")
               if (self.ifInBound(self.state.location , allStudySpaces[key].point2,allStudySpaces[key].point1)){
 
-                console.log("inbound")
                 var payload = {
 
                   ref: allStudySpaces[key]["refName"],
@@ -303,24 +366,24 @@ export default class MainScreen extends Component {
             }
             locationInterval += 1
 
-            var num = (Number(self.state.secCount) + 1).toString(),
+            var num = self.state.secCount+ 1,
                 mCount = self.state.minCount,
                 hCount = self.state.hourCount;
     
-            if (Number(self.state.secCount) == 59) {
-                mCount = (Number(self.state.minCount) + 1).toString();
-                num = '00';
+            if (self.state.secCount == 59) {
+                mCount = self.state.minCount + 1
+                num = 0;
             }
 
-            if (Number(self.state.minCount) == 59) {
-                hCount = (Number(self.state.hourCount) + 1).toString();
-                mCounnt = '00';
+            if (self.state.minCount == 59) {
+                hCount = (self.state.hourCount) + 1;
+                mCount = 0;
             }
             
             self.setState({
-                hourCount: hCount.length == 1 ? '0' + hCount : hCount,
-                minCount: mCount.length == 1 ? '0' + mCount : mCount,
-                secCount: num.length == 1 ? '0' + num : num,
+                hourCount: hCount,
+                minCount: mCount,
+                secCount: num,
             });
 
         }, 1000);
@@ -360,9 +423,9 @@ export default class MainScreen extends Component {
         this.setState({
             isStarted: false,
             showTimerText: false,
-            hourCount: '00',
-            minCount: '00',
-            secCount: '00',
+            hourCount: 0,
+            minCount: 0,
+            secCount: 0,
             timerButtonText: 'Start\nStudying'
         });
     }
@@ -370,13 +433,14 @@ export default class MainScreen extends Component {
   }
 
   async storeReports(payload){        
+      var self = this
 
       for(var i = 0 ;  i< this.state.activeSessions.length ;i++){
           console.log("activeSessions[i]")
           console.log(this.state.activeSessions)
+      
           if(this.state.activeSessions[i].type == 1){ 
 
-            var self = this
             await firebase.database().ref('/Reports/Users/'+this.state.userId + '/').once('value').then(async function(snapshot){
 
               var reports = snapshot.val()
@@ -397,7 +461,30 @@ export default class MainScreen extends Component {
             })
           }
           else if(this.state.activeSessions[i].type == 2){ 
-            await firebase.database().ref('/Reports/Workspaces/' + this.state.activeSessions[i].workspaceID +"/" +this.state.userId +'/').update(payload)
+            await firebase.database().ref('/Reports/Workspaces/' + this.state.activeSessions[i].workspaceID +"/" +this.state.userId +'/').once('value').then(async function(snapshot){
+
+              var reports = snapshot.val() 
+
+              console.log(reports)
+              if(reports){
+                reports.push(payload)
+              }
+              else{
+                console.log("workspace no reports")
+                
+                reports = []
+                reports.push(payload)
+                
+              }
+
+              console.log("inputting workspace reports")
+              console.log(reports)
+              
+              console.log(self.state.userId)
+              console.log("ending")
+              await firebase.database().ref('/Reports/Workspaces/' + self.state.activeSessions[i].workspaceID +"/" +self.state.userId +'/').update(reports)
+
+            })
           }
         
         
@@ -432,6 +519,20 @@ export default class MainScreen extends Component {
     this.setState({
       renderList: newList
     })
+  }
+
+  getImage(item){
+    if(item.type == 1){
+        //personal studyspace
+      return require('../../assets/location-symbol.jpg')
+    }
+    else if(item.type == 2){
+      //workspace
+      return {
+        "uri":  item.payload.imageLink
+      }
+      
+    }
   }
   render() {
     console.log("rerender with scrollview with center text ")
@@ -473,7 +574,7 @@ export default class MainScreen extends Component {
           style = {item.style}
           >
           <View style = {{flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
-          <Image style = {{width :   25, height : 25}} source = {require("../../assets/location-symbol.jpg")}/>
+          <Image style = {{width :   25, height : 25}} source = {require('../../assets/location-symbol.jpg')}/>
           <Text  style ={{textAlign : 'center'}}> {item.payload.ref}</Text>
           </View>
           </TouchableOpacity>

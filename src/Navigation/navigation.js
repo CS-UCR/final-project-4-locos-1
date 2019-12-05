@@ -20,6 +20,7 @@ import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
 import { createDrawerNavigator } from 'react-navigation-drawer';
 // import DrawerNavigation from '../Navigation/DrawerNavigation'
+import Dashboard from '../components/dashboardComponents/Dashboard'
 
 const Features = createStackNavigator(
     {
@@ -32,6 +33,7 @@ const Features = createStackNavigator(
         UserInfoRoute: UserInfo,
         FeedRoute: Feed,
         CreateWorkspaceRoute: CreateWorkspace,
+        DashboardRoute: Dashboard
     },{
         defaultNavigationOptions: ({ navigation }) => ({
             headerRight: (
@@ -57,7 +59,8 @@ const Drawer = createDrawerNavigator(
         CreateWorkspaceRoute: CreateWorkspace,
         MainScreenDrawer: {
             screen: MainScreen,
-        }
+        },
+        DashboardRoute: Dashboard
     },
     {
         initialRouteName: 'MainScreenDrawer',
