@@ -56,7 +56,7 @@ const AuthWorkSpacesNavigator = createStackNavigator(
               backgroundColor: Platform.OS === 'android' ? Colors.workSpaceNavigationPrimaryColor : ''
             },
             headerTintColor:
-              Platform.OS === 'android' ? 'red' : Colors.workSpaceNavigationPrimaryColor,
+              Platform.OS === 'android' ? 'white' : Colors.workSpaceNavigationPrimaryColor,
           }
     }
 );
