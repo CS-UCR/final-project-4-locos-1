@@ -23,6 +23,9 @@ export default(state = initialState, action) => {
                 ),
                 authWorkspaces: state.authWorkspaces.filter(
                     workspace => workspace.id !== action.workspaceId
+                ),
+                authWorkspaces: state.authWorkspaces.filter(
+                    workspace => workspace.id !== action.workspaceId
                 )
             }
         case CREATE_WORKSPACE:
