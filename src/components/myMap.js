@@ -5,11 +5,6 @@ import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 import { Updates } from 'expo';
 import * as firebase from 'firebase'
 import {NavigationEvents} from 'react-navigation'
-//TO DO:
-/*
-1.-Be able to make polygons stay on the map everytime it is reopened (firebase?)                              - P1
-4.-Be able to delete polygons                                                                                 - P27                                                                                               - P6
-*/
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height; 
@@ -29,31 +24,28 @@ export default class myMap extends React.Component {
         longitude: LONGITUDE,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
-
       },
 
       coord:{
         latitude: null,
         longitude: null,
       },
-      // polypoints: [],
+ 
       polygons: [],
       editing: null,
       creating: false,
-
       currentUser : null,
       userId : null,
-
       rendered : false,
     }
   }
   
   static navigationOptions = () => {
     return {
-        headerRight: <DrawerIcon/>,
-        headerStyle: {
-            backgroundColor: '#E0E0E0',
-        },
+      headerRight: <DrawerIcon/>,
+      headerStyle: {
+          backgroundColor: '#E0E0E0',
+      },
     };
   };
 
@@ -62,7 +54,6 @@ export default class myMap extends React.Component {
     if(editing.coordinates.length < 4){
       Alert.alert('Your study space is incomplete!');
     } else {
-        
         //make a payload to push in /StudySpaces
         var payload = {
             owner : this.state.userId,
@@ -90,19 +81,17 @@ export default class myMap extends React.Component {
 
           //if already have studyspaces
           if (snapshot.hasChild("StudySpaces")){
-            console.log("has child")
+            // console.log("has child")
             var points = schema["StudySpaces"]
             points[newKey] = newKey
           }
           //if first study space
           else{
-            console.log("no children")
+            // console.log("no children")
             var points = {}
             points[newKey] = newKey
           }
           firebase.database().ref("/Users/" + self.state.userId + "/StudySpaces").update(points)
-          
-
         })
 
         this.setState({
@@ -110,10 +99,7 @@ export default class myMap extends React.Component {
           editing: null,
           creating: false,
         });
-        
-
     }
-    console.log('create')
   }
 
   cancel(){
@@ -124,7 +110,6 @@ export default class myMap extends React.Component {
       editing: null,
       creating: false,
     })
-    console.log('cancel')
   }
 
   create(){
@@ -135,11 +120,10 @@ export default class myMap extends React.Component {
 
   delete(polygon){
     const{polygons} = this.state;
-
     //remove from database
     //remove from /StudySpaces
     firebase.database().ref('/StudySpaces/'+polygon.studySpaceKey + "/").remove()
-    
+
     //remove from Users/id/studyspaces
     firebase.database().ref('/Users/'+this.state.userId + '/StudySpaces/'+ polygon.studySpaceKey).remove()
   
@@ -151,16 +135,12 @@ export default class myMap extends React.Component {
     this.setState({
       polygons: [...polygons]
     })
-    console.log('delete')
-
-
   }
 
   onPress(e){
     const{editing, coord, creating} = this.state;
     if(creating == true){
       if(!editing){
-        console.log("1st click")
 
         this.setState({
           editing: {
@@ -174,8 +154,6 @@ export default class myMap extends React.Component {
           }
         });
       } else if(editing.coordinates.length < 4){
-        console.log("2nd click")
-
         var newKey = firebase.database().ref("/StudySpaces/").push().key
 
         this.setState({
@@ -196,48 +174,38 @@ export default class myMap extends React.Component {
       'Do you wish to delete this polygon?',
       '',
       [
-        {text: 'No', onPress: () => console.log(polygon.id)},
+        {text: 'No'},
         {text: 'Yes', onPress: () => this.delete(polygon)},
       ],
     );
   } 
 
   makeCoordinates(point1, point2){
-
     coordinates = []
 
     coordinates.push(
       {latitude : point1.latitude,
       longitude : point1.longitude}
     )
-  coordinates.push(
-            {latitude : point2.latitude,
-            longitude : point1.longitude}
-          ) 
+    coordinates.push(
+      {latitude : point2.latitude,
+      longitude : point1.longitude}
+    ) 
     coordinates.push(
       {latitude : point2.latitude,
       longitude : point2.longitude}
     )
-
-   
-
     coordinates.push(
-        {latitude : point1.latitude,
-        longitude : point2.longitude}
-      )
-    
-  
-
+      {latitude : point1.latitude,
+      longitude : point2.longitude}
+    )
     return coordinates
-
   }
 
   async loadUserPolygons(){
-
     //get all the polygons the user is a part of
     //take out the ones already in this.state.polygons
     //update state of this.state.polygons
-
     var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
@@ -246,84 +214,56 @@ export default class myMap extends React.Component {
           
           //
           var spaces = snapshot.val()
+
           //iterate polygons current state
-
-          // console.log("current polygons")
-          // console.log(self.state.polygons)
-
-          
           for(var i = 0 ; i < self.state.polygons.length; i++){
-            
             //check if polygon key is in spaces
             if(self.state.polygons[i].studySpaceKey in spaces){
-              // console.log("in here")
-              // console.log(self.state.polygons[i].studySpaceKey)
-              // console.log(self.state.polygons[i])
               delete spaces[self.state.polygons[i].studySpaceKey]
-
             }
           }
 
-          console.log("current id")
-          console.log(id)
           firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
-              renderingPolygons = self.state.polygons
+            renderingPolygons = self.state.polygons
 
-              spaceCoordinates = snapshot.val()
-              //add new spaces
-              
-              // console.log("spaceCoordinates")
-              // console.log(spaceCoordinates)
-              for(var key in spaces){
-                
-                  var polygon = {
-                      id : id,
-                      coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
-                      points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
-                      studySpaceKey : key
-                  }
-
-                  // console.log("new polygon")
-                  // console.log(polygon)
-
-                  //put polygon in polygons state
-                  renderingPolygons.push(polygon)
-                  id+=1
-              }
-
-            
-              self.setState({
-                polygons : renderingPolygons
-              })
-              })
-
-
-
+            spaceCoordinates = snapshot.val()
+            //add new spaces
+            for(var key in spaces){
+                var polygon = {
+                    id : id,
+                    coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                    points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                    studySpaceKey : key
+                }
+                //put polygon in polygons state
+                renderingPolygons.push(polygon)
+                id+=1
+            }
+            self.setState({
+              polygons : renderingPolygons
+            })
           })
-          
+        })   
       }
       else{
-
       }
     })
   }
+
   componentDidMount(){
-    
     //get user information
     var self = this
     firebase.auth().onAuthStateChanged(function(user){
-        if(user){
-            //logged on
-            console.log("logged on")
-            self.setState({currentUser: user,
-                            userId : user.uid})
-        }
-        else{
-            //not logged on
-            console.log("no user logged on")
-        }
+      if(user){
+        //logged on
+        self.setState({currentUser: user,
+                        userId : user.uid})
+      }
+      else{
+        //not logged on
+        console.log("no user logged on")
+      }
     })
-
     navigator.geolocation.getCurrentPosition(
       position =>{
         this.setState({
@@ -337,24 +277,16 @@ export default class myMap extends React.Component {
       },
       error => this.setState({error: error.message}),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-    )
-
-  
+    )  
   }
 
   render() {
-
-    console.log("rendering")
-    console.log("===polygons===")
-    console.log(this.state.polygons)
     return (
       <View style={styles.container}>
         <NavigationEvents
           onWillFocus={() => {
-            console.log(this.state.polygons.length)
             //rerender and display all polygons
             this.loadUserPolygons()
-            
           }}
         />
         <MapView
@@ -363,12 +295,10 @@ export default class myMap extends React.Component {
           //mapType = {MAP_TYPES.HYBRID}       //CHOOSE THE TYPE OF MAP YOU WANT TO USE
           showsUserLocation={true}
           showsMyLocationButton={true}
-          
           initialRegion={this.state.initialRegion}
           onPress={e => this.onPress(e)}
           >
             {this.state.polygons.map(polygon => (
-              
               <Polygon
                 key={polygon.id}
                 tappable = {true}
@@ -386,10 +316,8 @@ export default class myMap extends React.Component {
                 strokeColor={'red'}
                 fillColor={'hsla(240, 100%, 50%, 0.5)'}
                 strokeColor={1}
-
               />
             )}
-            
         </MapView>
         <View style={styles.buttonContainerStyle}>
           {!this.state.creating && (
@@ -445,7 +373,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 10,  
-  
   },
-
 });
