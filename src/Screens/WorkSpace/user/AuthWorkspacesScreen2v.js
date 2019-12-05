@@ -107,7 +107,6 @@ const UserWorkspacesScreen = props => {
             </View>
         )
     }
-
     return (
         <FlatList
             onRefresh={loadWorkspaces}

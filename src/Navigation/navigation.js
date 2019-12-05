@@ -22,6 +22,7 @@ import UserInfo from '../components/UserInfo'
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
 import AuthEditWorkspaceScreen from '../Screens/WorkSpace/user/AuthEdithWorkspaceScreen'
+import AuthListWorkspaceMemberScreen from  '../Screens/WorkSpace/user/AuthListWorkspaceMembersScreen'
 import AuthMap from '../components/AuthMap'
 
 import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScreen'
@@ -35,7 +36,8 @@ const AuthWorkSpacesNavigator = createStackNavigator(
         AuthWorkspacesScreen: AuthWorkspacesScreen,
         AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
         AuthMap:AuthMap,
-        UserWorkspaceMap:UserWorkspaceMap
+        UserWorkspaceMap:UserWorkspaceMap,
+        AuthListWorkspaceMemberScreen: AuthListWorkspaceMemberScreen
     }, {
         defaultNavigationOptions: {
             headerStyle: {

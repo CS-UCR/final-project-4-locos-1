@@ -16,7 +16,6 @@ import {
     const [imageUrl, setImageUrl] = useState('')
 
     const imageSource = async(image) => {
-      console.log("hello: ", image)
       const imageRetrieved  = await firebase.storage().ref().child(`images/workspaces/${image}`).getDownloadURL()
         .then(url =>  setImageUrl(url))
 

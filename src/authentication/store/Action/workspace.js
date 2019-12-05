@@ -7,6 +7,7 @@ export const DELETE_WORKSPACE = 'DELETE_WORKSPACE';
 export const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE';
 export const SET_WORKSPACE = 'SET_WORKSPACE'
 export const ADD_MEMBERS = 'ADD_MEMBERS'
+export const REMOVE_MEMBERS = 'REMOVE_MEMBERS'
 
 const makeId = (length) => {
   let result = '';
@@ -94,9 +95,27 @@ export const createWorkSpace = (workspaceTitle, color, imageUri) => {
                 accessCode,
                 members: [authID]
             })
+
+
         });
 
         const resData = await response.json();
+
+          await firebase.database().ref(`/Users/${authID}/workspaces/`).once('value').then(async function(snapshot){
+          let userWorkspaces = snapshot.val()
+          let updatedWorkspace = []
+  
+          if(userWorkspaces){
+            updatedWorkspace = userWorkspaces
+            updatedWorkspace.push(resData.name)
+          }
+          else{
+            updatedWorkspace.push(resData.name)
+          }
+  
+          await firebase.database().ref(`/Users/${authID}/workspaces/`).update(updatedWorkspace)
+        })
+
 
         dispatch({
             type:CREATE_WORKSPACE,
@@ -187,11 +206,6 @@ export const joinWorkspace = (id,members) => {
         await firebase.database().ref(`/Users/${authID}/workspaces/`).update(updatedWorkspace)
       })
 
-      
-
-
-
-
     if(!response.ok){
       throw new Error('Something went wrong!')
     }
@@ -202,6 +216,45 @@ export const joinWorkspace = (id,members) => {
           workspaceData:{
             memberList: members
           }
+    });
+  };
+};
+
+
+export const deleteMember = (workspaceId, memberId) => {
+  console.log("Member")
+  return async dispatch => {
+    let membersData = []
+      await firebase.database().ref(`/workspaces/${workspaceId}/members`).once('value').then(async function(snapshot){
+      let retrieveData = snapshot.val()
+      console.log("retrieve data: ", retrieveData)
+      console.log("workspace ID: ", workspaceId)
+      console.log("member ID: ", memberId)
+      membersData = retrieveData.filter( member => member !== memberId)
+
+    })
+
+    console.log("member Data: ", membersData)
+
+    const response =  await fetch(`https://lokos-studybuddy.firebaseio.com/workspaces/${id}.json`, 
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          workspaceTitle: workspaceTitle,
+          color: color,
+          imageUri: imageUri
+        })
+      }
+    );
+
+    if(!response.ok){
+      throw new Error('Something went wrong!')
+    }
+
+    dispatch({
     });
   };
 };

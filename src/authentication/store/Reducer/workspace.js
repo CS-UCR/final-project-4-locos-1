@@ -37,7 +37,6 @@ export default(state = initialState, action) => {
                 action.workspaceData.members
 
             );
-            console.log("new workspace ", newWorkSpace)
             return{
                 ...state,
                 availableWorkspaces: state.availableWorkspaces.concat(newWorkSpace),
