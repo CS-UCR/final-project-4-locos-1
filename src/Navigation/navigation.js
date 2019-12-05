@@ -49,7 +49,6 @@ const AuthWorkSpacesNavigator = createStackNavigator(
         AuthWorkspacesScreen: AuthWorkspacesScreen,
         AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
         AuthMap:AuthMap,
-        UserWorkspaceMap:UserWorkspaceMap,
         AuthListWorkspaceMemberScreen: AuthListWorkspaceMemberScreen
     }, {
         defaultNavigationOptions: {
