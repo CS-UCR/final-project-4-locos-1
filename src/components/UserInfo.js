@@ -167,7 +167,7 @@ export default class UserInfo extends Component{
             console.log(output)
             console.log("pushing into firebase")
             await firebase.database().ref('Users/' + this.state.userId + '/').update(output)
-            this.props.navigation.navigate('MainRoute')
+            this.props.navigation.navigate('MainScreenDrawer')
             Alert.alert('Notice','Successfully updated profile!',[{text:'Okay'}])
 
     }

@@ -18,7 +18,7 @@ const initialState = {
           userId: action.userId
         };
       case LOGOUT:
-        return initialState
+        return  initialState
       default:
         return state;
     }

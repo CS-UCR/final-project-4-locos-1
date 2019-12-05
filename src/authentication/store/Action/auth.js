@@ -68,7 +68,11 @@ export const login = (email, password) => {
 
       const accountData = await response.json()
       dispatch({ type: LOGIN, token: accountData.idToken, userId: accountData.localId });
+<<<<<<< HEAD
       firebase.auth().signInWithEmailAndPassword(email,password)
+=======
+      // console.log(firebase.auth().signInWithEmailAndPassword(email,password))
+>>>>>>> origin/displayWorkspace
   }
 }
 
