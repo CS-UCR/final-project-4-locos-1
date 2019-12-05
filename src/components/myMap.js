@@ -59,6 +59,7 @@ export default class myMap extends React.Component {
           owner: this.state.userId,
           point1: this.state.editing.points[0],
           point2: this.state.editing.points[1],
+          refName: 'Personal'
         }
 
         //push new study space

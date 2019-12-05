@@ -92,6 +92,7 @@ export default class myMap extends React.Component {
           editing: null,
           creating: false,
         });
+      console.log(polygons)
     }
   }
 
@@ -128,6 +129,7 @@ export default class myMap extends React.Component {
     this.setState({
       polygons: [...polygons]
     })
+    console.log(polygons)
   }
 
   onPress(e){
@@ -196,6 +198,7 @@ export default class myMap extends React.Component {
   }
 
   async loadUserPolygons(){
+    id = 0
     //get all the polygons the user is a part of
     //take out the ones already in this.state.polygons
     //update state of this.state.polygons
@@ -229,6 +232,7 @@ export default class myMap extends React.Component {
                 }
                 //put polygon in polygons state
                 renderingPolygons.push(polygon)
+                console.log(id)
                 id+=1
             }
             self.setState({
