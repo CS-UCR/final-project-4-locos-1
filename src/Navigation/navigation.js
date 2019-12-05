@@ -40,16 +40,16 @@ const AuthWorkSpacesNavigator = createStackNavigator(
         
         // MainRoute: Menu,
         // TitleRoute: Title,
+        AuthWorkspacesScreen: AuthWorkspacesScreen,
+        AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
+        AuthMap:AuthMap,
+        AuthListWorkspaceMemberScreen: AuthListWorkspaceMemberScreen,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
         UserInfoRoute: UserInfo,
         FeedRoute: Feed,
         CreateWorkspaceRoute: CreateWorkspace,
         DashboardRoute: Dashboard,
-        AuthWorkspacesScreen: AuthWorkspacesScreen,
-        AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
-        AuthMap:AuthMap,
-        AuthListWorkspaceMemberScreen: AuthListWorkspaceMemberScreen
     }, {
         defaultNavigationOptions: {
             headerStyle: {
@@ -79,15 +79,11 @@ const UserWorkSpacesNavigator = createStackNavigator(
 
 const Drawer = createDrawerNavigator(
     {
-        FeedRoute: Feed, 
+      MainScreenDrawer: {
+        screen: MainScreen,
+      },
         MapRoute: myMap,
-        UserInfoRoute: UserInfo,
-        CreateWorkspaceRoute: CreateWorkspace,
-        MainScreenDrawer: {
-            screen: MainScreen,
-        },
         DashboardRoute: Dashboard,
-        MainScreenDrawer: MainScreen,
         'My Workspaces':UserWorkSpacesNavigator ,
         'Workspaces Management' : AuthWorkSpacesNavigator
     },
