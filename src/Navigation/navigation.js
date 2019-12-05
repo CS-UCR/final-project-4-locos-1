@@ -19,7 +19,6 @@ import Feed from '../components/Feed'
 import myMap from '../components/myMap'
 import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
-import { createDrawerNavigator } from 'react-navigation-drawer';
 // import DrawerNavigation from '../Navigation/DrawerNavigation'
 import Dashboard from '../components/dashboardComponents/Dashboard'
 
