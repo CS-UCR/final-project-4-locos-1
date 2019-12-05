@@ -38,8 +38,8 @@ const AuthWorkSpacesNavigator = createStackNavigator(
     {
         
         
-        MainRoute: Menu,
-        TitleRoute: Title,
+        // MainRoute: Menu,
+        // TitleRoute: Title,
         MainScreenRoute: MainScreen,
         MapRoute: myMap,
         UserInfoRoute: UserInfo,
