@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
+import {Alert, View, Text, Button, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
-import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import Colors from '../constants/Colors';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
@@ -111,12 +112,15 @@ export default class UserInfo extends Component{
 
     static navigationOptions = () => {
         return {
-            headerRight: <DrawerIcon/>,
+            headerTitle: 'Create User Profile',
             headerStyle: {
-                backgroundColor: '#E0E0E0',
+                backgroundColor: Colors.headerBackgoundColor,
             },
+            headerTitleStyle:{
+              color: Colors.headerTitleColor,
+            }
         };
-    };
+      };
 
     componentDidMount(){
         
@@ -167,7 +171,7 @@ export default class UserInfo extends Component{
             console.log(output)
             console.log("pushing into firebase")
             await firebase.database().ref('Users/' + this.state.userId + '/').update(output)
-            this.props.navigation.navigate('MainScreenDrawer')
+            this.props.navigation.navigate('Main Screen')
             Alert.alert('Notice','Successfully updated profile!',[{text:'Okay'}])
 
     }
@@ -188,10 +192,12 @@ export default class UserInfo extends Component{
                 </View>
                 <View style={{height: 40}}></View>
                 <View style={{height: 400}}>
+                    <ScrollView>
                     <Form 
                         ref={c => this._form = c}
                         type={UserI}
                         options={formOptions} />
+                    </ScrollView>
                 </View>
                 <TouchableHighlight onPress={this.updateFirebase} underlayColor="white">    
                     <View style={styles.updateInfoButton}>
