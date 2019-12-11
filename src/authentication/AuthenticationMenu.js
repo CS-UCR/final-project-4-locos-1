@@ -12,9 +12,6 @@ const AuthenticationMenu = props => {
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
-      {/* <View style={styles.lines}></View>
-      <Text style={styles.Header}>Study Buddy</Text>
-      <View style={styles.lines}></View> */}
       <View style={{height: 5}}></View>
       <Image 
           source={require('../../assets/StuddyBuddyLogo.png')}  
@@ -48,18 +45,18 @@ const styles = StyleSheet.create({
       padding: 20,
       marginTop:50,
       backgroundColor:'#feccc1',
-      borderWidth:7,
+      borderWidth:5,
       borderColor:'pink'
 
     },
     buttonContainer: {
       marginTop: 10,
-      borderWidth:5,
+      borderWidth:3,
       backgroundColor:'white'
     },
     button:{
-      borderWidth:5,
-      borderColor: "black"
+      borderWidth:3,
+      borderColor: "#404040"
     },
     Header: {
       width:"90%",
