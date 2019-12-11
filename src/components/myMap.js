@@ -5,6 +5,7 @@ import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 import { Updates } from 'expo';
 import * as firebase from 'firebase'
 import {NavigationEvents} from 'react-navigation'
+import Colors from '../constants/Colors'
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height; 
@@ -42,12 +43,17 @@ export default class myMap extends React.Component {
   
   static navigationOptions = () => {
     return {
-      headerRight: <DrawerIcon/>,
-      headerStyle: {
-          backgroundColor: '#E0E0E0',
-      },
+        headerTitle: 'Study Spaces Map',
+        headerRight: <DrawerIcon/>,
+        headerStyle: {
+            backgroundColor: Colors.headerBackgoundColor,
+        },
+        headerTitleStyle:{
+          color: Colors.headerTitleColor,
+        }
     };
   };
+
 
   finish(){
     const{polygons, editing} = this.state;
