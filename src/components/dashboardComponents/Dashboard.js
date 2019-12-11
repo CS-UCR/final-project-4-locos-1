@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Text, Dimensions} from 'react-native';
+import DrawerIcon from '../../Navigation/assets/drawerNav/DrawerIcon';
+import Colors from '../../constants/Colors'
 import Accordian from './Accordian'
 import * as firebase from 'firebase'
 
@@ -30,6 +32,20 @@ export default class Dashboard extends Component {
       
      }
   }
+
+  static navigationOptions = () => {
+    return {
+        headerTitle: 'Dashboard',
+        headerRight: <DrawerIcon/>,
+        headerStyle: {
+            backgroundColor: Colors.headerBackgoundColor,
+        },
+        headerTitleStyle:{
+          color: Colors.headerTitleColor,
+        }
+    };
+  };
+
 
   installMenu(userId, personalData, workspaceData){
     var newMenu = []

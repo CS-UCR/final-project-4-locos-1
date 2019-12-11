@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight,StyleSheet, Picker, Image} from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import Colors from '../../constants/Colors'
 
 import {ScrollView} from 'react-native'
 
@@ -86,10 +87,14 @@ export default class MainScreen extends Component {
 
   static navigationOptions = () => {
     return {
+        headerTitle: 'Dashboard',
         headerRight: <DrawerIcon/>,
         headerStyle: {
-            backgroundColor: '#E0E0E0',
+            backgroundColor: Colors.headerBackgoundColor,
         },
+        headerTitleStyle:{
+          color: Colors.headerTitleColor,
+        }
     };
   };
 
