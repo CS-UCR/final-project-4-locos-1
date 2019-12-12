@@ -21,6 +21,7 @@ import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
 // import DrawerNavigation from '../Navigation/DrawerNavigation'
 import Dashboard from '../components/dashboardComponents/Dashboard'
+import UpdateUserInfo from '../components/UpdateUserInfo'
 
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
@@ -34,6 +35,10 @@ import UserJoinWorkspacesScreen from '../Screens/WorkSpace/Member/UserJoinWorksp
 
 const MainScreenStack = createStackNavigator({
   MainScreenRoute: MainScreen,
+})
+
+const UpdateUserInfoStack = createStackNavigator({
+  UpdateUserInfoRoute: UpdateUserInfo,
 })
 
 const MapStack = createStackNavigator({
@@ -57,6 +62,7 @@ const AuthWorkSpacesNavigator = createStackNavigator(
         MainScreenRoute: MainScreenStack,
         MapRoute: MapStack,
         UserInfoRoute: UserInfo,
+        UpdateUserInfoRoute: UpdateUserInfoStack,
         FeedRoute: Feed,
         CreateWorkspaceRoute: CreateWorkspace,
         DashboardRoute: DashboardStack,
@@ -93,6 +99,7 @@ const Drawer = createDrawerNavigator(
       },
         'Study Space Map': MapStack,
         'Dashboard': DashboardStack,
+        'Update Profile': UpdateUserInfoStack,
         'My Workspaces':UserWorkSpacesNavigator ,
         'Workspaces Management' : AuthWorkSpacesNavigator
     },
