@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
+import {Alert, View, Text, Button, KeyboardAvoidingView, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
+import { Col, Row, Grid } from "react-native-easy-grid";
 import t from 'tcomb-form-native';
+import DialogInput from 'react-native-dialog-input';
 import * as firebase from 'firebase';
 
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
@@ -11,55 +13,62 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         //alignItems: 'center',
-        backgroundColor: '#FFE9EC',
+        backgroundColor: '#FFFF',
         padding: 25,
     },
     pageTitleText:{
-        fontSize: 45,
+        fontSize: 15,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
     userInfoContainer: {
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         backgroundColor: '#FFFFFF',
         borderWidth: 1,
-        borderColor: '#493029',
+        borderColor: Colors.darkGreyColor,
         height: 180,
     },
     userInfoTextContainer: {
         alignItems: 'flex-start',
         height: 30,
-        padding: 3,
+        padding: 10,
     },
     userInfoText :{
         textAlign: 'left',
         padding: 2,
-        fontSize: 20,
-        color: '#000000'
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: Colors.darkGreyColor,
+        marginTop: 5,
+    },
+    colInfoText :{
+        textAlign: 'left',
+        padding: 2,
+        fontSize: 15,
+        color: '#000000',
+        marginTop: 5,
     },
     updateInfoButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#feccc1',
-        borderWidth: 2,
-        borderColor: "grey"
+        backgroundColor: Colors.darkGreyColor,
+        display: 'flex',
+        padding: 1,
+        marginTop: 5,
+        height: 35,
     },
     updateInfoButtonText: {
         textAlign: 'center',
-        padding: 5,
-        fontSize: 20,
-        color: '#505050',
+        padding: 2,
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: '#FFFF',
     },
 });
 
 const Form = t.form.Form;
 
 const UserI = t.struct({
-    firstname: t.maybe(t.String),
-    lastname: t.maybe(t.String),
-    major: t.maybe(t.String),
-    phonenum: t.maybe(t.String),
     shareInfo: t.Boolean,
 })
 
@@ -88,39 +97,14 @@ const formStyles = {
 
 const formOptions = {
     fields: {
-        // firstname:{
-        //     label: this.state.firstnameDB ? this.state.firstnameDB : 'First Name',
-        // },
-        // lastname:{
-        //     label: this.state.lastnameDB,
-        // },
-        // major:{
-        //     label: this.state.majorDB,
-        // },
-        // phonenum:{
-        //     label: this.state.phoneNumDB,
-        // },
-        // shareInfo: {
-        //     label: 'Share information with Workspace Owners?',
-        // },
-        firstname:{
-            label: 'First Name',
-        },
-        lastname:{
-            label: 'Last Name',
-        },
-        major:{
-            label: 'Major',
-        },
-        phonenum:{
-            label: 'Phone Num',
-        },
         shareInfo: {
-            label: 'Share information with Workspace Owners?',
+            label: 'Share information?',
+           // default: this.state.shareInfoDB,
         },
     },
     stylesheet: formStyles,
   };
+
 
 export default class UpdateUserInfo extends Component{
 
@@ -130,14 +114,15 @@ export default class UpdateUserInfo extends Component{
         this.state={
             info: null,
             currentUser : "",
-            firstname : null,
-            lastname : null,
-            major : null,
-            sharedInfo: null,
+            userId: null,
             firstnameDB : 'First Name',
             lastnameDB : 'Last Name',
             majorDB: 'Major',
-            sharedInfoDB: 'Share information with Workspace Owners?',
+            sharedInfoDB: false,
+            fnDialogue : false,
+            lnDialogue : false,
+            mjDialogue : false,
+            phDialogue: false,
         }
     }
 
@@ -164,12 +149,20 @@ export default class UpdateUserInfo extends Component{
                 console.log(user)
                 self.setState({currentUser: user,
                                 userId : user.uid,
-                                firstnameDB : user.firstname,
-                                lastnameDB: user.lastname,
-                                majorDB: user.major,
-                                shareInfoDB: user.shareInfo,
-                                phoneNumDB: user.phoneNum,
                 })
+
+                firebase.database().ref('/Users/' + user.uid + '/profile').on('value', (snapshot) =>{
+                    console.log("USER SNAPSHOT\n")
+                    console.log(snapshot)
+                    console.log(user.uid)      
+                    self.setState({
+                        firstnameDB: snapshot.val().firstname,
+                        lastnameDB: snapshot.val().lastname,
+                        majorDB: snapshot.val().major,
+                        phonenumDB: snapshot.val().phoneNum,
+                        //shareInfoDB: snapshot.val().shareInfo,
+                    })
+                }) 
             }
             else{
                 //not logged on
@@ -182,35 +175,89 @@ export default class UpdateUserInfo extends Component{
         const value = this._form.getValue();
         if(value){
             info = value
-            alert("Your info has been updated, " + value.firstname + "!")
+            alert("Your info has been updated, " + value.firstnameUP + "!")
         }else{
             alert("Please correct the errors")
         }
     }
+
+    fnDialog = () => {
+        this.setState({fnDialogue: true})
+    }
+    updateFirstname = (inputText) => {
+        this.setState({firstnameDB: inputText,
+                        fnDialogue: false})
+        setTimeout(() => {
+            this.updateFirebase();
+        }, 500);
+    }
+
+    lnDialog = () => {
+        this.setState({lnDialogue: true})
+    }
+    updateLastname = (inputText) => {
+        this.setState({lastnameDB: inputText,
+                        lnDialogue: false})
+        setTimeout(() => {
+            this.updateFirebase();
+        }, 500);
+    }
+
+    mjDialog = () => {
+        this.setState({mjDialogue: true})
+    }
+    updateMajor = (inputText) => {
+        this.setState({majorDB: inputText,
+                        mjDialogue: false})
+                        setTimeout(() => {
+                            this.updateFirebase();
+                        }, 500);
+    }
+
+    phDialog = () => {
+        this.setState({phDialogue: true})
+    }
+    updatePhonenum = (inputText) => {
+        this.setState({phonenumDB: inputText,
+                        phDialogue: false})
+                        setTimeout(() => {
+                            this.updateFirebase();
+                        }, 500);
+    }
+
+    updateShareInfo = () => {
+        var formValues = this._form.getValue()
+        if(formValues.shareInfo) {this.setState({shareInfoDB : formValues.shareInfo})}
+        setTimeout(() => {
+            this.updateFirebase();
+        }, 500);
+    }
+
+    closeDialog = () => {
+        this.setState({
+            fnDialogue : false,
+            lnDialogue : false,
+            mjDialogue : false,
+            phDialogue: false,
+        })
+    }
+
     //TODO:Update info into firebase
     updateFirebase = async() => {
-        console.log("in button")
-            //Constants to be updated into firebase
-    
-            //if(info.phonenum) {phonenum = info.phonenum} else {phonenum = 0};
-            
-            var formValues = this._form.getValue()
+
             var output = {
                 email: this.state.currentUser.email,
-                profile: {firstname : formValues.firstname,
-                        lastname: formValues.lastname,
-                        major : formValues.major,
-                        shareInfo : formValues.shareInfo,
-                        phoneNum : formValues.phonenum
+                profile: {firstname : this.state.firstnameDB,
+                        lastname: this.state.lastnameDB,
+                        major : this.state.majorDB,
+                        shareInfo : this.state.shareInfoDB,
+                        phoneNum : this.state.phonenumDB,
                 }
             }
             console.log("OUTPUT")
             console.log(output)
             console.log("pushing into firebase")
             await firebase.database().ref('Users/' + this.state.userId + '/').update(output)
-            this.props.navigation.navigate('Main Screen')
-            Alert.alert('Notice','Successfully updated profile!',[{text:'Okay'}])
-
     }
     
     
@@ -225,36 +272,120 @@ export default class UpdateUserInfo extends Component{
         return (
             <View style={styles.container}>
                 <View style={{height: 30}}>
-                    <Text refstyle={styles.pageTitleText}>User Info</Text>
+                    <Text style={styles.pageTitleText}>Your curent information is displayed below</Text>
                 </View>
                 <View style={styles.userInfoContainer}>
-                    <ScrollView>
-                    <View style={styles.userInfoTextContainer}>
-                        <Text style={styles.userInfoText}> First Name: {this.state.firstnameDB} </Text>
-                    </View>
-                    <View style={styles.userInfoTextContainer}>
-                        <Text style={styles.userInfoText}> Last Name: {this.state.lastnameDB} </Text>
-                    </View>
-                    <View style={styles.userInfoTextContainer}>
-                        <Text style={styles.userInfoText}> Major: {this.state.majorDB} </Text>
-                    </View>
-                    <View style={styles.userInfoTextContainer}>
-                        <Text style={styles.userInfoText}> Phone Number: {this.state.phonenumDB} </Text>
-                    </View>
-                    </ScrollView>
+                    <Grid>
+                        <Col size={30}>
+                            <Row>
+                                <Text style={styles.colInfoText}>First Name</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.colInfoText}>Last Name</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.colInfoText}>Major</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.colInfoText}>Phone Number</Text>
+                            </Row>
+                        </Col>
+                        <Col size={5}></Col>
+                        <Col size={40}>
+                            <Row>
+                                <Text style={styles.userInfoText}>{this.state.firstnameDB}</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.userInfoText}>{this.state.lastnameDB}</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.userInfoText}>{this.state.majorDB}</Text>
+                            </Row>
+                            <Row>
+                                <Text style={styles.userInfoText}>{this.state.phonenumDB}</Text>
+                            </Row>
+                        </Col>
+                        <Col size={2}></Col>
+                        <Col size={13}>
+                            <Row>
+                            <TouchableHighlight syles={styles.updateInfoButton} onPress={() => this.fnDialog()} underlayColor="white">
+                                <View style={styles.updateInfoButton}>
+                                    <Text style={styles.updateInfoButtonText}>Update</Text>
+                                </View>
+                            </TouchableHighlight>
+                            </Row>
+                            <Row>
+                            <TouchableHighlight syles={styles.updateInfoButton} onPress={() => this.lnDialog()} underlayColor="white">
+                                <View style={styles.updateInfoButton}>
+                                    <Text style={styles.updateInfoButtonText}>Update</Text>
+                                </View>
+                            </TouchableHighlight>
+                            </Row>
+                            <Row>
+                            <TouchableHighlight syles={styles.updateInfoButton} onPress={() => this.mjDialog()} underlayColor="white">
+                                <View style={styles.updateInfoButton}>
+                                    <Text style={styles.updateInfoButtonText}>Update</Text>
+                                </View>
+                            </TouchableHighlight>
+                            </Row>
+                            <Row>
+                            <TouchableHighlight syles={styles.updateInfoButton} onPress={() => this.phDialog()} underlayColor="white">
+                                <View style={styles.updateInfoButton}>
+                                    <Text style={styles.updateInfoButtonText}>Update</Text>
+                                </View>
+                            </TouchableHighlight>
+                            </Row>
+                        </Col>
+                    </Grid>
                 </View>
-                <View style={{height: 40}}></View>
-                <View style={{height: 200}}>
-                    <Form 
-                        ref={c => this._form = c}
-                        type={UserI}
-                        options={formOptions} />
+                <KeyboardAvoidingView>
+                <DialogInput isDialogVisible={this.state.fnDialogue}
+                    message={"Enter new first name"}
+                    initValueTextInput={this.state.firstnameDB}
+                    submitInput={ (inputText) => {this.updateFirstname(inputText)} }
+                    closeDialog={ () => {this.closeDialog()}}>
+                </DialogInput>
+
+                <DialogInput isDialogVisible={this.state.lnDialogue}
+                    message={"Enter new last name"}
+                    initValueTextInput={this.state.lastnameDB}
+                    submitInput={ (inputText) => {this.updateLastname(inputText)} }
+                    closeDialog={ () => {this.closeDialog()}}>
+                </DialogInput>
+
+                <DialogInput isDialogVisible={this.state.mjDialogue}
+                    message={"Enter new major"}
+                    initValueTextInput={this.state.majorDB}
+                    submitInput={ (inputText) => {this.updateMajor(inputText)} }
+                    closeDialog={ () => {this.closeDialog()}}>
+                </DialogInput>
+
+                <DialogInput isDialogVisible={this.state.phDialogue}
+                    message={"Enter new phone number"}
+                    initValueTextInput={this.state.phonenumDB}
+                    submitInput={ (inputText) => {this.updatePhonenum(inputText)} }
+                    closeDialog={ () => {this.closeDialog()}}>
+                </DialogInput>
+                </KeyboardAvoidingView>
+
+                <View style={{height: 20}}></View>
+                <View style={{height: 50}}>
+                    <Grid>
+                        <Col>
+                            <Form 
+                                ref={c => this._form = c}
+                                type={UserI}
+                                options={formOptions} />
+                        </Col>
+                        <Col>
+                            <TouchableHighlight onPress={() => this.updateShareInfo()} underlayColor="white">    
+                                <View style={styles.updateInfoButton}>
+                                    <Text style={styles.updateInfoButtonText}>Update Share Information</Text>
+                                </View>
+                            </TouchableHighlight>
+                        </Col>    
+                    </Grid>
                 </View>
-                <TouchableHighlight onPress={this.updateFirebase} underlayColor="white">    
-                    <View style={styles.updateInfoButton}>
-                        <Text style={styles.updateInfoButtonText}>Update Info</Text>
-                    </View>
-                </TouchableHighlight>
             </View>
           );
     }
