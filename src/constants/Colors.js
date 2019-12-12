@@ -6,5 +6,8 @@ export default {
     drawerNavigatorTextColor: '#4a149c',
     drawerIconColor: '#4a148c',
     headerTitleColor: '#4a148c',
-    headerBackgroundColor: '#E7E7E7'
+    headerBackgroundColor: '#E7E7E7',
+    lightPinkColor: '#FFE9EC',
+    darkGreyColor: '#404040',
+    deepPurpleColor: '#4a148c',
 }

@@ -1,34 +1,40 @@
 import React, {Component} from 'react';
-import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet} from 'react-native';
+import {Alert, View, Text, KeyboardAvoidingView, TouchableHighlight, StyleSheet} from 'react-native';
 import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
-import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import Colors from '../constants/Colors';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        //alignItems: 'center',
-        backgroundColor: '#FFE9EC',
-        padding: 25,
+        alignItems: 'center',
+        backgroundColor: '#FFFF',
+        paddingLeft: 25,
+        paddingRight: 25,
+        marginTop: 0,
     },
-    pageTitleText:{
-        fontSize: 25,
+    pageDescriptionText:{
+        fontSize: 15,
         fontWeight: 'bold',
-        textAlign: 'center',
+        color: Colors.deepPurpleColor,
     },
     updateInfoButton: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#feccc1',
-        borderWidth: 2,
-        borderColor: "grey"
+        backgroundColor: '#FFFF',
+        borderWidth: 1,
+        width: 150,
+        height: 40,
+        borderColor: Colors.darkGreyColor,
     },
     updateInfoButtonText: {
         textAlign: 'center',
         padding: 5,
         fontSize: 20,
-        color: '#505050',
+        color: Colors.deepPurpleColor,
+        fontWeight: 'bold',
     },
 });
 
@@ -102,6 +108,7 @@ export default class UserInfo extends Component{
         this.state={
             info: null,
             currentUser : "",
+            //userId: null,
             firstname : null,
             lastname : null,
             major : null,
@@ -111,12 +118,15 @@ export default class UserInfo extends Component{
 
     static navigationOptions = () => {
         return {
-            headerRight: <DrawerIcon/>,
+            headerTitle: 'Create User Profile',
             headerStyle: {
-                backgroundColor: '#E0E0E0',
+                backgroundColor: Colors.headerBackgoundColor,
             },
+            headerTitleStyle:{
+              color: Colors.headerTitleColor,
+            }
         };
-    };
+      };
 
     componentDidMount(){
         
@@ -167,8 +177,8 @@ export default class UserInfo extends Component{
             console.log(output)
             console.log("pushing into firebase")
             await firebase.database().ref('Users/' + this.state.userId + '/').update(output)
-            this.props.navigation.navigate('MainScreenDrawer')
-            Alert.alert('Notice','Successfully updated profile!',[{text:'Okay'}])
+            this.props.navigation.navigate('Main Screen')
+            Alert.alert('Notice','Successfully created profile!',[{text:'Okay'}])
 
     }
     
@@ -183,21 +193,27 @@ export default class UserInfo extends Component{
     render(){
         return (
             <View style={styles.container}>
-                <View style={{height: 30}}>
-                    <Text refstyle={styles.pageTitleText}>Create Profile</Text>
-                </View>
-                <View style={{height: 40}}></View>
+            <Text style={styles.pageDescriptionText}>Please fill in the information below to complete your profile</Text>
+            <View style={{height: 30}}></View>
+            <KeyboardAvoidingView
+            behavior="padding"
+            keyboardVerticalOffset={5}
+          > 
                 <View style={{height: 400}}>
+                    <ScrollView>
                     <Form 
                         ref={c => this._form = c}
                         type={UserI}
                         options={formOptions} />
+                    </ScrollView>
                 </View>
-                <TouchableHighlight onPress={this.updateFirebase} underlayColor="white">    
-                    <View style={styles.updateInfoButton}>
-                        <Text style={styles.updateInfoButtonText}>Create</Text>
-                    </View>
-                </TouchableHighlight>
+            </KeyboardAvoidingView>
+
+            <TouchableHighlight syles={styles.updateInfoButton} onPress={this.updateFirebase} underlayColor="white">    
+                <View style={styles.updateInfoButton}>
+                    <Text style={styles.updateInfoButtonText}>Create</Text>
+                </View>
+            </TouchableHighlight>
             </View>
           );
     }
