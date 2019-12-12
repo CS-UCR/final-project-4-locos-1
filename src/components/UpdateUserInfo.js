@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Alert, View, Text, Button, TouchableHighlight, StyleSheet} from 'react-native';
+import {Alert, View, Text, Button, Platform, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
 import t from 'tcomb-form-native';
 import * as firebase from 'firebase';
+
+import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
 import Colors from '../constants/Colors';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
     container: {
@@ -14,9 +15,28 @@ const styles = StyleSheet.create({
         padding: 25,
     },
     pageTitleText:{
-        fontSize: 25,
+        fontSize: 45,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    userInfoContainer: {
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#493029',
+        height: 180,
+    },
+    userInfoTextContainer: {
+        alignItems: 'flex-start',
+        height: 30,
+        padding: 3,
+    },
+    userInfoText :{
+        textAlign: 'left',
+        padding: 2,
+        fontSize: 20,
+        color: '#000000'
     },
     updateInfoButton: {
         alignItems: 'center',
@@ -36,11 +56,11 @@ const styles = StyleSheet.create({
 const Form = t.form.Form;
 
 const UserI = t.struct({
-    firstname: t.String,
-    lastname: t.String,
-    major: t.String,
+    firstname: t.maybe(t.String),
+    lastname: t.maybe(t.String),
+    major: t.maybe(t.String),
     phonenum: t.maybe(t.String),
-    shareInfo: t.Boolean
+    shareInfo: t.Boolean,
 })
 
 const formStyles = {
@@ -64,29 +84,36 @@ const formStyles = {
         marginBottom: 5,
       }
     },
-    errorBlock: {
-        fontSize: 12,
-        marginBottom: 0,
-        color: 'red',
-    },
 }
 
 const formOptions = {
     fields: {
+        // firstname:{
+        //     label: this.state.firstnameDB ? this.state.firstnameDB : 'First Name',
+        // },
+        // lastname:{
+        //     label: this.state.lastnameDB,
+        // },
+        // major:{
+        //     label: this.state.majorDB,
+        // },
+        // phonenum:{
+        //     label: this.state.phoneNumDB,
+        // },
+        // shareInfo: {
+        //     label: 'Share information with Workspace Owners?',
+        // },
         firstname:{
             label: 'First Name',
-            error: 'Please input a first name',
         },
         lastname:{
             label: 'Last Name',
-            error: 'Please input a last name',
         },
         major:{
             label: 'Major',
-            error: 'Please input a major name',
         },
         phonenum:{
-            label: 'Phone Number',
+            label: 'Phone Num',
         },
         shareInfo: {
             label: 'Share information with Workspace Owners?',
@@ -95,7 +122,7 @@ const formOptions = {
     stylesheet: formStyles,
   };
 
-export default class UserInfo extends Component{
+export default class UpdateUserInfo extends Component{
 
     constructor(props){
         super(props);
@@ -106,13 +133,18 @@ export default class UserInfo extends Component{
             firstname : null,
             lastname : null,
             major : null,
-            sharedInfo: null
+            sharedInfo: null,
+            firstnameDB : 'First Name',
+            lastnameDB : 'Last Name',
+            majorDB: 'Major',
+            sharedInfoDB: 'Share information with Workspace Owners?',
         }
     }
 
     static navigationOptions = () => {
         return {
-            headerTitle: 'Create User Profile',
+            headerTitle: 'Update User Info',
+            headerRight: <DrawerIcon/>,
             headerStyle: {
                 backgroundColor: Colors.headerBackgoundColor,
             },
@@ -131,7 +163,13 @@ export default class UserInfo extends Component{
                 console.log("user\n")
                 console.log(user)
                 self.setState({currentUser: user,
-                                userId : user.uid})
+                                userId : user.uid,
+                                firstnameDB : user.firstname,
+                                lastnameDB: user.lastname,
+                                majorDB: user.major,
+                                shareInfoDB: user.shareInfo,
+                                phoneNumDB: user.phoneNum,
+                })
             }
             else{
                 //not logged on
@@ -148,7 +186,6 @@ export default class UserInfo extends Component{
         }else{
             alert("Please correct the errors")
         }
-        //console.log('value: ', value);
     }
     //TODO:Update info into firebase
     updateFirebase = async() => {
@@ -188,20 +225,34 @@ export default class UserInfo extends Component{
         return (
             <View style={styles.container}>
                 <View style={{height: 30}}>
-                    <Text refstyle={styles.pageTitleText}>Create Profile</Text>
+                    <Text refstyle={styles.pageTitleText}>User Info</Text>
+                </View>
+                <View style={styles.userInfoContainer}>
+                    <ScrollView>
+                    <View style={styles.userInfoTextContainer}>
+                        <Text style={styles.userInfoText}> First Name: {this.state.firstnameDB} </Text>
+                    </View>
+                    <View style={styles.userInfoTextContainer}>
+                        <Text style={styles.userInfoText}> Last Name: {this.state.lastnameDB} </Text>
+                    </View>
+                    <View style={styles.userInfoTextContainer}>
+                        <Text style={styles.userInfoText}> Major: {this.state.majorDB} </Text>
+                    </View>
+                    <View style={styles.userInfoTextContainer}>
+                        <Text style={styles.userInfoText}> Phone Number: {this.state.phonenumDB} </Text>
+                    </View>
+                    </ScrollView>
                 </View>
                 <View style={{height: 40}}></View>
-                <View style={{height: 400}}>
-                    <ScrollView>
+                <View style={{height: 200}}>
                     <Form 
                         ref={c => this._form = c}
                         type={UserI}
                         options={formOptions} />
-                    </ScrollView>
                 </View>
                 <TouchableHighlight onPress={this.updateFirebase} underlayColor="white">    
                     <View style={styles.updateInfoButton}>
-                        <Text style={styles.updateInfoButtonText}>Create</Text>
+                        <Text style={styles.updateInfoButtonText}>Update Info</Text>
                     </View>
                 </TouchableHighlight>
             </View>
