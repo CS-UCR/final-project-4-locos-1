@@ -92,7 +92,6 @@ export default class myMap extends React.Component {
           editing: null,
           creating: false,
         });
-      //console.log(polygons)
     }
   }
 
@@ -133,13 +132,11 @@ export default class myMap extends React.Component {
 
   async getColor(){
     const{wsID} = this.state;
-    console.log(wsID)
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
         firebase.database().ref('/workspaces/'+ wsID + "/").once('value').then(function(snapshot){
           workspace = snapshot.val()
           wsColor = workspace.color
-          console.log(wsColor)
         })
       }
     })
@@ -247,7 +244,6 @@ export default class myMap extends React.Component {
                 }
                 //put polygon in polygons state
                 renderingPolygons.push(polygon)
-                //console.log(id)
                 id+=1
             }
             self.setState({

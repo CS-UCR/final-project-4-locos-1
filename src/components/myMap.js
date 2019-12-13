@@ -183,8 +183,21 @@ export default class myMap extends React.Component {
       );
     }
     else{
-      console.log(polygon)
-      Alert.alert('Workspace Name: ');     
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          firebase.database().ref('/StudySpaces/'+ polygon.studySpaceKey + "/").once('value').then(function(snapshot){
+            studySpace = snapshot.val()
+            wsStudySpace = studySpace.wsID
+            console.log(wsStudySpace)
+            firebase.database().ref('/workspaces/'+ wsStudySpace + "/").once('value').then(function(snapshot){
+              workSpace = snapshot.val()
+              wsName = workSpace.workspaceTitle
+              console.log(wsName)
+              Alert.alert('Workspace Name: ' + wsName);
+            })
+          })
+        }
+      })    
     }
   } 
 
@@ -346,8 +359,6 @@ export default class myMap extends React.Component {
           onWillFocus={() => {
             //rerender and display all polygons
             this.loadUserPolygons()
-            console.log("HOOOOOOLAAAA")
-            console.log(this.state.polygons)
           }}
         />
         <MapView
