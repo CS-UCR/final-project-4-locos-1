@@ -117,11 +117,11 @@ const EditWorkspaceScreen = props => {
             dispatch(
                 workspacesAction.createWorkSpace(
                     formState.inputValues.workspaceTitle,
-                    colores[colorIndex], //***/
+                    colores[colorIndex],
                     formState.inputValues.imageUri
                 )
             )
-            if(colorIndex<colores.length){ //*****/
+            if(colorIndex<colores.length){
                 colorIndex++
                 console.log(colorIndex)
             }
