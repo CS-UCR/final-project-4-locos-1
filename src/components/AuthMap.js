@@ -55,6 +55,7 @@ export default class myMap extends React.Component {
       Alert.alert('Your study space is incomplete!');
     } else {
         //make a payload to push in /StudySpaces
+        console.log(this.state.userId)  //////aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         var payload = {
           owner: this.state.userId,
           point1: this.state.editing.points[0],
@@ -130,13 +131,22 @@ export default class myMap extends React.Component {
     })
   }
 
-  async getColor(){
+  async getColor(){   //get color and check if admin
     const{wsID} = this.state;
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
         firebase.database().ref('/workspaces/'+ wsID + "/").once('value').then(function(snapshot){
           workspace = snapshot.val()
           wsColor = workspace.color
+          wsOwner = workspace.authID
+          console.log(wsOwner)
+          console.log(this.state.userId)
+          // if(wsOwner == this.state.userId){
+          //   console.log("hello")
+          // }
+          // else{
+
+          // }
         })
       }
     })
@@ -252,8 +262,7 @@ export default class myMap extends React.Component {
           })
         })   
       }
-      else{
-      }
+      else{}
     })
   }
 
@@ -267,7 +276,7 @@ export default class myMap extends React.Component {
           currentUser: user,
           userId : user.uid
         })
-      }
+      }   
       else{
         //not logged on
         console.log("no user logged on")
