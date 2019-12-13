@@ -117,22 +117,7 @@ export default class Accordian extends Component{
           </View>
           <View height={200}>
           <BarChart
-              data={{
-                labels: [
-                  this.state.day1Txt,
-                  this.state.day2Txt,
-                  this.state.day3Txt,
-                  this.state.day4Txt,
-                  this.state.day5Txt,
-                  this.state.day6Txt,
-                  this.state.day7Txt,
-                ],
-                datasets: [
-                  {
-                    data: [this.state.day1Time, this.state.day2Time, this.state.day3Time, this.state.day4Time, this.state.day5Time, this.state.day6Time, this.state.day7Time],
-                  },
-                ],
-              }}
+              data={this.getPast7Days()}
               width={Dimensions.get('window').width - 2}
               height={200}
               yAxisLabel={''}

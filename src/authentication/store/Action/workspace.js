@@ -129,17 +129,12 @@ export const removeMemberWorkspace = (workspaceId, memberId )=>{
         let memberList = snapshot.val()
         let updatedMemberList = []
 
-        console.log("MemberList: ", memberList)
-
-
         for( key in memberList){
           if(memberList[key] !== memberId){
             console.log("key")
             updatedMemberList.push(memberList[key])
           }
         }
-
-        console.log("Udpated member :", updatedMemberList)
 
         await firebase.database().ref(`/workspaces/${workspaceId}/members/`).set(updatedMemberList)
       })
@@ -149,8 +144,6 @@ export const removeMemberWorkspace = (workspaceId, memberId )=>{
       // dispatch({})
   };
 } 
-
-
 
 
 export const createWorkSpace = (workspaceTitle, color, imageUri) => {
