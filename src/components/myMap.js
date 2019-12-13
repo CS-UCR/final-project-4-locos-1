@@ -168,7 +168,6 @@ export default class myMap extends React.Component {
           },
         });
       } else{}
-      console.log(this.state.polygons)
     }
   }
 
@@ -184,7 +183,8 @@ export default class myMap extends React.Component {
       );
     }
     else{
-      Alert.alert('Sorry, this study space is not personal, you can not delete it!');     
+      console.log(polygon)
+      Alert.alert('Workspace Name: ');     
     }
   } 
 
@@ -214,6 +214,7 @@ export default class myMap extends React.Component {
     //get all the polygons the user is a part of
     //take out the ones already in this.state.polygons
     //update state of this.state.polygons
+    this.state.polygons = []
     var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
@@ -264,12 +265,9 @@ export default class myMap extends React.Component {
             await firebase.database().ref('/workspaces/'+ uWorkspaces[j] + "/StudySpaces/").once('value').then(function(snapshot){
               //all the study spaces that are in the workspaces that the user is part of
               var wStudySpaces = snapshot.val()
-              console.log(workspaceID)
 
               firebase.database().ref('/workspaces/'+ workspaceID + "/").once('value').then(function(snapshot){
                 wsColor = snapshot.val()
-                console.log(wsColor.color)
-
 
                 //iterate polygons current state
                 for(var k = 0 ; k < self.state.polygons.length; k++){
@@ -306,8 +304,7 @@ export default class myMap extends React.Component {
           }
         })  
       }
-      else{
-      }
+      else{}
     })
   }
 
@@ -349,6 +346,8 @@ export default class myMap extends React.Component {
           onWillFocus={() => {
             //rerender and display all polygons
             this.loadUserPolygons()
+            console.log("HOOOOOOLAAAA")
+            console.log(this.state.polygons)
           }}
         />
         <MapView

@@ -22,7 +22,7 @@ const colores = [
     "hsla(0, 0%, 0%, 0.5)", "hsla(30, 100%, 50%, 0.5)", "hsla(90, 100%, 50%, 0.5)",
     "hsla(0, 100%, 100%, 0.65)",
 ]
-var colorIndex = 0
+var colorIndex = Math.floor(Math.random() * (colores.length - 1))
 
 const formReducer = (state, action) => {
     switch(action.type){
@@ -121,7 +121,7 @@ const EditWorkspaceScreen = props => {
                     formState.inputValues.imageUri
                 )
             )
-            if(colorIndex<colores.length-1){ //*****/
+            if(colorIndex<colores.length){ //*****/
                 colorIndex++
                 console.log(colorIndex)
             }

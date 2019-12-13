@@ -11,6 +11,7 @@ const LATITUDE = 33.9737;       //UC RIVERSIDE LATITUDE
 const LONGITUDE = -117.3281;    //UC RIVERSIDE LONGITUDE
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+var wsColor = '';
 let id = 0;
 
 export default class myMap extends React.Component {
@@ -35,7 +36,7 @@ export default class myMap extends React.Component {
       currentUser : null,
       userId : null,
       rendered : false,
-      wsID: this.props.navigation.getParam('workspaceId')
+      wsID: this.props.navigation.getParam('workspaceId'),
     }
   }
   
@@ -117,7 +118,7 @@ export default class myMap extends React.Component {
     //remove from /StudySpaces
     firebase.database().ref('/StudySpaces/'+polygon.studySpaceKey + "/").remove()
 
-    //remove from Users/id/studyspaces
+    //remove from workspaces/wsid/studyspaces
     firebase.database().ref('/workspaces/'+this.state.wsID + '/StudySpaces/'+ polygon.studySpaceKey).remove()
   
     this.state.polygons.splice(polygon.id, 1)
@@ -128,18 +129,30 @@ export default class myMap extends React.Component {
     this.setState({
       polygons: [...polygons]
     })
-    //console.log(polygons)
+  }
+
+  async getColor(){
+    const{wsID} = this.state;
+    console.log(wsID)
+    await firebase.auth().onAuthStateChanged(function(user){
+      if(user){
+        firebase.database().ref('/workspaces/'+ wsID + "/").once('value').then(function(snapshot){
+          workspace = snapshot.val()
+          wsColor = workspace.color
+          console.log(wsColor)
+        })
+      }
+    })
   }
 
   onPress(e){
-    const{editing, coord, creating} = this.state;
+    const{editing, coord, creating,} = this.state;
     if(creating == true){
       if(!editing){
-
         this.setState({
           editing: {
             id: id++,
-            //color: ,HEEEEEEEEEEEEEEEEEEEEEEEERE
+            color: wsColor,
             personal: false,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
@@ -227,7 +240,7 @@ export default class myMap extends React.Component {
             for(var key in spaces){
                 var polygon = {
                     id : id,
-                    //color: , HEEEEEEEEREEEE
+                    color: wsColor,
                     coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
                     points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
                     studySpaceKey : key
@@ -254,8 +267,10 @@ export default class myMap extends React.Component {
     firebase.auth().onAuthStateChanged(function(user){
       if(user){
         //logged on
-        self.setState({currentUser: user,
-                        userId : user.uid})
+        self.setState({
+          currentUser: user,
+          userId : user.uid
+        })
       }
       else{
         //not logged on
@@ -275,7 +290,9 @@ export default class myMap extends React.Component {
       },
       error => this.setState({error: error.message}),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-    )  
+    )
+    
+    this.getColor()
   }
 
   render() {
@@ -302,7 +319,7 @@ export default class myMap extends React.Component {
                 tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}  //HEEEEREEEE!
+                fillColor={polygon.color}
                 strokeColor={1}
                 onPress={() => this.onPolygonPress(polygon)}
               />
@@ -312,7 +329,7 @@ export default class myMap extends React.Component {
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}  //HEREEEEEE!
+                fillColor={wsColor}
                 strokeColor={1}
               />
             )}
