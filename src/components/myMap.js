@@ -46,7 +46,7 @@ export default class myMap extends React.Component {
         headerTitle: 'Study Spaces Map',
         headerRight: <DrawerIcon/>,
         headerStyle: {
-            backgroundColor: Colors.headerBackgoundColor,
+          backgroundColor: Colors.headerBackgoundColor,
         },
         headerTitleStyle:{
           color: Colors.headerTitleColor,
@@ -173,7 +173,6 @@ export default class myMap extends React.Component {
   }
 
   onPolygonPress(polygon){
-
     if(polygon.personal){
       Alert.alert(
         'Do you wish to delete this polygon?',
@@ -185,7 +184,7 @@ export default class myMap extends React.Component {
       );
     }
     else{
-      Alert.alert('Sorry, this state is not personal, you can not delete!');     
+      Alert.alert('Sorry, this study space is not personal, you can not delete it!');     
     }
   } 
 
@@ -252,7 +251,6 @@ export default class myMap extends React.Component {
             })
           })
         })
-        /*******START EDITING HERE***********/
         //get user studyspaces
         firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(function(snapshot){          
           //all the workspaces that the user is part of
@@ -294,9 +292,7 @@ export default class myMap extends React.Component {
               })
             })
           }
-        })
-        console.log(self.state.polygons)
-        /*******ENDI EDITING HERE************/   
+        })  
       }
       else{
       }

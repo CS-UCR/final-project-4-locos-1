@@ -44,7 +44,7 @@ export default class myMap extends React.Component {
     return {
       headerRight: <DrawerIcon/>,
       headerStyle: {
-          backgroundColor: '#E0E0E0',
+        backgroundColor: '#E0E0E0',
       },
     };
   };
