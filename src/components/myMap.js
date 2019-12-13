@@ -2,7 +2,6 @@ import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import { Updates } from 'expo';
 import * as firebase from 'firebase'
 import {NavigationEvents} from 'react-navigation'
 import Colors from '../constants/Colors'
@@ -146,6 +145,7 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
+            color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
             personal: true,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
@@ -238,7 +238,9 @@ export default class myMap extends React.Component {
             for(var key in spaces){
                 var polygon = {
                   id : id,
+                  color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
                   coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                  personal: true,
                   points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
                   studySpaceKey : key
                 }
@@ -255,7 +257,6 @@ export default class myMap extends React.Component {
         firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(function(snapshot){          
           //all the workspaces that the user is part of
           var uWorkspaces = snapshot.val()
-
           for(var i = 0; i < uWorkspaces.length; i++){
             firebase.database().ref('/workspaces/'+ uWorkspaces[i] + "/StudySpaces/").once('value').then(function(snapshot){
               
@@ -277,6 +278,8 @@ export default class myMap extends React.Component {
                 for(var key in wStudySpaces){
                   var polygon = {
                     id : id,
+                    color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
+                    personal: false,
                     coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
                     points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
                     studySpaceKey : key
@@ -288,7 +291,6 @@ export default class myMap extends React.Component {
                 self.setState({
                   polygons : renderingPolygons
                 })
-                console.log(renderingPolygons)
               })
             })
           }
@@ -354,7 +356,7 @@ export default class myMap extends React.Component {
                 tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={polygon.color}
                 strokeColor={1}
                 onPress={() => this.onPolygonPress(polygon)}
               />
@@ -364,7 +366,7 @@ export default class myMap extends React.Component {
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={'hsla(240, 100%, 50%, .2)'}
                 strokeColor={1}
               />
             )}

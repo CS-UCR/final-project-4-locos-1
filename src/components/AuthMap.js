@@ -2,7 +2,6 @@ import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import { Updates } from 'expo';
 import * as firebase from 'firebase'
 import {NavigationEvents} from 'react-navigation'
 
