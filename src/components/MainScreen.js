@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight,StyleSheet, Picker, Image} from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import Colors from '../../constants/Colors'
+import Colors from '../constants/Colors'
 
 import {ScrollView} from 'react-native'
 
@@ -207,7 +207,7 @@ export default class MainScreen extends Component {
                             workspaceID: userInfo["workspaces"][i]
                           })
                           
-                          //get unique list of refName
+                          //get unique list of wsID
                           renderList[payload.ref]= {
                             key : ss,
                             payload: payload,
@@ -239,7 +239,7 @@ export default class MainScreen extends Component {
 
                 var payload = {
 
-                  ref: allStudySpaces[key]["refName"],
+                  ref: allStudySpaces[key]["wsID"],
                   imageLink: '../../assets/location-symbol.jpg'
                   
                 }
@@ -254,7 +254,7 @@ export default class MainScreen extends Component {
                   type : 1
                 })
                 
-                //get unique list of refName
+                //get unique list of wsID
                 renderList[payload.ref]= {
                   key : key,
                   payload: payload,

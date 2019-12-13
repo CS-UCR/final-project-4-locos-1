@@ -66,14 +66,9 @@ export default class myMap extends React.Component {
             point1 : this.state.editing.points[0],
             point2 : this.state.editing.points[1],
             //need to add a name for workspace or "personal" study space
-            refName : "Personal"
+            wsID : "Personal"
 
           }
-        console.log("polygons")
-        console.log(this.state.polygons)
-
-        console.log("editing")
-        console.log(this.state.editing)
 
         //push new study space
         firebase.database().ref("/StudySpaces/" + this.state.editing.studySpaceKey).update(payload)
@@ -220,7 +215,6 @@ export default class myMap extends React.Component {
           
           //
           var spaces = snapshot.val()
-
           //iterate polygons current state
           for(var i = 0 ; i < self.state.polygons.length; i++){
             //check if polygon key is in spaces
@@ -236,10 +230,10 @@ export default class myMap extends React.Component {
             //add new spaces
             for(var key in spaces){
                 var polygon = {
-                    id : id,
-                    coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
-                    points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
-                    studySpaceKey : key
+                  id : id,
+                  coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                  points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                  studySpaceKey : key
                 }
                 //put polygon in polygons state
                 renderingPolygons.push(polygon)
@@ -249,7 +243,54 @@ export default class myMap extends React.Component {
               polygons : renderingPolygons
             })
           })
-        })   
+        })
+        /*******START EDITING HERE***********/
+        //console.log(polygons)
+        //get user studyspaces
+        firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(function(snapshot){          
+          //all the workspaces that the user is part of
+          var uWorkspaces = snapshot.val()
+          console.log(uWorkspaces)
+
+          for(var i = 0; i < uWorkspaces.length; i++){
+            firebase.database().ref('/workspaces/'+ uWorkspaces[i] + "/StudySpaces/").once('value').then(function(snapshot){
+              
+              //all the study spaces that are in the workspaces that the user is part of
+              var wStudySpaces = snapshot.val()
+              //iterate polygons current state
+              for(var i = 0 ; i < self.state.polygons.length; i++){
+                //check if polygon key is in wStudySpaces
+                if(self.state.polygons[i].studySpaceKey in wStudySpaces){
+                  delete wStudySpaces[self.state.polygons[i].studySpaceKey]
+                }
+              }
+
+              firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
+                renderingPolygons = self.state.polygons
+
+                spaceCoordinates = snapshot.val()
+
+                for(var key in wStudySpaces){
+                  var polygon = {
+                    id : id,
+                    coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                    points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                    studySpaceKey : key
+                  }
+                  //put polygon in polygons state
+                  renderingPolygons.push(polygon)
+                  id+=1
+                }
+                self.setState({
+                  polygons : renderingPolygons
+                })
+                
+                // console.log(renderingPolygons)
+              })
+            })
+          }
+        })
+        /*******ENDI EDITING HERE************/   
       }
       else{
       }
@@ -331,7 +372,7 @@ export default class myMap extends React.Component {
               onPress={() => this.create()}
               style={styles.buttonStyle}
             >
-              <Text>Create Study Space</Text>
+              <Text>Add Personal Study Space</Text>
             </TouchableOpacity>
           )}
           {this.state.editing && (

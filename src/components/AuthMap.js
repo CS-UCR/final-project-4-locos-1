@@ -92,7 +92,7 @@ export default class myMap extends React.Component {
           editing: null,
           creating: false,
         });
-      console.log(polygons)
+      //console.log(polygons)
     }
   }
 
@@ -129,7 +129,7 @@ export default class myMap extends React.Component {
     this.setState({
       polygons: [...polygons]
     })
-    console.log(polygons)
+    //console.log(polygons)
   }
 
   onPress(e){
@@ -209,7 +209,7 @@ export default class myMap extends React.Component {
         firebase.database().ref('/workspaces/'+ self.state.wsID + "/StudySpaces/").once('value').then(function(snapshot){
           
           var spaces = snapshot.val()
-
+         
           //iterate polygons current state
           for(var i = 0 ; i < self.state.polygons.length; i++){
             //check if polygon key is in spaces
@@ -232,7 +232,7 @@ export default class myMap extends React.Component {
                 }
                 //put polygon in polygons state
                 renderingPolygons.push(polygon)
-                console.log(id)
+                //console.log(id)
                 id+=1
             }
             self.setState({
