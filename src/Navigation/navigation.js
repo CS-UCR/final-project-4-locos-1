@@ -21,6 +21,7 @@ import UserInfo from '../components/UserInfo'
 import CreateWorkspace from '../components/CreateWorkspace'
 // import DrawerNavigation from '../Navigation/DrawerNavigation'
 import Dashboard from '../components/dashboardComponents/Dashboard'
+import UpdateUserInfo from '../components/UpdateUserInfo'
 
 
 import AuthWorkspacesScreen from '../Screens/WorkSpace/user/AuthWorkspacesScreen2v'
@@ -32,7 +33,21 @@ import UserWorkspacesScreen from '../Screens/WorkSpace/Member/UserWorkspacesScre
 import UserJoinWorkspacesScreen from '../Screens/WorkSpace/Member/UserJoinWorkspacesScreen'
 // import UserWorkspaceMap from '../components/WorkSpaceMap'
 
+const MainScreenStack = createStackNavigator({
+  MainScreenRoute: MainScreen,
+})
 
+const UpdateUserInfoStack = createStackNavigator({
+  UpdateUserInfoRoute: UpdateUserInfo,
+})
+
+const MapStack = createStackNavigator({
+  MapRoute: myMap,
+});
+
+const DashboardStack = createStackNavigator({
+  DashboardRoute: Dashboard,
+})
 
 const AuthWorkSpacesNavigator = createStackNavigator(
     {
@@ -44,12 +59,13 @@ const AuthWorkSpacesNavigator = createStackNavigator(
         AuthEditWorkspaceScreen :AuthEditWorkspaceScreen,
         AuthMap:AuthMap,
         AuthListWorkspaceMemberScreen: AuthListWorkspaceMemberScreen,
-        MainScreenRoute: MainScreen,
-        MapRoute: myMap,
+        MainScreenRoute: MainScreenStack,
+        MapRoute: MapStack,
         UserInfoRoute: UserInfo,
+        UpdateUserInfoRoute: UpdateUserInfoStack,
         FeedRoute: Feed,
         CreateWorkspaceRoute: CreateWorkspace,
-        DashboardRoute: Dashboard,
+        DashboardRoute: DashboardStack,
     }, {
         defaultNavigationOptions: {
             headerStyle: {
@@ -60,7 +76,6 @@ const AuthWorkSpacesNavigator = createStackNavigator(
           }
     }
 );
-
 
 const UserWorkSpacesNavigator = createStackNavigator(
   {
@@ -79,21 +94,22 @@ const UserWorkSpacesNavigator = createStackNavigator(
 
 const Drawer = createDrawerNavigator(
     {
-      MainScreenDrawer: {
-        screen: MainScreen,
+      'Main Screen': {
+        screen: MainScreenStack,
       },
-        MapRoute: myMap,
-        DashboardRoute: Dashboard,
+        'Study Space Map': MapStack,
+        'Dashboard': DashboardStack,
+        'Update Profile': UpdateUserInfoStack,
         'My Workspaces':UserWorkSpacesNavigator ,
         'Workspaces Management' : AuthWorkSpacesNavigator
     },
     {
-        initialRouteName: 'MainScreenDrawer',
+        initialRouteName: 'Main Screen',
         drawerPosition: 'right',
         drawerBackgroundColor: Colors.drawerNavigatorBackgroundColor,
         contentOptions: {
             labelStyle: {
-              color: 'white',
+              color: Colors.drawerNavigatorTextColor,
             },
             activeBackgroundColor: Colors.drawerNavigatorActivationColor,
         },

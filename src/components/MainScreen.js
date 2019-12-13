@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight,StyleSheet, Picker, Image} from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
+import Colors from '../../constants/Colors'
 
 import {ScrollView} from 'react-native'
 

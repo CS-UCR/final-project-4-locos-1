@@ -3,6 +3,7 @@ import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Button, Text
 import AuthLayout from './component/utilites/InputLayout'
 import * as firebase from 'firebase'
 import {Image} from 'react-native'
+import Colors from '../constants/Colors'
 
 const AuthenticationMenu = props => {
     
@@ -56,7 +57,12 @@ const styles = StyleSheet.create({
     },
     button:{
       borderWidth:3,
-      borderColor: "#404040"
+      borderColor: Colors.darkGreyColor,
+      
+    },
+    buttonText:{
+      color: Colors.deepPurpleColor,
+      fontWeight: "bold",
     },
     Header: {
       width:"90%",
