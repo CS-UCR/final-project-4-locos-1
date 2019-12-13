@@ -15,6 +15,14 @@ import Colors from '../../../constants/Colors'
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
 const IMAGE_INPUT_UPDATE = 'IMAGE_INPUT_UPDATE'
 const ADD_MEMBERS_UPDATE = 'ADD_MEMBERS_UPDATE'
+const colores = [
+    "hsla(150, 100%, 50%, 0.5)", "hsla(210, 100%, 50%, 0.5)", "hsla(300, 100%, 50%, 0.5)",
+    "hsla(0, 100%, 50%, 0.5)", "hsla(60, 100%, 50%, 0.5)", "hsla(120, 100%, 25%, 0.5)",
+    "hsla(180, 100%, 50%, 0.5)", "hsla(240, 100%, 40%, 0.5)", "hsla(330, 100%, 50%, 0.5)",
+    "hsla(0, 0%, 0%, 0.5)", "hsla(30, 100%, 50%, 0.5)", "hsla(90, 100%, 50%, 0.5)",
+    "hsla(0, 100%, 100%, 0.65)",
+]
+var colorIndex = Math.floor(Math.random() * (colores.length - 1))
 
 const formReducer = (state, action) => {
     switch(action.type){
@@ -76,13 +84,11 @@ const EditWorkspaceScreen = props => {
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues: {
             workspaceTitle: editedWorkspace ? editedWorkspace.workspaceTitle: '',
-            color: editedWorkspace ?  editedWorkspace.color: '',
             imageUri: editedWorkspace ?  editedWorkspace.imageUri: '',
             emails: ''
         },
         inputValidities: {
             workspaceTitle:  editedWorkspace ? true: false,
-            color: editedWorkspace ? true : false,
             imageUri: true,
             emails: true
         },
@@ -102,7 +108,7 @@ const EditWorkspaceScreen = props => {
                 workspacesAction.updateWorkSpace(
                     workspaceId,
                     formState.inputValues.workspaceTitle,
-                    formState.inputValues.color,
+                    '', 
                     formState.inputValues.imageUri
                 )
             )
@@ -111,10 +117,18 @@ const EditWorkspaceScreen = props => {
             dispatch(
                 workspacesAction.createWorkSpace(
                     formState.inputValues.workspaceTitle,
-                    formState.inputValues.color,
+                    colores[colorIndex], //***/
                     formState.inputValues.imageUri
                 )
             )
+            if(colorIndex<colores.length){ //*****/
+                colorIndex++
+                console.log(colorIndex)
+            }
+            else{
+                colorIndex = 0
+                console.log(colorIndex)
+            }
         }
 
         if(formState.inputValues.emails){
@@ -188,7 +202,7 @@ const EditWorkspaceScreen = props => {
                         />
                     }
 
-                    {functionality !== 'Add Members' &&
+                    {/* {functionality !== 'Add Members' &&
                         <Input
                         id="color"
                         label="Color"
@@ -201,7 +215,7 @@ const EditWorkspaceScreen = props => {
                         initiallyValid={!!editedWorkspace}
                         required
                     />
-                    }
+                    } */}
 
                     {functionality !== 'Edit Workspace' &&
                         <Input
