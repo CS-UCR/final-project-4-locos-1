@@ -172,6 +172,8 @@ export default class myMap extends React.Component {
   }
 
   onPolygonPress(polygon){
+    //console.log(this.state.polygons)
+    console.log(polygon.id)
     if(polygon.personal){
       Alert.alert(
         'Do you wish to delete this polygon?',
@@ -188,11 +190,9 @@ export default class myMap extends React.Component {
           firebase.database().ref('/StudySpaces/'+ polygon.studySpaceKey + "/").once('value').then(function(snapshot){
             studySpace = snapshot.val()
             wsStudySpace = studySpace.wsID
-            console.log(wsStudySpace)
             firebase.database().ref('/workspaces/'+ wsStudySpace + "/").once('value').then(function(snapshot){
               workSpace = snapshot.val()
               wsName = workSpace.workspaceTitle
-              console.log(wsName)
               Alert.alert('Workspace Name: ' + wsName);
             })
           })
@@ -228,6 +228,7 @@ export default class myMap extends React.Component {
     //take out the ones already in this.state.polygons
     //update state of this.state.polygons
     this.state.polygons = []
+    id = 0
     var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
