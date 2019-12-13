@@ -6,6 +6,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import HeaderButton from '../../../authentication/component/utilites/HeaderButton'
 
 import WorkSpaceGridTile from '../../../authentication/component/WorkSpaceGridTile'
+import DrawerIcon from '../../../Navigation/assets/drawerNav/DrawerIcon'
 import * as workspaceActions from '../../../authentication/store/Action/workspace'
 import Colors from '../../../constants/Colors'
 
@@ -121,7 +122,8 @@ UserWorkspacesScreen.navigationOptions = navigationData =>{
     const workSpaceCreator = navigationData.navigation.getParam('join')
     return {
         headerTitle: 'My Workspaces',
-        headerRight:(
+        headerRight: <DrawerIcon/>,
+        headerLeft:(
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
                     title="Join Workspace"
@@ -131,7 +133,13 @@ UserWorkspacesScreen.navigationOptions = navigationData =>{
                     onPress={workSpaceCreator}
                 />
             </HeaderButtons>
-        )
+        ),
+        headerStyle: {
+            backgroundColor: Colors.headerBackgoundColor,
+        },
+        headerTitleStyle:{
+          color: Colors.headerTitleColor,
+        },
     }
 }
 
