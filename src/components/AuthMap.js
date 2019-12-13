@@ -37,6 +37,7 @@ export default class myMap extends React.Component {
       userId : null,
       rendered : false,
       wsID: this.props.navigation.getParam('workspaceId'),
+      admin: true,
     }
   }
   
@@ -130,13 +131,30 @@ export default class myMap extends React.Component {
     })
   }
 
-  async getColor(){
+  async getColor(){   //get color and check if admin
     const{wsID} = this.state;
+    var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
         firebase.database().ref('/workspaces/'+ wsID + "/").once('value').then(function(snapshot){
           workspace = snapshot.val()
           wsColor = workspace.color
+          wsOwner = workspace.authID
+          console.log(wsOwner)
+          console.log(user.uid)
+          if(wsOwner == user.uid){  //***********************/
+            console.log("hello")
+            self.setState({
+              admin: true,
+            })
+          }
+          else{
+            console.log("hello2")
+            self.setState({
+              admin: false,
+            })
+
+          }
         })
       }
     })
@@ -176,14 +194,19 @@ export default class myMap extends React.Component {
   }
 
   onPolygonPress(polygon){
-    Alert.alert(
-      'Do you wish to delete this polygon?',
-      '',
-      [
-        {text: 'No'},
-        {text: 'Yes', onPress: () => this.delete(polygon)},
-      ],
-    );
+    if(this.state.admin){
+      Alert.alert(
+        'Do you wish to delete this polygon?',
+        '',
+        [
+          {text: 'No'},
+          {text: 'Yes', onPress: () => this.delete(polygon)},
+        ],
+      );
+    }
+    else{
+      Alert.alert('Sorry! You are not the administrator of the workspace');
+    }
   } 
 
   makeCoordinates(point1, point2){
@@ -252,8 +275,7 @@ export default class myMap extends React.Component {
           })
         })   
       }
-      else{
-      }
+      else{}
     })
   }
 
@@ -267,7 +289,7 @@ export default class myMap extends React.Component {
           currentUser: user,
           userId : user.uid
         })
-      }
+      }   
       else{
         //not logged on
         console.log("no user logged on")
@@ -331,7 +353,7 @@ export default class myMap extends React.Component {
             )}
         </MapView>
         <View style={styles.buttonContainerStyle}>
-          {!this.state.creating && (
+          {!this.state.creating && this.state.admin && (
             <TouchableOpacity
               onPress={() => this.create()}
               style={styles.buttonStyle}
