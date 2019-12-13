@@ -13,9 +13,6 @@ const AuthenticationMenu = props => {
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
-      {/* <View style={styles.lines}></View>
-      <Text style={styles.Header}>Study Buddy</Text>
-      <View style={styles.lines}></View> */}
       <View style={{height: 5}}></View>
       <Image 
           source={require('../../assets/StuddyBuddyLogo.png')}  

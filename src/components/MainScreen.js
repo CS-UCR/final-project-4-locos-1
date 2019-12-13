@@ -12,6 +12,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import SpaceCard from './SpaceCard'
 import {NavigationEvents} from 'react-navigation'
+import Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,12 +63,15 @@ export default class MainScreen extends Component {
         hourCount: 0,
         minCount: 0,
         secCount: 0,
+        hourCountText: '00',
+        minCountText: '00',
+        secCountText: '00', 
         trueStart: null,
         showTimerText: false,
         trueTime: null,
         isStarted: false,
         timerButtonText: 'Start\nStudying',
-
+        imageTimerButtonLoc: require('../../assets/startStudyingButton.png'),
         //using user information
         userId : null,
         currentUser : null,
@@ -87,7 +91,7 @@ export default class MainScreen extends Component {
 
   static navigationOptions = () => {
     return {
-        headerTitle: 'Dashboard',
+        headerTitle: 'Main Screen',
         headerRight: <DrawerIcon/>,
         headerStyle: {
             backgroundColor: Colors.headerBackgoundColor,
@@ -389,6 +393,10 @@ export default class MainScreen extends Component {
                 hourCount: hCount,
                 minCount: mCount,
                 secCount: num,
+
+                hourCountText: hCount <= 9 ? ('0' + hCount.toString()).toString() : hCount.toString(),
+                minCountText: mCount <= 9 ? ('0' + mCount.toString()).toString() : mCount.toString(),
+                secCountText: num <= 9 ? ('0' + num.toString()).toString() : num.toString(),
             });
 
         }, 1000);
@@ -397,7 +405,8 @@ export default class MainScreen extends Component {
         this.setState({
             isStarted : true,
             showTimerText: true,
-            timerButtonText: 'Stop\nStudying'
+            timerButtonText: 'Stop\nStudying',
+            imageTimerButtonLoc: require('../../assets/stopStudyingButton.png'),
         })
     }else if(this.state.isStarted){
 
@@ -431,7 +440,8 @@ export default class MainScreen extends Component {
             hourCount: 0,
             minCount: 0,
             secCount: 0,
-            timerButtonText: 'Start\nStudying'
+            timerButtonText: 'Start\nStudying',
+            imageTimerButtonLoc: require('../../assets/startStudyingButton.png'),
         });
     }
 
@@ -590,13 +600,16 @@ export default class MainScreen extends Component {
 
       </View>
       <View style={{height: 40}}>
-     {this.state.showTimerText && <Text style={styles.timerText}>{this.state.hourCount} : {this.state.minCount} : {this.state.secCount}</Text>}
+     {this.state.showTimerText && <Text style={styles.timerText}>{this.state.hourCountText} : {this.state.minCountText} : {this.state.secCountText}</Text>}
     </View>
+
         <TouchableHighlight onPress={this.onPressTimerButton} underlayColor="white">    
-            <View style={[styles.timerButton, {backgroundColor: this.state.isStarted ? '#ECB4B4' : '#B4ECB4'}]}>
-            <Text style={styles.timerButtonText}> {this.state.timerButtonText}</Text>
-            </View>
+            <Image 
+            source={this.state.imageTimerButtonLoc}  
+            style={{width: 170, height: 170}} 
+            />
         </TouchableHighlight>
+        <View style={{height: 40}}></View>
       </View>
 
 
