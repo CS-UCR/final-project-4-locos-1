@@ -106,23 +106,27 @@ export default class Dashboard extends Component {
             await firebase.database().ref('/Users/' + user.uid + '/').once('value').then(async function(snapshot){
                 var userInfo = snapshot.val()
 
-                //get workspace reports
                 if(snapshot.hasChild('workspaces')){
-                    for(var workspaceKey in userInfo['workspaces']){
-                        console.log(workspaceKey)
-
+                    //iterate through each workspace
+                    for(var i = 0; i < userInfo['workspaces'].length ; i++){
                         
+                        var WSkey = userInfo['workspaces'][i]
 
+                        //get workspace info
                         await firebase.database().ref('/workspaces/').once('value').then(async function(snapshot){
                             
                             var workspaceInfo = snapshot.val()
+                            console.log("workspace key below")
+                            console.log(WSkey)
                              //add index for new workspace Report
-                            if(snapshot.hasChild(workspaceKey)){
-                                await firebase.database().ref('/Reports/workspaces/'+ workspaceKey + '/').once('value').then(function(snapshot){
+                            if(snapshot.hasChild(WSkey)){
+                                console.log("workspace exists")
+                                await firebase.database().ref('/Reports/workspaces/'+ WSkey + '/').once('value').then(function(snapshot){
 
                                     if(snapshot){
-                                        workspaceReports[workspaceKey] = {
-                                            info: workspaceInfo,
+                                        console.log("report of workspace exists")
+                                        workspaceReports[WSkey] = {
+                                            info: workspaceInfo[WSkey],
                                             data: snapshot.val()
                                         }
                                     }
@@ -135,13 +139,13 @@ export default class Dashboard extends Component {
             })
             console.log("finished rendering")
 
-            console.log(personalReports)
+            // console.log(personalReports)
 
             console.log("workspace reports")
             console.log(workspaceReports)
 
             self.installMenu(user.uid, personalReports,workspaceReports)
-            
+
             self.setState({
                 currentUser : user,
                 userId : user.uid,
@@ -158,16 +162,10 @@ export default class Dashboard extends Component {
         }
     })
   }
-  renderData(){
-      return(
-    <View>
-        <Text>fuck this shit</Text>    
-    </View>
-      )
-  }
+
   render() {
-    console.log("myMenu")
-    console.log(this.state.menu)
+    console.log("myMenu rendering")
+    //console.log(this.state.menu)
     return (
       <View style={styles.container}>
         { this.renderAccordians() }

@@ -19,7 +19,7 @@ export default class Accordian extends Component{
     constructor(props) {
         super(props);
         this.state = { 
-          data: props.data,
+          data: this.props.data,
           expanded : false,
           day1Time: 45, 
           day2Time: 24,
@@ -51,10 +51,60 @@ export default class Accordian extends Component{
         /*
         need unique aggregated data by date
         */
-        var myData = this.state.data.data 
-        var uniqueDateList = []
-        
+        var myData = this.state.data.data     
+        var dataMap = {}
 
+        //load data
+        for(var i = 0 ; i<myData.length; i++){
+          var myDate = new Date(myData[i].date)
+          var generateKey = myDate.getMonth() + '/' + myDate.getDate()
+          if (generateKey in dataMap){
+            dataMap[generateKey] += myData[i].secs / 60 + myData[i].mins + myData[i].hours * 60
+          }
+          else{
+            dataMap[generateKey] = myData[i].secs / 60 + myData[i].mins + myData[i].hours * 60
+          }
+          console.log("datamap[key]")
+          console.log(dataMap[generateKey])
+        }
+        
+        
+        //traverse through dates
+        var now = new Date()
+        now.setDate(now.getDate()+1)
+        var newDate = new Date(now)
+        newDate.setDate(newDate.getDate()- 7)
+
+        var barData = {
+          labels: [],
+          datasets: [
+            {
+              data: [],
+            },
+          ],
+        };
+    
+        for(var i = new Date(newDate); i < now  ; i.setDate(i.getDate()+1)){
+          //load data
+          var generateKey = i.getMonth() + '/' + i.getDate()
+          barData.labels.push(generateKey)
+          var result = -1;
+          if(generateKey in dataMap){
+            result = dataMap[generateKey]
+          }
+          else{
+            result = 0
+          }
+
+          barData.datasets[0].data.push(result)
+
+        }
+
+        console.log(barData)
+
+        return barData
+
+<<<<<<< HEAD
         // console.log("creating study values")
         // console.log("myData")
         // console.log(myData)
@@ -132,12 +182,15 @@ export default class Accordian extends Component{
         // return(
           
         // )
+=======
+>>>>>>> kev-Dashboards
     }
   configurePersonal(){
 
-    console.log("print personal dashboard")
-    
+    console.log("firing getPast7days")
+    console.log(this.getPast7Days())
     return(
+<<<<<<< HEAD
                 <View>
                   <View height={20}/>
                   <View height={20}>
@@ -237,6 +290,12 @@ export default class Accordian extends Component{
                     />
                     </View>
                 </View>
+=======
+      <View>
+
+
+      </View>
+>>>>>>> kev-Dashboards
     )
   }
 
@@ -250,6 +309,10 @@ export default class Accordian extends Component{
 
     if(this.state.data.type == "Personal"){
         //render Personal
+<<<<<<< HEAD
+=======
+        console.log("firing getPast7days in configureRender")
+>>>>>>> kev-Dashboards
         return(this.configurePersonal())
     }
     else if(this.state.data.type == "Workspace"){
