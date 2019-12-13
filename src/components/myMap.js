@@ -2,7 +2,6 @@ import React from 'react';
 import MapView, {Polygon, ProviderPropType, MAP_TYPES,} from 'react-native-maps';
 import { StyleSheet, Text, View, Button, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import { Updates } from 'expo';
 import * as firebase from 'firebase'
 import {NavigationEvents} from 'react-navigation'
 import Colors from '../constants/Colors'
@@ -46,7 +45,7 @@ export default class myMap extends React.Component {
         headerTitle: 'Study Spaces Map',
         headerRight: <DrawerIcon/>,
         headerStyle: {
-            backgroundColor: Colors.headerBackgoundColor,
+          backgroundColor: Colors.headerBackgoundColor,
         },
         headerTitleStyle:{
           color: Colors.headerTitleColor,
@@ -66,14 +65,9 @@ export default class myMap extends React.Component {
             point1 : this.state.editing.points[0],
             point2 : this.state.editing.points[1],
             //need to add a name for workspace or "personal" study space
-            refName : "Personal"
+            wsID : "Personal"
 
           }
-        console.log("polygons")
-        console.log(this.state.polygons)
-
-        console.log("editing")
-        console.log(this.state.editing)
 
         //push new study space
         firebase.database().ref("/StudySpaces/" + this.state.editing.studySpaceKey).update(payload)
@@ -151,6 +145,8 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
+            color: 'hsla(270, 100%, 50%, 0.5)',
+            personal: true,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
           },
@@ -171,19 +167,38 @@ export default class myMap extends React.Component {
             points: [...editing.coordinates, e.nativeEvent.coordinate],
           },
         });
-      } else{} 
+      } else{}
     }
   }
 
   onPolygonPress(polygon){
-    Alert.alert(
-      'Do you wish to delete this polygon?',
-      '',
-      [
-        {text: 'No'},
-        {text: 'Yes', onPress: () => this.delete(polygon)},
-      ],
-    );
+    //console.log(this.state.polygons)
+    console.log(polygon.id)
+    if(polygon.personal){
+      Alert.alert(
+        'Do you wish to delete this polygon?',
+        '',
+        [
+          {text: 'No'},
+          {text: 'Yes', onPress: () => this.delete(polygon)},
+        ],
+      );
+    }
+    else{
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          firebase.database().ref('/StudySpaces/'+ polygon.studySpaceKey + "/").once('value').then(function(snapshot){
+            studySpace = snapshot.val()
+            wsStudySpace = studySpace.wsID
+            firebase.database().ref('/workspaces/'+ wsStudySpace + "/").once('value').then(function(snapshot){
+              workSpace = snapshot.val()
+              wsName = workSpace.workspaceTitle
+              Alert.alert('Workspace Name: ' + wsName);
+            })
+          })
+        }
+      })    
+    }
   } 
 
   makeCoordinates(point1, point2){
@@ -212,6 +227,8 @@ export default class myMap extends React.Component {
     //get all the polygons the user is a part of
     //take out the ones already in this.state.polygons
     //update state of this.state.polygons
+    this.state.polygons = []
+    id = 0
     var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
@@ -220,7 +237,6 @@ export default class myMap extends React.Component {
           
           //
           var spaces = snapshot.val()
-
           //iterate polygons current state
           for(var i = 0 ; i < self.state.polygons.length; i++){
             //check if polygon key is in spaces
@@ -236,10 +252,12 @@ export default class myMap extends React.Component {
             //add new spaces
             for(var key in spaces){
                 var polygon = {
-                    id : id,
-                    coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
-                    points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
-                    studySpaceKey : key
+                  id : id,
+                  color: 'hsla(270, 100%, 50%, 0.5)', //color personal
+                  coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                  personal: true,
+                  points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                  studySpaceKey : key
                 }
                 //put polygon in polygons state
                 renderingPolygons.push(polygon)
@@ -249,10 +267,58 @@ export default class myMap extends React.Component {
               polygons : renderingPolygons
             })
           })
-        })   
+        })
+        //get user workspaces
+        firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(async function(snapshot){          
+          //all the workspaces that the user is part of
+          var uWorkspaces = snapshot.val()
+      
+          for(var j = 0; j < uWorkspaces.length; j++){
+            var workspaceID = uWorkspaces[j]
+
+            await firebase.database().ref('/workspaces/'+ uWorkspaces[j] + "/StudySpaces/").once('value').then(function(snapshot){
+              //all the study spaces that are in the workspaces that the user is part of
+              var wStudySpaces = snapshot.val()
+
+              firebase.database().ref('/workspaces/'+ workspaceID + "/").once('value').then(function(snapshot){
+                wsColor = snapshot.val()
+
+                //iterate polygons current state
+                for(var k = 0 ; k < self.state.polygons.length; k++){
+                  //check if polygon key is in wStudySpaces
+                  if(self.state.polygons[k].studySpaceKey in wStudySpaces){
+                    delete wStudySpaces[self.state.polygons[k].studySpaceKey]
+                  }
+                }
+
+                firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
+                  renderingPolygons = self.state.polygons
+
+                  spaceCoordinates = snapshot.val()
+
+                  for(var key in wStudySpaces){
+                    var polygon = {
+                      id : id,
+                      color: wsColor.color,  
+                      personal: false,
+                      coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                      points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                      studySpaceKey : key
+                    }
+                    //put polygon in polygons state
+                    renderingPolygons.push(polygon)
+                    id+=1
+                  }
+                  self.setState({
+                    polygons : renderingPolygons
+                  })
+                })
+              })
+            })
+          }
+        })  
       }
-      else{
-      }
+      else{}
     })
   }
 
@@ -262,9 +328,10 @@ export default class myMap extends React.Component {
     firebase.auth().onAuthStateChanged(function(user){
       if(user){
         //logged on
-        self.setState({currentUser: user,
-                        userId : user.uid})
-      }
+        self.setState({
+          currentUser: user,
+          userId : user.uid}
+        )}
       else{
         //not logged on
         console.log("no user logged on")
@@ -310,7 +377,7 @@ export default class myMap extends React.Component {
                 tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={polygon.color}
                 strokeColor={1}
                 onPress={() => this.onPolygonPress(polygon)}
               />
@@ -320,7 +387,7 @@ export default class myMap extends React.Component {
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={'hsla(270, 100%, 50%, 0.5)'}
                 strokeColor={1}
               />
             )}
@@ -331,7 +398,7 @@ export default class myMap extends React.Component {
               onPress={() => this.create()}
               style={styles.buttonStyle}
             >
-              <Text>Create Study Space</Text>
+              <Text>Add Personal Study Space</Text>
             </TouchableOpacity>
           )}
           {this.state.editing && (

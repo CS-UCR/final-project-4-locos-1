@@ -210,7 +210,7 @@ export default class MainScreen extends Component {
                             workspaceID: userInfo["workspaces"][i]
                           })
                           
-                          //get unique list of refName
+                          //get unique list of wsID
                           renderList[payload.ref]= {
                             key : ss,
                             payload: payload,
@@ -242,7 +242,7 @@ export default class MainScreen extends Component {
 
                 var payload = {
 
-                  ref: allStudySpaces[key]["refName"],
+                  ref: allStudySpaces[key]["wsID"],
                   imageLink: '../../assets/location-symbol.jpg'
                   
                 }
@@ -257,7 +257,7 @@ export default class MainScreen extends Component {
                   type : 1
                 })
                 
-                //get unique list of refName
+                //get unique list of wsID
                 renderList[payload.ref]= {
                   key : key,
                   payload: payload,
