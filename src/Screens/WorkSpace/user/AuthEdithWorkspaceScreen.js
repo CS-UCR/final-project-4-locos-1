@@ -108,7 +108,7 @@ const EditWorkspaceScreen = props => {
                 workspacesAction.updateWorkSpace(
                     workspaceId,
                     formState.inputValues.workspaceTitle,
-                    '', 
+                    color[colorIndex],
                     formState.inputValues.imageUri
                 )
             )
