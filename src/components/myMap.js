@@ -268,11 +268,11 @@ export default class myMap extends React.Component {
             })
           })
         })
-        //get user studyspaces
+        //get user workspaces
         firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(async function(snapshot){          
           //all the workspaces that the user is part of
           var uWorkspaces = snapshot.val()
-
+      
           for(var j = 0; j < uWorkspaces.length; j++){
             var workspaceID = uWorkspaces[j]
 
