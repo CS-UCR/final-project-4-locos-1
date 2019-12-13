@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Dimensions} from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions, ScrollView} from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import Colors from '../../constants/Colors';
@@ -11,7 +11,6 @@ import {
   ProgressChart,
   ContributionGraph,
   StackedBarChart} from "react-native-chart-kit";
-import { ScrollView } from 'react-native-gesture-handler';
 //import { styles } from '../../styles/styles';
 
 export default class Accordian extends Component{
@@ -111,14 +110,13 @@ export default class Accordian extends Component{
   configurePersonal(){
     return(
         <View>
-          <View height={20}/>
           <View height={20}>
           <Text style = {{fontSize: 15, fontWeight: "bold", alignItems: "center", color: Colors.deepPurpleColor, marginTop: 4}}> Last 7 Days In Minutes Spent Studying </Text>
           </View>
           <View height={200}>
           <BarChart
               data={this.getPast7Days()}
-              width={Dimensions.get('window').width - 2}
+              width={Dimensions.get('window').width - 20}
               height={200}
               yAxisLabel={''}
               chartConfig={{
@@ -137,11 +135,15 @@ export default class Accordian extends Component{
               }}
             />
           </View>
-          <View height={30}/>
-          <View height={20}>
-          <Text style = {{fontSize: 15, fontWeight: "bold", alignItems: "center", color: Colors.deepPurpleColor, marginTop: 0}}> How well did you spread out your time? </Text>
-          </View>
-            {/* <View height={200}>
+                    
+        </View>
+    )
+  }
+
+  configureWorkspace(){
+    return(
+      <View>
+      <View height={200}>
           <ContributionGraph
               values={[
                 { date: this.state.day1DateTxt, count: this.state.day1Time },
@@ -179,7 +181,7 @@ export default class Accordian extends Component{
               ]}
               endDate={new Date(this.state.day7DateTxt)}
               numDays={100}
-              width={Dimensions.get('window').width - 2}
+              width={Dimensions.get('window').width - 20}
               height={200}
               chartConfig={{
                 backgroundColor: '#FFFFFF',
@@ -192,13 +194,9 @@ export default class Accordian extends Component{
                 },
               }}
             />
-            </View> */}
-        </View>
+            </View>
+      </View>
     )
-  }
-
-  configureWorkspace(){
-
   }
   configureRender(){
 
@@ -210,14 +208,14 @@ export default class Accordian extends Component{
         return(this.configurePersonal())
     }
     else if(this.state.data.type == "Workspace"){
-        //render workspace
+        return(this.configureWorkspace())//render workspace
     }
     
   }
   render() {
     console.log("rerendering accordian 8")
     return (
-     //<View style= {styles.container}>
+      
        <View style = {{backgroundColor : '#FFFFFF'}}>
             {console.log("past view")}
             <TouchableOpacity style={styles.row} onPress={this.toggleExpand}>
@@ -228,13 +226,12 @@ export default class Accordian extends Component{
             </TouchableOpacity>
             { 
                 this.state.expanded &&
-                <View style = {{flex : 1 }}>
+                <View style = {styles.child}>
                     {console.log("beginning")}
                     {this.configureRender()}
                 </View>
             }
        </View>
-     //</View>
     )
   }
 
@@ -277,7 +274,7 @@ const styles = StyleSheet.create({
     },
     child:{
         backgroundColor: '#FFFFFF',
-        padding:16,
+        // padding:16,
     },
     GraphBoxStyle:{
       height: '80%',
