@@ -37,6 +37,7 @@ export default class myMap extends React.Component {
       userId : null,
       rendered : false,
       wsID: this.props.navigation.getParam('workspaceId'),
+      admin: true,
     }
   }
   
@@ -55,7 +56,6 @@ export default class myMap extends React.Component {
       Alert.alert('Your study space is incomplete!');
     } else {
         //make a payload to push in /StudySpaces
-        console.log(this.state.userId)  //////aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         var payload = {
           owner: this.state.userId,
           point1: this.state.editing.points[0],
@@ -133,6 +133,7 @@ export default class myMap extends React.Component {
 
   async getColor(){   //get color and check if admin
     const{wsID} = this.state;
+    var self = this
     await firebase.auth().onAuthStateChanged(function(user){
       if(user){
         firebase.database().ref('/workspaces/'+ wsID + "/").once('value').then(function(snapshot){
@@ -140,13 +141,20 @@ export default class myMap extends React.Component {
           wsColor = workspace.color
           wsOwner = workspace.authID
           console.log(wsOwner)
-          console.log(this.state.userId)
-          // if(wsOwner == this.state.userId){
-          //   console.log("hello")
-          // }
-          // else{
+          console.log(user.uid)
+          if(wsOwner == user.uid){  //***********************/
+            console.log("hello")
+            self.setState({
+              admin: true,
+            })
+          }
+          else{
+            console.log("hello2")
+            self.setState({
+              admin: false,
+            })
 
-          // }
+          }
         })
       }
     })
@@ -186,14 +194,19 @@ export default class myMap extends React.Component {
   }
 
   onPolygonPress(polygon){
-    Alert.alert(
-      'Do you wish to delete this polygon?',
-      '',
-      [
-        {text: 'No'},
-        {text: 'Yes', onPress: () => this.delete(polygon)},
-      ],
-    );
+    if(this.state.admin){
+      Alert.alert(
+        'Do you wish to delete this polygon?',
+        '',
+        [
+          {text: 'No'},
+          {text: 'Yes', onPress: () => this.delete(polygon)},
+        ],
+      );
+    }
+    else{
+      Alert.alert('Sorry! You are not the administrator of the workspace');
+    }
   } 
 
   makeCoordinates(point1, point2){
@@ -340,7 +353,7 @@ export default class myMap extends React.Component {
             )}
         </MapView>
         <View style={styles.buttonContainerStyle}>
-          {!this.state.creating && (
+          {!this.state.creating && this.state.admin && (
             <TouchableOpacity
               onPress={() => this.create()}
               style={styles.buttonStyle}
