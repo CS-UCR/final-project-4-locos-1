@@ -139,6 +139,7 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
+            //color: ,HEEEEEEEEEEEEEEEEEEEEEEEERE
             personal: false,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
@@ -226,6 +227,7 @@ export default class myMap extends React.Component {
             for(var key in spaces){
                 var polygon = {
                     id : id,
+                    //color: , HEEEEEEEEREEEE
                     coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
                     points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
                     studySpaceKey : key
@@ -300,7 +302,7 @@ export default class myMap extends React.Component {
                 tappable = {true}
                 coordinates={polygon.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={'hsla(240, 100%, 50%, 0.5)'}  //HEEEEREEEE!
                 strokeColor={1}
                 onPress={() => this.onPolygonPress(polygon)}
               />
@@ -310,7 +312,7 @@ export default class myMap extends React.Component {
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, 0.5)'}
+                fillColor={'hsla(240, 100%, 50%, 0.5)'}  //HEREEEEEE!
                 strokeColor={1}
               />
             )}

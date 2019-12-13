@@ -145,7 +145,7 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
-            color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
+            color: 'hsla(270, 100%, 50%, 0.5)',
             personal: true,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
@@ -238,7 +238,7 @@ export default class myMap extends React.Component {
             for(var key in spaces){
                 var polygon = {
                   id : id,
-                  color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
+                  color: 'hsla(270, 100%, 50%, 0.5)', //color personal
                   coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
                   personal: true,
                   points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
@@ -254,42 +254,52 @@ export default class myMap extends React.Component {
           })
         })
         //get user studyspaces
-        firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(function(snapshot){          
+        firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(async function(snapshot){          
           //all the workspaces that the user is part of
           var uWorkspaces = snapshot.val()
-          for(var i = 0; i < uWorkspaces.length; i++){
-            firebase.database().ref('/workspaces/'+ uWorkspaces[i] + "/StudySpaces/").once('value').then(function(snapshot){
-              
+
+          for(var j = 0; j < uWorkspaces.length; j++){
+            var workspaceID = uWorkspaces[j]
+
+            await firebase.database().ref('/workspaces/'+ uWorkspaces[j] + "/StudySpaces/").once('value').then(function(snapshot){
               //all the study spaces that are in the workspaces that the user is part of
               var wStudySpaces = snapshot.val()
-              //iterate polygons current state
-              for(var i = 0 ; i < self.state.polygons.length; i++){
-                //check if polygon key is in wStudySpaces
-                if(self.state.polygons[i].studySpaceKey in wStudySpaces){
-                  delete wStudySpaces[self.state.polygons[i].studySpaceKey]
-                }
-              }
+              console.log(workspaceID)
 
-              firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
-                renderingPolygons = self.state.polygons
+              firebase.database().ref('/workspaces/'+ workspaceID + "/").once('value').then(function(snapshot){
+                wsColor = snapshot.val()
+                console.log(wsColor.color)
 
-                spaceCoordinates = snapshot.val()
 
-                for(var key in wStudySpaces){
-                  var polygon = {
-                    id : id,
-                    color: 'hsla(240, 100%, 50%, 0.5)',  //***************/
-                    personal: false,
-                    coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
-                    points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
-                    studySpaceKey : key
+                //iterate polygons current state
+                for(var k = 0 ; k < self.state.polygons.length; k++){
+                  //check if polygon key is in wStudySpaces
+                  if(self.state.polygons[k].studySpaceKey in wStudySpaces){
+                    delete wStudySpaces[self.state.polygons[k].studySpaceKey]
                   }
-                  //put polygon in polygons state
-                  renderingPolygons.push(polygon)
-                  id+=1
                 }
-                self.setState({
-                  polygons : renderingPolygons
+
+                firebase.database().ref('/StudySpaces/').once('value').then(function(snapshot){
+                  renderingPolygons = self.state.polygons
+
+                  spaceCoordinates = snapshot.val()
+
+                  for(var key in wStudySpaces){
+                    var polygon = {
+                      id : id,
+                      color: wsColor.color,  
+                      personal: false,
+                      coordinates : self.makeCoordinates(spaceCoordinates[key].point1, spaceCoordinates[key].point2),
+                      points : [spaceCoordinates[key].point1,spaceCoordinates[key].point2],
+                      studySpaceKey : key
+                    }
+                    //put polygon in polygons state
+                    renderingPolygons.push(polygon)
+                    id+=1
+                  }
+                  self.setState({
+                    polygons : renderingPolygons
+                  })
                 })
               })
             })
@@ -366,7 +376,7 @@ export default class myMap extends React.Component {
                 key={this.state.editing.id}
                 coordinates={this.state.editing.coordinates}
                 strokeColor={'red'}
-                fillColor={'hsla(240, 100%, 50%, .2)'}
+                fillColor={'hsla(270, 100%, 50%, 0.5)'}
                 strokeColor={1}
               />
             )}
