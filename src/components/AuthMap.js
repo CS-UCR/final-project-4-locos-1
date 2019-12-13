@@ -140,6 +140,7 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
+            personal: false,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
           },

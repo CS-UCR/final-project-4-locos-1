@@ -146,6 +146,7 @@ export default class myMap extends React.Component {
         this.setState({
           editing: {
             id: id++,
+            personal: true,
             coordinates: [e.nativeEvent.coordinate],
             points: [e.nativeEvent.coordinate],
           },
@@ -166,19 +167,26 @@ export default class myMap extends React.Component {
             points: [...editing.coordinates, e.nativeEvent.coordinate],
           },
         });
-      } else{} 
+      } else{}
+      console.log(this.state.polygons)
     }
   }
 
   onPolygonPress(polygon){
-    Alert.alert(
-      'Do you wish to delete this polygon?',
-      '',
-      [
-        {text: 'No'},
-        {text: 'Yes', onPress: () => this.delete(polygon)},
-      ],
-    );
+
+    if(polygon.personal){
+      Alert.alert(
+        'Do you wish to delete this polygon?',
+        '',
+        [
+          {text: 'No'},
+          {text: 'Yes', onPress: () => this.delete(polygon)},
+        ],
+      );
+    }
+    else{
+      Alert.alert('Sorry, this state is not personal, you can not delete!');     
+    }
   } 
 
   makeCoordinates(point1, point2){
@@ -245,12 +253,10 @@ export default class myMap extends React.Component {
           })
         })
         /*******START EDITING HERE***********/
-        //console.log(polygons)
         //get user studyspaces
         firebase.database().ref('/Users/'+ user.uid + "/workspaces/").once('value').then(function(snapshot){          
           //all the workspaces that the user is part of
           var uWorkspaces = snapshot.val()
-          console.log(uWorkspaces)
 
           for(var i = 0; i < uWorkspaces.length; i++){
             firebase.database().ref('/workspaces/'+ uWorkspaces[i] + "/StudySpaces/").once('value').then(function(snapshot){
@@ -284,12 +290,12 @@ export default class myMap extends React.Component {
                 self.setState({
                   polygons : renderingPolygons
                 })
-                
-                // console.log(renderingPolygons)
+                console.log(renderingPolygons)
               })
             })
           }
         })
+        console.log(self.state.polygons)
         /*******ENDI EDITING HERE************/   
       }
       else{
@@ -303,9 +309,10 @@ export default class myMap extends React.Component {
     firebase.auth().onAuthStateChanged(function(user){
       if(user){
         //logged on
-        self.setState({currentUser: user,
-                        userId : user.uid})
-      }
+        self.setState({
+          currentUser: user,
+          userId : user.uid}
+        )}
       else{
         //not logged on
         console.log("no user logged on")
