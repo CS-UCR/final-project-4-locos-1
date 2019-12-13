@@ -104,93 +104,11 @@ export default class Accordian extends Component{
 
         return barData
 
-<<<<<<< HEAD
-        // console.log("creating study values")
-        // console.log("myData")
-        // console.log(myData)
-        // for(var i = 0 ; i < myData.length ;i++){
-        //     console.log("iteration: " + i)
-            
-        //     var myDate = new Date(myData[i].date).getDate()
-        //     console.log("myDate V2")
-        //     console.log(myDate)
-
-        //     console.log("myData")
-        //     console.log(myData)
-
-        //     console.log("myData[i]")
-        //     console.log(myData[i])
-
-           
-        //     console.log("this is study Value operations")
-        //     var studyValue = (myData[i]["hours"] * 60) + myDate[i]["mins"] + (myData[i]["secs"] / 60)
-            
-        //     console.log("studyValue")
-        //     console.log(studyValue)
-            
-        //     if(myDate in uniqueList){
-        //         uniqueDateList[myDate] += studyValue
-        //     }
-        //     else{
-        //         uniqueDateList[myDate] = studyValue
-        //     }
-            
-        // }
-        // //now 
-
-        // console.log("get past 7 days for loop")
-        // var today = new Date().getDate()
-        // lineData = {
-        //     labels : [],
-        //     datasets: [
-        //         {
-        //             data : [],
-        //             strokeWidth : 2
-        //         }
-        //     ]
-        // }
-        // //get past 7 days
-        // for (var i = 8; i >1  ;i--){
-        //     var nextDate = today - i;
-        //     if(nextDate in uniqueDateList){
-        //         //push label
-        //         lineData.labels.push(nextDate)
-        //         //push data
-        //         lineData.datasets.data.push(uniqueDateList[nextDate])
-
-        //     }
-        //     else{
-        //         lineData.labels.push(nextDate)
-        //         lineData.datasets.data.push(0)
-        //     }
-        // }
-
-        // console.log("myLineData")
-        // console.log(lineData)
-
-        // console.log("rendering 7PastDays")
-        const line = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-            datasets: [
-              {
-                data: [20, 45, 28, 80, 99, 43],
-                strokeWidth: 2, // optional
-              },
-            ],
-          };
-
-        // return(
-          
-        // )
-=======
->>>>>>> kev-Dashboards
     }
   configurePersonal(){
 
     console.log("firing getPast7days")
-    console.log(this.getPast7Days())
     return(
-<<<<<<< HEAD
                 <View>
                   <View height={20}/>
                   <View height={20}>
@@ -198,22 +116,7 @@ export default class Accordian extends Component{
                   </View>
                   <View height={200}>
                   <BarChart
-                      data={{
-                        labels: [
-                          this.state.day1Txt,
-                          this.state.day2Txt,
-                          this.state.day3Txt,
-                          this.state.day4Txt,
-                          this.state.day5Txt,
-                          this.state.day6Txt,
-                          this.state.day7Txt,
-                        ],
-                        datasets: [
-                          {
-                            data: [this.state.day1Time, this.state.day2Time, this.state.day3Time, this.state.day4Time, this.state.day5Time, this.state.day6Time, this.state.day7Time],
-                          },
-                        ],
-                      }}
+                      data= {this.getPast7Days()}
                       width={Dimensions.get('window').width - 2}
                       height={200}
                       yAxisLabel={''}
@@ -290,12 +193,6 @@ export default class Accordian extends Component{
                     />
                     </View>
                 </View>
-=======
-      <View>
-
-
-      </View>
->>>>>>> kev-Dashboards
     )
   }
 
@@ -309,10 +206,6 @@ export default class Accordian extends Component{
 
     if(this.state.data.type == "Personal"){
         //render Personal
-<<<<<<< HEAD
-=======
-        console.log("firing getPast7days in configureRender")
->>>>>>> kev-Dashboards
         return(this.configurePersonal())
     }
     else if(this.state.data.type == "Workspace"){
