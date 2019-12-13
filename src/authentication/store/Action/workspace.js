@@ -78,6 +78,81 @@ export const deleteWorkSpace = workspaceId =>{
     };
 }
 
+
+export const deleteJoinWorkspace = workspaceId =>{
+  return async (dispatch, getState) => {
+      const authID =  getState().userAuth.userId;
+
+
+
+
+      await firebase.database().ref(`/Users/${authID}/workspaces/`).once('value').then(async function(snapshot){
+        let userWorkspaces = snapshot.val()
+        let updatedWorkspace = []
+
+
+        for( key in userWorkspaces){
+          if(userWorkspaces[key] !== workspaceId){
+            console.log("key")
+            updatedWorkspace.push(userWorkspaces[key])
+          }
+        }
+
+        await firebase.database().ref(`/Users/${authID}/workspaces/`).set(updatedWorkspace)
+      })
+
+      dispatch({ type: DELETE_WORKSPACE, workspaceId: workspaceId})
+  };
+}
+
+export const removeMemberWorkspace = (workspaceId, memberId )=>{
+  return async (dispatch) => {
+      console.log("MemberID: ", workspaceId)
+
+      await firebase.database().ref(`/Users/${memberId}/workspaces/`).once('value').then(async function(snapshot){
+        let userWorkspaces = snapshot.val()
+        let updatedWorkspace = []
+
+        if(userWorkspaces){
+          for( key in userWorkspaces){
+            if(userWorkspaces[key] !== workspaceId){
+              updatedWorkspace.push(userWorkspaces[key])
+            }
+          }
+
+          await firebase.database().ref(`/Users/${memberId}/workspaces/`).set(updatedWorkspace)
+
+        }
+      })
+
+      await firebase.database().ref(`/workspaces/${workspaceId}/members/`).once('value').then(async function(snapshot){
+        let memberList = snapshot.val()
+        let updatedMemberList = []
+
+        console.log("MemberList: ", memberList)
+
+
+        for( key in memberList){
+          if(memberList[key] !== memberId){
+            console.log("key")
+            updatedMemberList.push(memberList[key])
+          }
+        }
+
+        console.log("Udpated member :", updatedMemberList)
+
+        await firebase.database().ref(`/workspaces/${workspaceId}/members/`).set(updatedMemberList)
+      })
+
+
+
+      // dispatch({})
+  };
+} 
+
+
+
+
 export const createWorkSpace = (workspaceTitle, color, imageUri) => {
     return async (dispatch, getState )=> {
         const authID =  getState().userAuth.userId

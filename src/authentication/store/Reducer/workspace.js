@@ -16,6 +16,7 @@ export default(state = initialState, action) => {
                 userWorkspaces: action.userWorkspaces,
             }
         case DELETE_WORKSPACE:
+            // console.log("User Workspace : ", state.userWorkspaces)
             return {
                 ...state,
                 availableWorkspaces: state.availableWorkspaces.filter(
@@ -24,7 +25,7 @@ export default(state = initialState, action) => {
                 authWorkspaces: state.authWorkspaces.filter(
                     workspace => workspace.id !== action.workspaceId
                 ),
-                authWorkspaces: state.authWorkspaces.filter(
+                userWorkspaces: state.userWorkspaces.filter(
                     workspace => workspace.id !== action.workspaceId
                 )
             }

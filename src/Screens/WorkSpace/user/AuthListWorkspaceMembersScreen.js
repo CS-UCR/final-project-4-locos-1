@@ -16,8 +16,8 @@ import {
 
 const listWorkspaceMember = (props) => {
     const editedWorkspace = props.navigation.getParam('workspaceId').id
-    console.log("Edith WOrkspace ", editedWorkspace)
-    const [memberList, setMemberList] = useState()
+    const authID = useSelector(state =>  state.userAuth.userId)
+    const [memberList, setMemberList] = useState([])
     const dispatch = useDispatch();
 
     let TouchableCmp = TouchableOpacity
@@ -27,63 +27,50 @@ const listWorkspaceMember = (props) => {
     }
 
     const listWorkspace = async(workspaceId) => {
-        await firebase.database().ref(`/workspaces/${workspaceId}/members`).once('value').then(async function(snapshot){
+        await firebase.database().ref(`/workspaces/${workspaceId}/members/`).once('value').then(async function(snapshot){
             workspaceMembers = snapshot.val()
+
+            let users  = []
+
+            await firebase.database().ref(`/Users/`).once('value').then(async function(snapshot){
+                users = snapshot.val()
+            })
             let membersInfo = []
             if(workspaceMembers){
                 for(member in workspaceMembers){
-                    await firebase.database().ref(`/Users/${member}`).once('value').then(async function(snapshot){
-                        let userList = snapshot.val()
-                        console.log("userList: ", userList)
-                        console.log("before key")
-                        for( key in userList){
-                            if(userList[key].profile){
-                                console.log("inside key")
-                                membersInfo.push({key:key,profile:userList[key].profile})
-                            }
+                    for(user in users){
+                        if(workspaceMembers[member] === user && user !== authID){
+                            membersInfo.push({userID: user, userInfo: users[user]})
                         }
-                    })
+                    }
+
                 }
             }
-            console.log("member info: ", membersInfo)
             setMemberList(membersInfo)
 
         })
-
-
-        // await firebase.database().ref(`/Users/`).once('value').then(async function(snapshot){
-        //     let userList = snapshot.val()
-        //     let memberInfo = []
-
-        //     for( key in userList){
-        //         if(userList[key].profile){
-        //             memberInfo.push({key:key,profile:userList[key].profile})
-        //         }
-        //     }
-
-        //     const workspaceMembers = await firebase.database().ref(`/workspaces/${workspaceId}/`).once('value')
-
-        //     setMemberList(memberInfo)
-        // })
     }
 
     const deleteMemberHandler = async (memberId) =>{
+        console.log("Member id: ", memberId)
         Alert.alert('Are you sure?', 'Do you really want to delete this member?',
         [{text: 'No', style: 'default'},
          {text:"Yes", style: 'destructive',
          onPress: () => { 
-             dispatch(workspaceActions.deleteMember(editedWorkspace,memberId))
+             dispatch(workspaceActions.removeMemberWorkspace(editedWorkspace,memberId))
          }}])
     }
 
 
     const renderMembers = itemData => {
+        console.log("ItemData: ", itemData.item.userID)
         return(
             <View style={styles.centered}>
-                <TouchableCmp onPress={deleteMemberHandler.bind(this,itemData.item.key)}> 
-                    <Text style={styles.textSize}> {itemData.item.profile.firstname + ' ' + itemData.item.profile.lastname}</Text>
+                <TouchableCmp onPress={deleteMemberHandler.bind(this,itemData.item.userID,)}> 
+                    <Text style={styles.textSize}> {itemData.item.userInfo.profile.firstname + ' ' + itemData.item.userInfo.profile.lastname}</Text>
                 </TouchableCmp>
             </View>
+
         )
     }
 
@@ -91,14 +78,22 @@ const listWorkspaceMember = (props) => {
         listWorkspace(editedWorkspace)
       }, []);
 
-    return(
 
-        <FlatList
-            data={memberList}
-            keyExtractor={(item) => item.id}
-            renderItem = {renderMembers}
-            numColumns = {1}/>
-    )
+    if(memberList.length === 0){
+        return( <View style={styles.centered}>
+            <Text> No member in workspace yet!</Text>
+        </View>)
+    }
+    else{
+
+        return(
+            <FlatList
+                data={memberList}
+                keyExtractor={(item) => item.id}
+                renderItem = {renderMembers}
+                numColumns = {1}/>
+        )
+    }
 }
 
 

@@ -17,6 +17,8 @@ const UserWorkspacesScreen = props => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const dispatch =useDispatch();
 
+    console.log("Workspaces user :, ", workspaces)
+
 
     const editWorkspaceHandler = id => {
         props.navigation.navigate('AuthMap',{workspaceId: id, functionality: 'Study Spaces'})
@@ -27,7 +29,7 @@ const UserWorkspacesScreen = props => {
             [{text: 'No', style: 'default'},
              {text:"Yes", style: 'destructive',
              onPress: () => {
-                 dispatch(workspaceActions.deleteWorkSpace(workspaceId))
+                 dispatch(workspaceActions.deleteJoinWorkspace(workspaceId))
              }}])
     }
 
