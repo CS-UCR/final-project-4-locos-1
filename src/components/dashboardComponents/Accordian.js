@@ -7,7 +7,7 @@ export default class Accordian extends Component{
     constructor(props) {
         super(props);
         this.state = { 
-          data: props.data,
+          data: this.props.data,
           expanded : false,
         }
     }
@@ -18,126 +18,69 @@ export default class Accordian extends Component{
         /*
         need unique aggregated data by date
         */
-        var myData = this.state.data.data 
-        var uniqueDateList = []
+        var myData = this.state.data.data     
+        var dataMap = {}
+
+        //load data
+        for(var i = 0 ; i<myData.length; i++){
+          var myDate = new Date(myData[i].date)
+          var generateKey = myDate.getMonth() + '/' + myDate.getDate()
+          if (generateKey in dataMap){
+            dataMap[generateKey] += myData[i].secs / 60 + myData[i].mins + myData[i].hours * 60
+          }
+          else{
+            dataMap[generateKey] = myData[i].secs / 60 + myData[i].mins + myData[i].hours * 60
+          }
+          console.log("datamap[key]")
+          console.log(dataMap[generateKey])
+        }
         
+        
+        //traverse through dates
+        var now = new Date()
+        now.setDate(now.getDate()+1)
+        var newDate = new Date(now)
+        newDate.setDate(newDate.getDate()- 7)
 
-        // console.log("creating study values")
-        // console.log("myData")
-        // console.log(myData)
-        // for(var i = 0 ; i < myData.length ;i++){
-        //     console.log("iteration: " + i)
-            
-        //     var myDate = new Date(myData[i].date).getDate()
-        //     console.log("myDate V2")
-        //     console.log(myDate)
+        var barData = {
+          labels: [],
+          datasets: [
+            {
+              data: [],
+            },
+          ],
+        };
+    
+        for(var i = new Date(newDate); i < now  ; i.setDate(i.getDate()+1)){
+          //load data
+          var generateKey = i.getMonth() + '/' + i.getDate()
+          barData.labels.push(generateKey)
+          var result = -1;
+          if(generateKey in dataMap){
+            result = dataMap[generateKey]
+          }
+          else{
+            result = 0
+          }
 
-        //     console.log("myData")
-        //     console.log(myData)
+          barData.datasets[0].data.push(result)
 
-        //     console.log("myData[i]")
-        //     console.log(myData[i])
+        }
 
-           
-        //     console.log("this is study Value operations")
-        //     var studyValue = (myData[i]["hours"] * 60) + myDate[i]["mins"] + (myData[i]["secs"] / 60)
-            
-        //     console.log("studyValue")
-        //     console.log(studyValue)
-            
-        //     if(myDate in uniqueList){
-        //         uniqueDateList[myDate] += studyValue
-        //     }
-        //     else{
-        //         uniqueDateList[myDate] = studyValue
-        //     }
-            
-        // }
-        // //now 
+        console.log(barData)
 
-        // console.log("get past 7 days for loop")
-        // var today = new Date().getDate()
-        // lineData = {
-        //     labels : [],
-        //     datasets: [
-        //         {
-        //             data : [],
-        //             strokeWidth : 2
-        //         }
-        //     ]
-        // }
-        // //get past 7 days
-        // for (var i = 8; i >1  ;i--){
-        //     var nextDate = today - i;
-        //     if(nextDate in uniqueDateList){
-        //         //push label
-        //         lineData.labels.push(nextDate)
-        //         //push data
-        //         lineData.datasets.data.push(uniqueDateList[nextDate])
+        return barData
 
-        //     }
-        //     else{
-        //         lineData.labels.push(nextDate)
-        //         lineData.datasets.data.push(0)
-        //     }
-        // }
-
-        // console.log("myLineData")
-        // console.log(lineData)
-
-        // console.log("rendering 7PastDays")
-        const line = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-            datasets: [
-              {
-                data: [20, 45, 28, 80, 99, 43],
-                strokeWidth: 2, // optional
-              },
-            ],
-          };
-
-        return(
-        <View> 
-            {console.log("=====WARNING======")}
-
-        <Text>
-            7 Past Days
-        </Text>
-        <LineChart
-            data={line}
-            width={Dimensions.get('window').width} // from react-native
-            height={220}
-            yAxisLabel={'minutes'}
-            chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-                borderRadius: 16
-            }
-            }}
-            bezier
-            style={{
-            marginVertical: 8,
-            borderRadius: 16
-            }}
-        />
-        </View>
-        )
     }
   configurePersonal(){
 
-    console.log("print personal dashboard")
-    
+    console.log("firing getPast7days")
+    console.log(this.getPast7Days())
     return(
-        <View style = {{flex : 1}}>
-        {console.log("personal data going in constructor")}
-        {console.log(this.state.data)}
-        {this.getPast7Days()}
-        {console.log("after render of PersonalDashboard")}
-        </View>
+      <View>
+
+
+      </View>
     )
   }
 
@@ -151,7 +94,8 @@ export default class Accordian extends Component{
 
     if(this.state.data.type == "Personal"){
         //render Personal
-        this.configurePersonal()
+        console.log("firing getPast7days in configureRender")
+        return(this.configurePersonal())
     }
     else if(this.state.data.type == "Workspace"){
         //render workspace

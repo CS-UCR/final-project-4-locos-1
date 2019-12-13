@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Button, Platform, TouchableHighlight,StyleSheet, Picker, Image} from 'react-native';
 import DrawerIcon from '../Navigation/assets/drawerNav/DrawerIcon';
-import Colors from '../../constants/Colors'
+import Colors from '../constants/Colors'
 
 import {ScrollView} from 'react-native'
 
@@ -12,7 +12,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import SpaceCard from './SpaceCard'
 import {NavigationEvents} from 'react-navigation'
-import Colors from '../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -166,21 +165,21 @@ export default class MainScreen extends Component {
           
           var allStudySpaces = studySpaceSnapshot.val()
           var studySpaceSnapshot = studySpaceSnapshot
-          console.log("checking if user has workspaces child")
+          // console.log("checking if user has workspaces child")
           if(userSnapshot.hasChild("workspaces")){
             
-            console.log("iterating workspaces")
-            console.log("workspace length")
-            console.log(userInfo["workspaces"].length)
+            // console.log("iterating workspaces")
+            // console.log("workspace length")
+            // console.log(userInfo["workspaces"].length)
             for(var i = 0 ; i < userInfo["workspaces"].length ; i++){
                 //get workspaces
 
-                console.log("going into workspace firebase call")
+                // console.log("going into workspace firebase call")
                 await firebase.database().ref('/workspaces/' + userInfo["workspaces"][i]).once('value').then(async function(snapshot){
                   //check if there
                   var workspaceInfo = snapshot.val()
-                  console.log("workspaceInfo")
-                  console.log(workspaceInfo)
+                  // console.log("workspaceInfo")
+                  // console.log(workspaceInfo)
 
                   if(snapshot.hasChild('StudySpaces')){
                     console.log("has StudySpaces index")
@@ -188,11 +187,11 @@ export default class MainScreen extends Component {
                     for(var ss in WSS){
                       //check if in bound
                       //if yes, push
-                      console.log("current study space key from workspace : " + ss)
+                      // console.log("current study space key from workspace : " + ss)
                       if(studySpaceSnapshot.hasChild(ss)){
-                        console.log("has child")
+                        // console.log("has child")
                         if (self.ifInBound(self.state.location , allStudySpaces[ss].point2,allStudySpaces[ss].point1)){
-                          console.log("workspace is inBound")
+                          // console.log("workspace is inBound")
                           var payload = {
 
                             ref: workspaceInfo['workspaceTitle'],
@@ -290,14 +289,14 @@ export default class MainScreen extends Component {
 
     
     //convert dictionary into a list
-    console.log(renderList)
+    // console.log(renderList)
     var outputList = []
     for(var key in renderList){
       outputList.push(renderList[key])
     }
 
-    console.log("outputList")
-    console.log(outputList)
+    // console.log("outputList")
+    // console.log(outputList)
     self.setState({
       inBoundSpaces :myList,
       renderList: outputList      
@@ -331,23 +330,21 @@ export default class MainScreen extends Component {
 
   }
 //TIMER ---
-  onPressTimerButton = () => {
+   onPressTimerButton = async() => {
   
     var self = this
     if(!this.state.isStarted){
         var startTime = new Date()
         this.state.trueStart=startTime.getTime()
        
-
-        var self = this
         var locationInterval = 0
 
         //record active Sessions
         var myActiveSessions = []
         var myList = this.state.renderList
 
-        console.log("myList")
-        console.log(myList)
+        // console.log("myList")
+        // console.log(myList)
 
         
         for(var i =0; i< myList.length; i++){
@@ -362,6 +359,37 @@ export default class MainScreen extends Component {
         //update storage variable without rerendering
         this.state.activeSessions = myActiveSessions
         
+        console.log("===adding active sessions in firebase v2===")
+        firebase.database().ref('/ActiveSessions/').once('value').then(function(snapshot){
+          console.log("sessions now")
+
+          var sessions = snapshot.val()
+          console.log(sessions)
+          if(sessions == null){
+            console.log("initializing ActiveSessions")
+            sessions = {}
+          }
+          
+          console.log("for loop")
+          for(var i = 0 ; i < myActiveSessions.length; i++){
+            if(myActiveSessions[i].key in sessions){
+              //just concatenate
+              console.log("in here")
+              sessions[myActiveSessions[i].key[self.state.userId]] = self.state.userId
+            }
+            else{
+              console.log("key not in here")
+              sessions[myActiveSessions[i].key] = {}
+              sessions[myActiveSessions[i].key][self.state.userId] = self.state.userId
+            }
+          }
+          console.log("about to update sessions")
+          console.log(sessions)
+          firebase.database().ref('/ActiveSessions/').update(sessions)
+          console.log("updated sessions")
+          console.log(sessions)
+        })
+     
 
         let timer = setInterval((interval) => {
     
@@ -426,7 +454,22 @@ export default class MainScreen extends Component {
 
         console.log("going in storeReports")
         console.log(this.state.activeSessions)
+        myActiveSessions = this.state.activeSessions
+
+        //delete from active sessions
+        firebase.database().ref('/ActiveSessions/').once('value').then(function(snapshot){
+          var sessions = snapshot.val()
+          
+          //delete user in each key
+          for(var i = 0 ; i< myActiveSessions.length; i++){
+            sessions[myActiveSessions[i]].delete(self.state.userId)
+          }
+          console.log("deleted")
+          console.log(sessions)
+          firebase.database().ref('/ActiveSessions/').update(sessions)
+        })
         this.storeReports(payload)
+
 
         //store in /Reports/Workspaces/WorkspaceID/StudySpaceID
         alert('Time Studied: ' + (this.state.trueTime/(1000 * 60)).toFixed(2) + "min")
@@ -526,8 +569,6 @@ export default class MainScreen extends Component {
       }
       myArray.highlight = false
     }
-    console.log("====after manipulation====")
-    console.log(myArray)
 
     var newList = this.state.renderList
     newList[index] = myArray
@@ -579,10 +620,6 @@ export default class MainScreen extends Component {
           <TouchableOpacity 
           style={{ justifyContent: 'center', }}
           onPress= {()=>{
-            console.log("item")
-            console.log(item)
-            console.log("key")
-            console.log(key)
             this.toggleHighlight(key)
           }}
           key = {key}
